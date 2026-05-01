@@ -19,9 +19,9 @@ defmodule CLI do
 
       cmd ->
         try do
-          command().execute()
+          command(cmd).execute()
         catch
-          IO.puts("#{cmd}: not found")
+          _error -> IO.puts("#{cmd}: not found")
         end
     end
 
