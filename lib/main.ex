@@ -18,6 +18,8 @@ defmodule CLI do
 
     try do
       command(command).execute(input)
+    rescue
+      e in KeyError -> IO.puts("#{command}: not found")
     catch
       _error -> IO.puts("#{command}: not found")
     end
