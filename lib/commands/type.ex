@@ -7,7 +7,7 @@ defmodule Commands.Type do
   ]
 
   def execute(args) do
-    command = String.join(args)
+    command = Enum.join(args)
 
     case command in @build_in_command do
       true ->
