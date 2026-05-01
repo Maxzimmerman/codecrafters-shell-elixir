@@ -1,10 +1,12 @@
 defmodule CLI do
   alias Commands.Exit
   alias Commands.Echo
+  alias Commands.Type
 
   @commands %{
     "exit" => Exit,
-    "echo" => Echo
+    "echo" => Echo,
+    "type" => Type
   }
 
   def main(_args) do
