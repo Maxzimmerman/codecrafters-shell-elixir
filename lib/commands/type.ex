@@ -11,7 +11,7 @@ defmodule Commands.Type do
 
     case command in @build_in_command do
       true ->
-        IO.puts("#{command} is a shell buildin")
+        IO.puts("#{command} is a shell builtin")
       false ->
         IO.puts("#{command}: not found")
     end
