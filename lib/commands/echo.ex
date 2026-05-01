@@ -2,6 +2,6 @@ defmodule Commands.Echo do
   @behaviour Commands.Command
 
   def execute(args) do
-    IO.inspect(args)
+    IO.puts(inspect(args))
   end
 end
