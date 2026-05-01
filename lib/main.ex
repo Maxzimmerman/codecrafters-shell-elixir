@@ -36,6 +36,7 @@ defmodule CLI do
   end
 
   defp decode_console_input(input) do
+    IO.inspect(String.split(input, ""))
     IO.inspect(input)
   end
 end
