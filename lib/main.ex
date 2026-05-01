@@ -1,12 +1,11 @@
 defmodule CLI do
   @commands []
   def main(_args) do
-    IO.write("$ ")
-
     listen()
   end
 
   defp listen do
+    IO.write("$ ")
     input = IO.gets("") |> String.trim()
 
     case input do
