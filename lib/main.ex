@@ -13,8 +13,8 @@ defmodule CLI do
 
   defp listen do
     IO.write("$ ")
-    input = IO.gets("") |> String.trim()
-    IO.inspect(input)
+    input = IO.gets("")
+    decode_console_input(input)
 
     case input do
       :eof ->
@@ -33,5 +33,9 @@ defmodule CLI do
 
   defp command(name) do
     Map.fetch!(@commands, name)
+  end
+
+  defp decode_console_input(input) do
+    IO.inspect(input)
   end
 end
