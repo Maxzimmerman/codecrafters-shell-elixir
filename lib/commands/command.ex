@@ -1,3 +1,3 @@
 defmodule Commands.Command do
-  @callback execute() :: any()
+  @callback execute(binary()) :: any()
 end

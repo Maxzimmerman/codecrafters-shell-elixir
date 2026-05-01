@@ -12,6 +12,7 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
     input = IO.gets("") |> String.trim()
+    IO.inspect(input)
 
     case input do
       :eof ->
