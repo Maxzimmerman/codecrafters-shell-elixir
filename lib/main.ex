@@ -1,5 +1,6 @@
 defmodule CLI do
-  @commands []
+  @commands ["exit"]
+
   def main(_args) do
     listen()
   end
