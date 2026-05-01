@@ -15,7 +15,7 @@ defmodule CLI do
         if cmd in @commands do
           IO.puts("found")
         else
-          IO.inspect("#{cmd}: not found")
+          IO.puts("#{cmd}: not found")
         end
     end
 
