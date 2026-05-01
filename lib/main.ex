@@ -13,7 +13,7 @@ defmodule CLI do
       :eof -> IO.puts("bye")
       cmd ->
         if cmd in @commands do
-          IO.puts("found")
+          System.halt(0)
         else
           IO.puts("#{cmd}: not found")
         end
