@@ -14,18 +14,12 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
     input = IO.gets("")
-    decode_console_input(input)
+    [command | input] = decode_console_input(input)
 
-    case input do
-      :eof ->
-        IO.puts("bye")
-
-      cmd ->
-        try do
-          command(cmd).execute()
-        catch
-          _error -> IO.puts("#{cmd}: not found")
-        end
+    try do
+      command(command).execute(input)
+    catch
+      _error -> IO.puts("#{command}: not found")
     end
 
     listen()
@@ -36,7 +30,6 @@ defmodule CLI do
   end
 
   defp decode_console_input(input) do
-    IO.inspect(String.trim(input) |> String.split(" "))
-    IO.inspect(input)
+    String.trim(input) |> String.split(" ")
   end
 end
