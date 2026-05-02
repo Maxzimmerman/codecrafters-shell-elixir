@@ -1,6 +1,6 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
-  def execute([path | input]) do
+  def execute([path | [input]]) do
     IO.inspect(input)
     port = Port.open({:spawn_executable, path}, [
       :binary,
@@ -8,6 +8,8 @@ defmodule Commands.Execute do
       :use_stdio,
       args: input
     ])
+
+    IO.puts("P")
 
     receive do
       {^port, {:data, data}} -> IO.puts("executed with #{inspect(data)}")
