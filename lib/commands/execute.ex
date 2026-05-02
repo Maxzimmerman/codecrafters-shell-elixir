@@ -1,5 +1,6 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
+
   def execute([path | [input]]) do
     port = Port.open({:spawn_executable, path}, [
       :binary,
@@ -15,4 +16,6 @@ defmodule Commands.Execute do
       {^port, {:exit_status, _code}} -> :finished
     end
   end
+
+  def execute(_args), do: :error
 end
