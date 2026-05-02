@@ -8,11 +8,11 @@ defmodule Commands.Execute do
       args: input
     ])
 
-    IO.puts("Program was passed #{Enum.count(input) + 1} args (including program name)")
+    IO.puts("Program was passed #{Enum.count(input) + 1} args (including program name).")
 
     receive do
-      {^port, {:data, data}} -> :got_data
-      {^port, {:exit_status, code}} -> :finished
+      {^port, {:data, _data}} -> :got_data
+      {^port, {:exit_status, _code}} -> :finished
     end
   end
 end
