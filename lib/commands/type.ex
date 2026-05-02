@@ -1,6 +1,8 @@
 defmodule Commands.Type do
   @behaviour Commands.Command
 
+  import Bitwise
+
   @build_in_command [
     "exit",
     "echo",
