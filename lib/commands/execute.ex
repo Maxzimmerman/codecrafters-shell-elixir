@@ -13,7 +13,7 @@ defmodule Commands.Execute do
 
     receive do
       {^port, {:data, data}} -> encode_exe_output(data)
-      {^port, {:exit_status, _code}} -> :finished
+      {^port, {:exit_status, code}} -> IO.puts(code)
     end
   end
 
