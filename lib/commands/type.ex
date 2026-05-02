@@ -23,7 +23,7 @@ defmodule Commands.Type do
           |> Enum.map(&Path.join(&1, command))
           |> Enum.find(&executable?/1)
 
-        if res != " " do
+        if res != "" do
           IO.puts("#{command} is #{res}")
         else
           IO.puts("#{command}: not found")
