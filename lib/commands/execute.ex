@@ -9,7 +9,7 @@ defmodule Commands.Execute do
       args: input
     ])
 
-    IO.puts("P")
+    IO.puts("Program was passed #{Enum.count(input) + 1} args (including program name)")
 
     receive do
       {^port, {:data, data}} -> IO.puts("executed with #{inspect(data)}")
