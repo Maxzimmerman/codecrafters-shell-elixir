@@ -3,6 +3,8 @@ defmodule Commands.Type do
 
   import Bitwise
 
+  alias Commands
+
   @build_in_command [
     "exit",
     "echo",
@@ -17,27 +19,13 @@ defmodule Commands.Type do
         IO.puts("#{command} is a shell builtin")
 
       false ->
-        res =
-          System.get_env("PATH")
-          |> String.split(":")
-          |> Enum.map(&Path.join(&1, command))
-          |> Enum.find(&executable?/1)
+        res = Commands.look_for_executable(command)
 
         if res do
           IO.puts("#{command} is #{res}")
         else
           IO.puts("#{command}: not found")
         end
-    end
-  end
-
-  defp executable?(path) do
-    case File.stat(path) do
-      {:ok, %File.Stat{mode: mode}} ->
-        (mode &&& 0o111) != 0
-
-      {:error, _} ->
-        false
     end
   end
 end
