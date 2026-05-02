@@ -16,10 +16,12 @@ defmodule Commands.Type do
       true ->
         IO.puts("#{command} is a shell builtin")
       false ->
+        res=
         System.get_env("PATH")
         |> String.split(":")
         |> Enum.map(&Path.join(&1, command))
         |> Enum.find(&executable?/1)
+        IO.inspect(res)
         IO.puts("#{command}: not found")
     end
   end
