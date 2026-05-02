@@ -22,16 +22,18 @@ defmodule CLI do
     input = IO.gets("")
     [command | input] = decode_console_input(input)
 
-    with {:ok, res} <- Commands.executable_in_path?(command) do
-      Execute.execute([res, input])
-    else
-      try do
-        command(command).execute(input)
-      rescue
-        e in KeyError -> IO.puts("#{command}: not found")
-      catch
-        _error -> IO.puts("#{command}: not found")
-      end
+    case Commands.executable_in_path?(command) do
+      {:ok, res} ->
+        Execute.execute([res, input])
+
+      {:error, :no_exe} ->
+        try do
+          command(command).execute(input)
+        rescue
+          e in KeyError -> IO.puts("#{command}: not found")
+        catch
+          _error -> IO.puts("#{command}: not found")
+        end
     end
 
     listen()
