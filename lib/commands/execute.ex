@@ -7,6 +7,7 @@ defmodule Commands.Execute do
         :binary,
         :exit_status,
         :use_stdio,
+        arg0: Path.basename(path),
         args: args
       ])
 
