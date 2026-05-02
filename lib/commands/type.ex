@@ -19,11 +19,10 @@ defmodule Commands.Type do
         IO.puts("#{command} is a shell builtin")
 
       false ->
-        res = Commands.look_for_executable(command)
-
-        if res do
-          IO.puts("#{command} is #{res}")
-        else
+        case Commands.executable_in_path(command) do
+          {:ok, res} ->
+            IO.puts("#{command} is #{res}")
+          {:error, :no_exe} ->
           IO.puts("#{command}: not found")
         end
     end
