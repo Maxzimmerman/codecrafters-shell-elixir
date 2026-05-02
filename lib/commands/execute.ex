@@ -11,7 +11,7 @@ defmodule Commands.Execute do
     IO.puts("Program was passed #{Enum.count(input) + 1} args (including program name).")
 
     receive do
-      {^port, {:data, _data}} -> :got_data
+      {^port, {:data, data}} -> IO.puts("#{inspect(data)}")
       {^port, {:exit_status, _code}} -> :finished
     end
   end
