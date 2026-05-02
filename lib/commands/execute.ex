@@ -30,7 +30,6 @@ defmodule Commands.Execute do
 
   def encode_exe_output(data) do
     [data | inputs] = String.split(data, "\n")
-    IO.puts(data)
 
     for input <- inputs do
       IO.puts(input)
