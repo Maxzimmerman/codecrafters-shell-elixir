@@ -27,7 +27,7 @@ defmodule Commands.Type do
   defp executable?(path) do
     case File.stat(path) do
       {:ok, %File.Stat{mode: mode}} ->
-        (mode & 0o111) != 0
+        (mode &&& 0o111) != 0
       {:error, _} ->
         false
     end
