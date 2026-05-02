@@ -12,6 +12,7 @@ defmodule Commands.Execute do
     IO.puts("Program was passed #{Enum.count(input) + 1} args (including program name).")
 
     receive do
+      {^port, {:data, data}} -> encode_exe_output(data)
       {^port, {:exit_status, code}} -> IO.puts(code)
     end
   end
