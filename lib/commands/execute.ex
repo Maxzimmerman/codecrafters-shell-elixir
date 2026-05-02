@@ -20,7 +20,9 @@ defmodule Commands.Execute do
   def execute(_args), do: :error
 
   def encode_exe_output(data) do
-    data = String.split(data, "\n")
-    IO.puts("#{inspect(data)}")
+    [data | inputs] = String.split(data, "\n")
+    for input <- inputs do
+      IO.puts(input)
+    end
   end
 end
