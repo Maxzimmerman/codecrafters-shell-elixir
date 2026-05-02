@@ -4,6 +4,8 @@ defmodule CLI do
   alias Commands.Type
   alias Commands.Execute
 
+  alias Commands
+
   @commands %{
     "exit" => Exit,
     "echo" => Echo,
@@ -20,12 +22,16 @@ defmodule CLI do
     input = IO.gets("")
     [command | input] = decode_console_input(input)
 
-    try do
-      command(command).execute(input)
-    rescue
-      e in KeyError -> IO.puts("#{command}: not found")
-    catch
-      _error -> IO.puts("#{command}: not found")
+    with {:ok, res} <- Commands.executable_in_path?(command) do
+      Execute.execute([res, input])
+    else
+      try do
+        command(command).execute(input)
+      rescue
+        e in KeyError -> IO.puts("#{command}: not found")
+      catch
+        _error -> IO.puts("#{command}: not found")
+      end
     end
 
     listen()

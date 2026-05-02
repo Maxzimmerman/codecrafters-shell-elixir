@@ -2,10 +2,11 @@ defmodule Commands do
   import Bitwise
 
   def executable_in_path?(command) do
-    res = System.get_env("PATH")
-    |> String.split(":")
-    |> Enum.map(&Path.join(&1, command))
-    |> Enum.find(&executable?/1)
+    res =
+      System.get_env("PATH")
+      |> String.split(":")
+      |> Enum.map(&Path.join(&1, command))
+      |> Enum.find(&executable?/1)
 
     if res do
       {:ok, res}

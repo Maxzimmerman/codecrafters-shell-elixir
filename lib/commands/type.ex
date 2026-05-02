@@ -1,8 +1,6 @@
 defmodule Commands.Type do
   @behaviour Commands.Command
 
-  import Bitwise
-
   alias Commands
 
   @build_in_command [
@@ -22,8 +20,9 @@ defmodule Commands.Type do
         case Commands.executable_in_path?(command) do
           {:ok, res} ->
             IO.puts("#{command} is #{res}")
+
           {:error, :no_exe} ->
-          IO.puts("#{command}: not found")
+            IO.puts("#{command}: not found")
         end
     end
   end
