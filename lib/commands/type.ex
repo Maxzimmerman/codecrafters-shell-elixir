@@ -15,14 +15,19 @@ defmodule Commands.Type do
     case command in @build_in_command do
       true ->
         IO.puts("#{command} is a shell builtin")
+
       false ->
-        res=
-        System.get_env("PATH")
-        |> String.split(":")
-        |> Enum.map(&Path.join(&1, command))
-        |> Enum.find(&executable?/1)
-        IO.inspect(res)
-        IO.puts("#{command}: not found")
+        res =
+          System.get_env("PATH")
+          |> String.split(":")
+          |> Enum.map(&Path.join(&1, command))
+          |> Enum.find(&executable?/1)
+
+        if res != " " do
+          IO.puts("#{command} is #{res}")
+        else
+          IO.puts("#{command}: not found")
+        end
     end
   end
 
@@ -30,6 +35,7 @@ defmodule Commands.Type do
     case File.stat(path) do
       {:ok, %File.Stat{mode: mode}} ->
         (mode &&& 0o111) != 0
+
       {:error, _} ->
         false
     end
