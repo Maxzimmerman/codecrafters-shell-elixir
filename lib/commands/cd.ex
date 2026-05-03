@@ -2,10 +2,11 @@ defmodule Commands.CD do
   @behaviour Commands.Command
 
   def execute(args) do
-    if Path.relative(args) do
-      cd_working_dir(args)
+    normalised_path = normalise_path(args)
+    if Path.relative(normalised_path) do
+      cd_working_dir(normalised_path)
     else
-      IO.puts("error: #{args}")
+      IO.puts("error: #{normalised_path}")
     end
   end
 
@@ -15,6 +16,15 @@ defmodule Commands.CD do
         File.cd(args)
       false ->
         IO.puts("cd: #{args}: No such file or directory")
+    end
+  end
+
+  defp normalise_path(path) do
+    if String.contains?(path, "~") do
+      expanded_path = Path.expand(path)
+      expanded_path
+    else
+      path
     end
   end
 end
