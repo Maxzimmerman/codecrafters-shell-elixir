@@ -6,7 +6,8 @@ defmodule Commands.Type do
   @build_in_command [
     "exit",
     "echo",
-    "type"
+    "type",
+    "pwd"
   ]
 
   def execute(args) do
