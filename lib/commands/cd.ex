@@ -3,11 +3,8 @@ defmodule Commands.CD do
 
   def execute([path | _]) do
     normalised_path = normalise_path(path)
-    if Path.relative(normalised_path) do
-      cd_working_dir(normalised_path)
-    else
-      IO.puts("error: #{normalised_path}")
-    end
+
+    cd_working_dir(Path.relative(normalised_path))
   end
 
   def execute(_), do: :error
@@ -16,6 +13,7 @@ defmodule Commands.CD do
     case File.exists?(args) do
       true ->
         File.cd(args)
+
       false ->
         IO.puts("cd: #{args}: No such file or directory")
     end
