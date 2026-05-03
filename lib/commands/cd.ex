@@ -1,8 +1,8 @@
 defmodule Commands.CD do
   @behaviour Commands.Command
 
-  def execute(args) do
-    normalised_path = normalise_path(args)
+  def execute([path | _]) do
+    normalised_path = normalise_path(path)
     if Path.relative(normalised_path) do
       cd_working_dir(normalised_path)
     else
