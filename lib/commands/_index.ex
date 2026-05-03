@@ -2,6 +2,7 @@ defmodule Commands do
   import Bitwise
 
   def executable_in_path?(command) do
+    IO.inspect(System.get_env("PATH") |> String.split(":") |> Enum.map(&Path.join(&1, command), label: "YTESTSTSET"))
     res =
       System.get_env("PATH")
       |> String.split(":")
