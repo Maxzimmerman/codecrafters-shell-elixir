@@ -7,7 +7,8 @@ defmodule Commands.Type do
     "exit",
     "echo",
     "type",
-    "pwd"
+    "pwd",
+    "cd"
   ]
 
   def execute(args) do

@@ -3,6 +3,7 @@ defmodule CLI do
   alias Commands.Echo
   alias Commands.Type
   alias Commands.PWD
+  alias Commands.CD
   alias Commands.Execute
 
   alias Commands
@@ -12,6 +13,7 @@ defmodule CLI do
     "echo" => Echo,
     "type" => Type,
     "pwd" => PWD,
+    "cd" => CD,
     "" => Execute
   }
 
