@@ -2,7 +2,7 @@ defmodule Commands.CD do
   @behaviour Commands.Command
 
   def execute(args) do
-    if Path.relative?(args) do
+    if Path.relative(args) do
       cd_working_dir(args)
     else
       IO.puts("error: #{args}")
