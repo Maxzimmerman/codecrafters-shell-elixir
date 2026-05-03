@@ -10,6 +10,8 @@ defmodule Commands.CD do
     end
   end
 
+  def execute(_), do: :error
+
   defp cd_working_dir(args) do
     case File.exists?(args) do
       true ->
