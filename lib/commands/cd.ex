@@ -21,8 +21,7 @@ defmodule Commands.CD do
 
   defp normalise_path(path) do
     if String.contains?(path, "~") do
-      expanded_path = Path.expand(path)
-      expanded_path
+      Path.expand(path)
     else
       path
     end
