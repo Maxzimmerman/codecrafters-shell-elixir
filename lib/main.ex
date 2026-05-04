@@ -58,8 +58,6 @@ defmodule CLI do
         |> Enum.map(&String.trim(&1))
 
       0 ->
-        IO.inspect(trimmed_input |> String.split(" "))
-
         trimmed_input
         |> String.split(" ")
         |> Enum.reject(&(&1 == ""))
