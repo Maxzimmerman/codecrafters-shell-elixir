@@ -48,7 +48,14 @@ defmodule CLI do
   end
 
   defp decode_console_input(input) do
-    IO.inspect(input |> String.trim(), label: "TEST")
-    String.trim(input) |> String.split(" ")
+    trimmed_input = input |> String.trim()
+
+    case String.split(trimmed_input, "") |> Enum.filter(&(&1 == "'")) |> Enum.count() do
+      2 ->
+        IO.inspect(trimmed_input, label: "TEST")
+
+      0 ->
+        trimmed_input |> String.split(" ")
+    end
   end
 end
