@@ -48,6 +48,9 @@ defmodule CLI do
   end
 
   defp decode_console_input(input) do
+    if String.at(input, 0) == "'" and String.at(input, -1) == "'" do
+      IO.puts(Enum.join(String.slice(input, 1..-2), " "))
+    end
     String.trim(input) |> String.split(" ")
   end
 end
