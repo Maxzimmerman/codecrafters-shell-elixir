@@ -77,6 +77,10 @@ defmodule CLI do
     tokenize(rest, tokens, current <> <<c::utf8>>, mode, true)
   end
 
+  defp tokenize(<<"\\", c::utf8, rest::binary>>, tokens, current, :none, _has_token) do
+    tokenize(rest, tokens, current <> <<c::utf8>>, :none, true)
+  end
+
   defp tokenize(<<c, rest::binary>>, tokens, current, :none, has_token) when c in [?\s, ?\t] do
     if has_token do
       tokenize(rest, [current | tokens], "", :none, false)
