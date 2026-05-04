@@ -59,7 +59,11 @@ defmodule CLI do
 
       0 ->
         IO.inspect(trimmed_input |> String.split(" "))
-        trimmed_input |> String.split(" ") |> Enum.map(&String.trim(&1))
+
+        trimmed_input
+        |> String.split(" ")
+        |> Enum.reject(&(&1 == ""))
+        |> Enum.map(&String.trim(&1))
     end
   end
 end
