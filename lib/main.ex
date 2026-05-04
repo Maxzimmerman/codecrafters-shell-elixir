@@ -50,14 +50,13 @@ defmodule CLI do
   defp decode_console_input(input) do
     trimmed_input = input |> String.trim()
 
-    case String.split(trimmed_input, "") |> Enum.filter(&(&1 == "'")) |> Enum.count() do
-      2 ->
+    if String.split(trimmed_input, "") |> Enum.filter(&(&1 == "'")) |> Enum.count() > 1 do
         trimmed_input
         |> String.split("'")
         |> Enum.reject(&(&1 == ""))
         |> Enum.map(&String.trim(&1))
 
-      0 ->
+    else
         trimmed_input
         |> String.split(" ")
         |> Enum.reject(&(&1 == ""))
