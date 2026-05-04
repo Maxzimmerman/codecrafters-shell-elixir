@@ -52,12 +52,10 @@ defmodule CLI do
 
     case String.split(trimmed_input, "") |> Enum.filter(&(&1 == "'")) |> Enum.count() do
       2 ->
-        unquoted_result =
         trimmed_input
         |> String.split("'")
-        |> Enum.reject(& &1 == "")
-        |> Enum.map(& String.trim(&1))
-        IO.inspect(unquoted_result, label: "TEST")
+        |> Enum.reject(&(&1 == ""))
+        |> Enum.map(&String.trim(&1))
 
       0 ->
         trimmed_input |> String.split(" ")
