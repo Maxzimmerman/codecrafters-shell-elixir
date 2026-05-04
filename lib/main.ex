@@ -50,33 +50,42 @@ defmodule CLI do
   defp decode_console_input(input) do
     input
     |> String.trim_trailing("\n")
-    |> tokenize([], "", false, false)
+    |> tokenize([], "", :none, false)
   end
 
-  defp tokenize("", tokens, "", false, false), do: Enum.reverse(tokens)
-  defp tokenize("", tokens, current, false, true), do: Enum.reverse([current | tokens])
+  defp tokenize("", tokens, "", :none, false), do: Enum.reverse(tokens)
+  defp tokenize("", tokens, current, :none, true), do: Enum.reverse([current | tokens])
 
-  defp tokenize(<<"'", rest::binary>>, tokens, current, false, _has_token) do
-    tokenize(rest, tokens, current, true, true)
+  defp tokenize(<<"'", rest::binary>>, tokens, current, :none, _has_token) do
+    tokenize(rest, tokens, current, :single, true)
   end
 
-  defp tokenize(<<"'", rest::binary>>, tokens, current, true, has_token) do
-    tokenize(rest, tokens, current, false, has_token)
+  defp tokenize(<<"'", rest::binary>>, tokens, current, :single, has_token) do
+    tokenize(rest, tokens, current, :none, has_token)
   end
 
-  defp tokenize(<<c::utf8, rest::binary>>, tokens, current, true, _has_token) do
-    tokenize(rest, tokens, current <> <<c::utf8>>, true, true)
+  defp tokenize(<<"\"", rest::binary>>, tokens, current, :none, _has_token) do
+    tokenize(rest, tokens, current, :double, true)
   end
 
-  defp tokenize(<<c, rest::binary>>, tokens, current, false, has_token) when c in [?\s, ?\t] do
+  defp tokenize(<<"\"", rest::binary>>, tokens, current, :double, has_token) do
+    tokenize(rest, tokens, current, :none, has_token)
+  end
+
+  defp tokenize(<<c::utf8, rest::binary>>, tokens, current, mode, _has_token)
+       when mode in [:single, :double] do
+    tokenize(rest, tokens, current <> <<c::utf8>>, mode, true)
+  end
+
+  defp tokenize(<<c, rest::binary>>, tokens, current, :none, has_token) when c in [?\s, ?\t] do
     if has_token do
-      tokenize(rest, [current | tokens], "", false, false)
+      tokenize(rest, [current | tokens], "", :none, false)
     else
-      tokenize(rest, tokens, current, false, false)
+      tokenize(rest, tokens, current, :none, false)
     end
   end
 
-  defp tokenize(<<c::utf8, rest::binary>>, tokens, current, false, _has_token) do
-    tokenize(rest, tokens, current <> <<c::utf8>>, false, true)
+  defp tokenize(<<c::utf8, rest::binary>>, tokens, current, :none, _has_token) do
+    tokenize(rest, tokens, current <> <<c::utf8>>, :none, true)
   end
 end
