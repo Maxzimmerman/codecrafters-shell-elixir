@@ -48,19 +48,35 @@ defmodule CLI do
   end
 
   defp decode_console_input(input) do
-    trimmed_input = input |> String.trim()
+    input
+    |> String.trim_trailing("\n")
+    |> tokenize([], "", false, false)
+  end
 
-    if String.split(trimmed_input, "") |> Enum.filter(&(&1 == "'")) |> Enum.count() > 1 do
-        trimmed_input
-        |> String.split("'")
-        |> Enum.reject(&(&1 == ""))
-        |> Enum.map(&String.trim(&1))
+  defp tokenize("", tokens, "", false, false), do: Enum.reverse(tokens)
+  defp tokenize("", tokens, current, false, true), do: Enum.reverse([current | tokens])
 
+  defp tokenize(<<"'", rest::binary>>, tokens, current, false, _has_token) do
+    tokenize(rest, tokens, current, true, true)
+  end
+
+  defp tokenize(<<"'", rest::binary>>, tokens, current, true, has_token) do
+    tokenize(rest, tokens, current, false, has_token)
+  end
+
+  defp tokenize(<<c::utf8, rest::binary>>, tokens, current, true, _has_token) do
+    tokenize(rest, tokens, current <> <<c::utf8>>, true, true)
+  end
+
+  defp tokenize(<<c, rest::binary>>, tokens, current, false, has_token) when c in [?\s, ?\t] do
+    if has_token do
+      tokenize(rest, [current | tokens], "", false, false)
     else
-        trimmed_input
-        |> String.split(" ")
-        |> Enum.reject(&(&1 == ""))
-        |> Enum.map(&String.trim(&1))
+      tokenize(rest, tokens, current, false, false)
     end
+  end
+
+  defp tokenize(<<c::utf8, rest::binary>>, tokens, current, false, _has_token) do
+    tokenize(rest, tokens, current <> <<c::utf8>>, false, true)
   end
 end
