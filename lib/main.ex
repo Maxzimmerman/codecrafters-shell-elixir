@@ -52,7 +52,7 @@ defmodule CLI do
 
     if String.split(trimmed_input, "") |> Enum.filter(&(&1 == "'")) |> Enum.count() > 1 do
         trimmed_input
-        |> String.split("' ")
+        |> String.split("'")
         |> Enum.reject(&(&1 == ""))
         |> Enum.map(&String.trim(&1))
 
