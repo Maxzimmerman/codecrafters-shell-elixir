@@ -48,8 +48,7 @@ defmodule CLI do
   end
 
   defp decode_console_input(input) do
-    [command, input] = String.trim(input) |> String.split(" ")
-    IO.inspect(input)
-    [command, input]
+    IO.inspect(input, label: "TEST")
+    String.trim(input) |> String.split(" ")
   end
 end
