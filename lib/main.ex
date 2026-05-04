@@ -58,7 +58,7 @@ defmodule CLI do
         |> Enum.map(&String.trim(&1))
 
       0 ->
-        trimmed_input |> String.split(" ")
+        trimmed_input |> String.split(" ") |> Enum.map(&String.trim(&1))
     end
   end
 end
