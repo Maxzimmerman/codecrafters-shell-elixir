@@ -2,9 +2,7 @@ defmodule Commands.CD do
   @behaviour Commands.Command
 
   def execute([path | _]) do
-    normalised_path = normalise_path(path)
-
-    cd_working_dir(Path.relative(normalised_path))
+    cd_working_dir(normalise_path(path))
   end
 
   def execute(_), do: :error
