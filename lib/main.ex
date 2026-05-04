@@ -55,7 +55,7 @@ defmodule CLI do
         unquoted_result =
         trimmed_input
         |> String.split("'")
-        |> Enum.map(& String.replace(&1, "'", ""))
+
         IO.inspect(unquoted_result, label: "TEST")
 
       0 ->
