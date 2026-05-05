@@ -29,7 +29,7 @@ defmodule Commands.Execute do
           args: args
         ])
 
-      loop(port, "", "")
+      loop(port)
     end
   end
 
@@ -40,6 +40,17 @@ defmodule Commands.Execute do
       {^port, {:data, data}} ->
         IO.write(data)
         loop(port, input_file, output_file)
+
+      {^port, {:exit_status, _code}} ->
+        :ok
+    end
+  end
+
+  defp loop(port) do
+    receive do
+      {^port, {:data, data}} ->
+        IO.write(data)
+        loop(port)
 
       {^port, {:exit_status, _code}} ->
         :ok
