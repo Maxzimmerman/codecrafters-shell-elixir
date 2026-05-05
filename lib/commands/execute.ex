@@ -2,6 +2,7 @@ defmodule Commands.Execute do
   @behaviour Commands.Command
 
   def execute([path, args]) do
+    IO.puts("CALLED EXECUTE")
     port =
       Port.open({:spawn_executable, path}, [
         :binary,
