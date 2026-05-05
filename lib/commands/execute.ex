@@ -14,7 +14,7 @@ defmodule Commands.Execute do
           args: args
         ])
 
-      loop()
+      loop(port)
     else
       IO.puts("CALLED EXECUTE #{inspect(args)}")
 
