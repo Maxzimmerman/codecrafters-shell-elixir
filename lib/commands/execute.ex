@@ -16,7 +16,7 @@ defmodule Commands.Execute do
           args: args
         ])
 
-      loop(port)
+      loop(port, read_dir, write_dir)
     else
       IO.puts("CALLED EXECUTE #{inspect(args)}")
 
@@ -29,17 +29,17 @@ defmodule Commands.Execute do
           args: args
         ])
 
-      loop(port)
+      loop(port, "", "")
     end
   end
 
   def execute(_args), do: :error
 
-  defp loop(port) do
+  defp loop(port, input_file, output_file) do
     receive do
       {^port, {:data, data}} ->
         IO.write(data)
-        loop(port)
+        loop(port, input_file, output_file)
 
       {^port, {:exit_status, _code}} ->
         :ok
