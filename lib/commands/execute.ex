@@ -6,7 +6,7 @@ defmodule Commands.Execute do
       [_, read_dir, _, write_dir] = args
 
       port =
-        File.open({:spawn_executable, path}, [
+        Port.open({:spawn_executable, path}, [
           :binary,
           :exit_status,
           :use_stdio,
