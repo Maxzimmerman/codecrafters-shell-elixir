@@ -5,7 +5,7 @@ defmodule Commands.Execute do
     if Enum.member?(args, ">") do
       [_, read_dir, _, write_dir] = args
 
-      IO.puts("CALLED EXECUTE WITH > #{inspect(args)}")
+      IO.puts("CALLED EXECUTE WITH > #{read_dir} - #{write_dir}")
 
       port =
         Port.open({:spawn_executable, path}, [
