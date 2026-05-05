@@ -2,6 +2,9 @@ defmodule Commands.Execute do
   @behaviour Commands.Command
 
   def execute([path, args]) do
+    if Enum.member?(args, ">") do
+      IO.puts("CALLED EXECUTE with > #{inspect(args)}")
+    end
     IO.puts("CALLED EXECUTE #{inspect(args)}")
     port =
       Port.open({:spawn_executable, path}, [
