@@ -1,6 +1,38 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
+  def execute([command_path, [_, read_file, op, output_file]] = input) do
+    IO.inspect(input, label: "TEST ARGS 4")
+    if Enum.member?(args, ">") do
+      [_, read_dir, _, write_dir] = args
+
+      port =
+        Port.open({:spawn_executable, path}, [
+          :binary,
+          :exit_status,
+          :use_stdio,
+          arg0: Path.basename(path),
+          args: args
+        ])
+
+      loop(port, read_dir, write_dir)
+    else
+      IO.puts("CALLED EXECUTE #{inspect(args)}")
+
+      port =
+        Port.open({:spawn_executable, path}, [
+          :binary,
+          :exit_status,
+          :use_stdio,
+          arg0: Path.basename(path),
+          args: args
+        ])
+
+      loop(port)
+    end
+  end
+
+
   def execute([path, args] = input) do
       IO.inspect(input, label: "TEST ARGS")
     if Enum.member?(args, ">") do
