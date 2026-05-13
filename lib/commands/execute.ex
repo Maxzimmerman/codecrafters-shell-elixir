@@ -31,14 +31,14 @@ defmodule Commands.Execute do
 
   def execute(_args), do: :error
 
-  defp loop(port, input_file, output_file, output_data) do
+  defp loop(port, output_file, output_data) do
     receive do
       {^port, {:data, data}} ->
-        loop(port, input_file, output_file, [output_data | data])
+        loop(port, output_file, [output_data | data])
 
       {^port, {:exit_status, _code}} ->
-        {:ok, file} = File.open(input_file, [])
-        IO.puts(file, output_data)
+        {:ok, file} = File.open(output_file, [:write])
+        IO.binwrite(file, output_data)
         File.close(file)
         :ok
     end
