@@ -12,7 +12,7 @@ defmodule Commands.Execute do
           args: [read_file]
         ])
 
-      loop(port, read_file, output_file)
+      loop(port, read_file, output_file, [])
    end
   end
 
@@ -49,13 +49,13 @@ defmodule Commands.Execute do
 
   def execute(_args), do: :error
 
-  defp loop(port, input_file, output_file) do
+  defp loop(port, input_file, output_file, output_data) do
     receive do
       {^port, {:data, data}} ->
-        IO.inspect(data, label: "TEST")
-        loop(port, input_file, output_file)
+        loop(port, input_file, output_file, [output_data | data])
 
       {^port, {:exit_status, _code}} ->
+        IO.inspect("finished with #{output_data}")
         :ok
     end
   end
