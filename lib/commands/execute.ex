@@ -1,7 +1,7 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
-  def execute([command_path, [_, read_file, op, output_file]] = input) do
+  def execute([command_path, [flag, read_file, op, output_file]] = _input) do
     if op == ">" do
       port =
         Port.open({:spawn_executable, command_path}, [
@@ -9,11 +9,11 @@ defmodule Commands.Execute do
           :exit_status,
           :use_stdio,
           arg0: Path.basename(command_path),
-          args: [read_file]
+          args: [flag, read_file]
         ])
 
-      loop(port, read_file, output_file, [])
-   end
+      loop(port, output_file, [])
+    end
   end
 
   def execute([path, args] = input) do
