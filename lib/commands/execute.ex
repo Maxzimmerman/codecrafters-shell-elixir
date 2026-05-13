@@ -36,7 +36,7 @@ defmodule Commands.Execute do
   defp loop(port, input_file, output_file) do
     receive do
       {^port, {:data, data}} ->
-        IO.write(data)
+        IO.inspect(data, label: "TEST")
         loop(port, input_file, output_file)
 
       {^port, {:exit_status, _code}} ->
