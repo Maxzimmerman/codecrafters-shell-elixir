@@ -2,7 +2,7 @@ defmodule Commands.Execute do
   @behaviour Commands.Command
 
   def execute([command_path, [flag, read_file, op, output_file]] = _input) do
-    if op == ">" do
+    if op in [">", "1>"] do
       port =
         Port.open({:spawn_executable, command_path}, [
           :binary,
