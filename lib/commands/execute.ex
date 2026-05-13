@@ -17,34 +17,18 @@ defmodule Commands.Execute do
   end
 
   def execute([path, args] = input) do
-      IO.inspect(input, label: "TEST ARGS")
-    if Enum.member?(args, ">") do
-      [_, read_dir, _, write_dir] = args
+    IO.puts("CALLED EXECUTE #{inspect(args)}")
 
-      port =
-        Port.open({:spawn_executable, path}, [
-          :binary,
-          :exit_status,
-          :use_stdio,
-          arg0: Path.basename(path),
-          args: args
-        ])
+    port =
+      Port.open({:spawn_executable, path}, [
+        :binary,
+        :exit_status,
+        :use_stdio,
+        arg0: Path.basename(path),
+        args: args
+      ])
 
-      loop(port, read_dir, write_dir)
-    else
-      IO.puts("CALLED EXECUTE #{inspect(args)}")
-
-      port =
-        Port.open({:spawn_executable, path}, [
-          :binary,
-          :exit_status,
-          :use_stdio,
-          arg0: Path.basename(path),
-          args: args
-        ])
-
-      loop(port)
-    end
+    loop(port)
   end
 
   def execute(_args), do: :error
