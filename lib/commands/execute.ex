@@ -39,7 +39,7 @@ defmodule Commands.Execute do
         loop(port, input_file, output_file, [output_data | data])
 
       {^port, {:exit_status, _code}} ->
-        {:ok, file] = File.open(input_file)
+        {:ok, file} = File.open(input_file)
         IO.puts(file, ouput_data)
         :ok
     end
