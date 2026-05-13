@@ -48,6 +48,7 @@ defmodule CLI do
   end
 
   defp decode_console_input(input) do
+    IO.inspect(input, label: "TEST INPUT")
     input
     |> String.trim_trailing("\n")
     |> tokenize([], "", :none, false)
