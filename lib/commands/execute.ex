@@ -2,15 +2,14 @@ defmodule Commands.Execute do
   @behaviour Commands.Command
 
   def execute([command_path, [_, read_file, op, output_file]] = input) do
-    IO.inspect(input, label: "TEST ARGS 4")
-    if op in [">", "<"] do
+    if op == ">" do
       port =
         Port.open({:spawn_executable, command_path}, [
           :binary,
           :exit_status,
           :use_stdio,
           arg0: Path.basename(command_path),
-          args: [read_file, op, output_file]
+          args: [read_file]
         ])
 
       loop(port, read_file, output_file)
