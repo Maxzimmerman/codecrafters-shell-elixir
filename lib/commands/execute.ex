@@ -2,7 +2,7 @@ defmodule Commands.Execute do
   @behaviour Commands.Command
 
   def execute([path, args]) do
-      IO.inspect(args, lable: "TEST ARGS")
+      IO.inspect(args, label: "TEST ARGS")
     if Enum.member?(args, ">") do
       [_, read_dir, _, write_dir] = args
 
