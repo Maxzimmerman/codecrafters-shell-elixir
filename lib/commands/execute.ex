@@ -16,9 +16,7 @@ defmodule Commands.Execute do
     end
   end
 
-  def execute([path, args] = input) do
-    IO.puts("CALLED EXECUTE #{inspect(args)}")
-
+  def execute([path, args] = _input) do
     port =
       Port.open({:spawn_executable, path}, [
         :binary,
