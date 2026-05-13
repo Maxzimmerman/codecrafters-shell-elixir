@@ -4,6 +4,7 @@ defmodule Commands.Execute do
   def execute([path, args]) do
     if Enum.member?(args, ">") do
       [_, read_dir, _, write_dir] = args
+      IO.inspect(path, label: "TEST PATH")
 
       port =
         Port.open({:spawn_executable, path}, [
