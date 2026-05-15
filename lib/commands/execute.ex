@@ -1,28 +1,23 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
-  def execute([command_path, [flag, read_file, op, output_file] = args] = _input) when op in (["2>"]) do
-    case extract_stderr_redirect(args) do
-      {clean_args, stderr_file} ->
-        File.mkdir_p!(Path.dirname(stderr_file))
+  def execute([command_path, args, stderr_file]) when is_binary(stderr_file) do
+    cmd_string =
+      ([command_path | args] |> Enum.map(&shell_escape/1) |> Enum.join(" ")) <>
+        " 2> " <> shell_escape(stderr_file)
 
-        cmd_string =
-          ([command_path | clean_args] |> Enum.map(&shell_escape/1) |> Enum.join(" ")) <>
-            " 2> " <> shell_escape(stderr_file)
+    sh = System.find_executable("sh")
 
-        sh = System.find_executable("sh")
+    port =
+      Port.open({:spawn_executable, sh}, [
+        :binary,
+        :exit_status,
+        :use_stdio,
+        arg0: "sh",
+        args: ["-c", cmd_string]
+      ])
 
-        port =
-          Port.open({:spawn_executable, sh}, [
-            :binary,
-            :exit_status,
-            :use_stdio,
-            arg0: "sh",
-            args: ["-c", cmd_string]
-          ])
-
-        loop(port)
-    end
+    loop(port)
   end
 
   def execute([command_path, [flag, read_file, op, output_file]] = _input)
@@ -75,13 +70,6 @@ defmodule Commands.Execute do
 
       {^port, {:exit_status, _code}} ->
         :ok
-    end
-  end
-
-  defp extract_stderr_redirect(args) do
-    case Enum.split_while(args, &(&1 != "2>")) do
-      {before, ["2>", file | _]} -> {before, file}
-      {before, []} -> {before, nil}
     end
   end
 

@@ -26,9 +26,20 @@ defmodule CLI do
     input = IO.gets("")
     [command | input] = decode_console_input(input)
 
+    {input, stderr_file} = extract_stderr_redirect(input)
+
+    if stderr_file do
+      File.mkdir_p!(Path.dirname(stderr_file))
+      File.touch!(stderr_file)
+    end
+
     case Commands.executable_in_path?(command) do
       {:ok, res} ->
-        Execute.execute([res, input])
+        if stderr_file do
+          Execute.execute([res, input, stderr_file])
+        else
+          Execute.execute([res, input])
+        end
 
       {:error, :no_exe} ->
         try do
@@ -41,6 +52,13 @@ defmodule CLI do
     end
 
     listen()
+  end
+
+  defp extract_stderr_redirect(tokens) do
+    case Enum.split_while(tokens, &(&1 != "2>")) do
+      {before, ["2>", file | rest]} -> {before ++ rest, file}
+      {before, []} -> {before, nil}
+    end
   end
 
   defp command(name) do
