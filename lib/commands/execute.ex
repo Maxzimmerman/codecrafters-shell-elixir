@@ -1,13 +1,13 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
-  def execute([command_path, [flag, read_file, op, output_file]] = _input) when op in ["2>"] do
+  def execute([command_path, [flag, read_file, op, output_file]] = _input) when op in (["2>"]) do
     case extract_stderr_redirect(args) do
       {clean_args, stderr_file} ->
         File.mkdir_p!(Path.dirname(stderr_file))
 
         cmd_string =
-          ([path | clean_args] |> Enum.map(&shell_escape/1) |> Enum.join(" ")) <>
+          ([command_path | clean_args] |> Enum.map(&shell_escape/1) |> Enum.join(" ")) <>
             " 2> " <> shell_escape(stderr_file)
 
         sh = System.find_executable("sh")
