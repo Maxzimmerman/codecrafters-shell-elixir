@@ -1,8 +1,9 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
-def execute([command_path, [flag, read_file, op, output_file]] = _input) when op in ["2>"] do
+  def execute([command_path, [flag, read_file, op, output_file]] = _input) when op in ["2>"] do
     IO.puts("CALLED RIGHT")
+
     port =
       Port.open({:spawn_executable, command_path}, [
         :binary,
@@ -15,19 +16,18 @@ def execute([command_path, [flag, read_file, op, output_file]] = _input) when op
     loop(port, output_file, [])
   end
 
-  def execute([command_path, [flag, read_file, op, output_file]] = _input) do
-    if op in [">", "1>"] do
-      port =
-        Port.open({:spawn_executable, command_path}, [
-          :binary,
-          :exit_status,
-          :use_stdio,
-          arg0: Path.basename(command_path),
-          args: [flag, read_file]
-        ])
+  def execute([command_path, [flag, read_file, op, output_file]] = _input)
+      when op in [">", "1>"] do
+    port =
+      Port.open({:spawn_executable, command_path}, [
+        :binary,
+        :exit_status,
+        :use_stdio,
+        arg0: Path.basename(command_path),
+        args: [flag, read_file]
+      ])
 
-      loop(port, output_file, [])
-    end
+    loop(port, output_file, [])
   end
 
   def execute([path, args] = _input) do
