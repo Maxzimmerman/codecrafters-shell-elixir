@@ -4,16 +4,10 @@ defmodule Commands.Execute do
   def execute([command_path, [flag, read_file, op, output_file]] = _input) when op in ["2>"] do
     IO.puts("CALLED RIGHT")
 
-    port =
-      Port.open({:spawn_executable, command_path}, [
-        :binary,
-        :exit_status,
-        :use_stdio,
-        arg0: Path.basename(command_path),
-        args: [flag, read_file]
-      ])
+    {:ok, _pid, os_pid} =
+      :exec.run([cmd | args], [:stdout, {:stderr, String.to_charlist(read_file)}])
 
-    loop(port, output_file, [])
+    collect_stdout(os_pid)
   end
 
   def execute([command_path, [flag, read_file, op, output_file]] = _input)
@@ -65,6 +59,16 @@ defmodule Commands.Execute do
         loop(port)
 
       {^port, {:exit_status, _code}} ->
+        :ok
+    end
+  end
+
+  def collect_stdout(os_pid) do
+    receive do
+      {:stdout, ^os_pid, data} ->
+        IO.write(data)
+        collect_stdout(os_pid)
+      {:DOWN, ^os_pid, :process, _, _} ->
         :ok
     end
   end
