@@ -1,13 +1,31 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
-  def execute([command_path, [flag, read_file, op, output_file]] = _input) when op in ["2>"] do
-    IO.puts("CALLED RIGHT")
+  def execute([path, args] = _input) do
+    case extract_stderr_redirect(args) do
+      {clean_args, nil} ->
+        spawn_normally(path, clean_args)
 
-    {:ok, _pid, os_pid} =
-      :exec.run([cmd | args], [:stdout, {:stderr, String.to_charlist(read_file)}])
+      {clean_args, stderr_file} ->
+        File.mkdir_p!(Path.dirname(stderr_file))
 
-    collect_stdout(os_pid)
+        cmd_string =
+          ([path | clean_args] |> Enum.map(&shell_escape/1) |> Enum.join(" ")) <>
+            " 2> " <> shell_escape(stderr_file)
+
+        sh = System.find_executable("sh")
+
+        port =
+          Port.open({:spawn_executable, sh}, [
+            :binary,
+            :exit_status,
+            :use_stdio,
+            arg0: "sh",
+            args: ["-c", cmd_string]
+          ])
+
+        loop(port)
+    end
   end
 
   def execute([command_path, [flag, read_file, op, output_file]] = _input)
@@ -64,12 +82,11 @@ defmodule Commands.Execute do
   end
 
   def collect_stdout(os_pid) do
-    receive do
-      {:stdout, ^os_pid, data} ->
-        IO.write(data)
-        collect_stdout(os_pid)
-      {:DOWN, ^os_pid, :process, _, _} ->
-        :ok
+    case Enum.split_while(args, &(&1 != "2>")) do
+      {before, ["2>", file | _]} -> {before, file}
+      {before, []} -> {before, nil}
     end
   end
+
+  defp shell_escape(s), do: "'" <> String.replace(s, "'", ~S('\'')) <> "'"
 end
