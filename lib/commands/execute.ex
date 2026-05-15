@@ -81,7 +81,7 @@ defmodule Commands.Execute do
     end
   end
 
-  def collect_stdout(os_pid) do
+  defp extract_stderr_redirect(args) do
     case Enum.split_while(args, &(&1 != "2>")) do
       {before, ["2>", file | _]} -> {before, file}
       {before, []} -> {before, nil}
