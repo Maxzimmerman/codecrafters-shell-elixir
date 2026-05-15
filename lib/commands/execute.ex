@@ -1,7 +1,7 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
-  def execute([command_path, [flag, read_file, op, output_file]] = _input) when op in (["2>"]) do
+  def execute([command_path, [flag, read_file, op, output_file] = args] = _input) when op in (["2>"]) do
     case extract_stderr_redirect(args) do
       {clean_args, stderr_file} ->
         File.mkdir_p!(Path.dirname(stderr_file))
