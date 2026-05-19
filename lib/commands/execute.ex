@@ -22,9 +22,6 @@ defmodule Commands.Execute do
 
   def execute([command_path, [flag, read_file, op, output_file]] = input)
       when op in [">>"] do
-    IO.puts("RIGHT FUNCTION")
-    dbg(input)
-
     port =
       Port.open({:spawn_executable, command_path}, [
         :binary,
