@@ -20,7 +20,7 @@ defmodule Commands.Execute do
     loop(port)
   end
 
-  def execute([command_path, [flag, read_file, op, output_file]] = input)
+  def execute([command_path, [flag, read_file, op, output_file]])
       when op in [">>"] do
     port =
       Port.open({:spawn_executable, command_path}, [
@@ -31,7 +31,7 @@ defmodule Commands.Execute do
         args: [flag, read_file]
       ])
 
-    loop(port, output_file, [])
+    loop_append_stdout(port, output_file, [])
   end
 
   def execute([command_path, [flag, read_file, op, output_file]] = _input)
@@ -71,6 +71,19 @@ defmodule Commands.Execute do
       {^port, {:exit_status, _code}} ->
         {:ok, file} = File.open(output_file, [:write])
         IO.binwrite(file, output_data)
+        File.close(file)
+        :ok
+    end
+  end
+
+  def loop_append_stdout(port, output_file, output_data) do
+    receive do
+      {^port, {:data, data}} ->
+        loop_append_stdout(port, output_file, [output_data | data])
+
+      {^port, {:exit_status, _code}} ->
+        {:ok, file} = File.open(output_file, [:write])
+        IO.puts(file, output_data)
         File.close(file)
         :ok
     end
