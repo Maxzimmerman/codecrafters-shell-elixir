@@ -21,7 +21,7 @@ defmodule Commands.Execute do
   end
 
   def execute([command_path, [flag, read_file, op, output_file]])
-      when op in [">>"] do
+      when op in [">>", "1>>"] do
     port =
       Port.open({:spawn_executable, command_path}, [
         :binary,
