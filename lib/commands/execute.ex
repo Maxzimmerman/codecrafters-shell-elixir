@@ -82,12 +82,10 @@ defmodule Commands.Execute do
         loop_append_stdout(port, output_file, [output_data | data])
 
       {^port, {:exit_status, _code}} ->
-        with :ok <- File.append(output_file, output_data) do
-          :ok
-        else
-          {:error, reason} ->
-            IO.puts("Could not append stdout reason: #{inspect(reason)}")
-        end
+        {:ok, file} = File.open(output_file, [:append])
+        IO.binwrite(file, output_data)
+        File.close(file)
+        :ok
     end
   end
 
