@@ -27,12 +27,21 @@ defmodule CLI do
     [command | input] = decode_console_input(input)
 
     {input, stderr_file} = extract_stderr_redirect(input)
+    {input, stdout_redirect} = extract_stdout_redirect(input)
 
     if stderr_file do
       File.mkdir_p!(Path.dirname(stderr_file))
       File.touch!(stderr_file)
     end
 
+    with_stdout_redirect(stdout_redirect, fn ->
+      run_command(command, input, stderr_file)
+    end)
+
+    listen()
+  end
+
+  defp run_command(command, input, stderr_file) do
     case Commands.executable_in_path?(command) do
       {:ok, res} ->
         if stderr_file do
@@ -50,14 +59,39 @@ defmodule CLI do
           _error -> IO.puts("#{command}: not found")
         end
     end
-
-    listen()
   end
 
   defp extract_stderr_redirect(tokens) do
     case Enum.split_while(tokens, &(&1 != "2>")) do
       {before, ["2>", file | rest]} -> {before ++ rest, file}
       {before, []} -> {before, nil}
+    end
+  end
+
+  defp extract_stdout_redirect(tokens) do
+    case Enum.split_while(tokens, &(&1 not in [">", "1>", ">>", "1>>"])) do
+      {before, [op, file | rest]} ->
+        mode = if op in [">>", "1>>"], do: :append, else: :write
+        {before ++ rest, {file, mode}}
+
+      {tokens, _} ->
+        {tokens, nil}
+    end
+  end
+
+  defp with_stdout_redirect(nil, fun), do: fun.()
+
+  defp with_stdout_redirect({path, mode}, fun) do
+    File.mkdir_p!(Path.dirname(path))
+    {:ok, file} = File.open(path, [mode])
+    old_gl = Process.group_leader()
+    Process.group_leader(self(), file)
+
+    try do
+      fun.()
+    after
+      Process.group_leader(self(), old_gl)
+      File.close(file)
     end
   end
 
