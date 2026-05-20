@@ -69,9 +69,9 @@ defmodule CLI do
   end
 
   defp extract_stdout_redirect(tokens) do
-    case Enum.split_while(tokens, &(&1 not in [">", "1>", ">>", "1>>"])) do
+    case Enum.split_while(tokens, &(&1 not in [">", "1>", ">>", "1>>", "2>>"])) do
       {before, [op, file | rest]} ->
-        mode = if op in [">>", "1>>"], do: :append, else: :write
+        mode = if op in [">>", "1>>", "2>>"], do: :append, else: :write
         {before ++ rest, {file, mode}}
 
       {tokens, _} ->
