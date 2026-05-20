@@ -26,26 +26,31 @@ defmodule CLI do
     input = IO.gets("")
     [command | input] = decode_console_input(input)
 
-    {input, stderr_file} = extract_stderr_redirect(input)
+    {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
-    if stderr_file do
-      File.mkdir_p!(Path.dirname(stderr_file))
-      File.touch!(stderr_file)
+    if stderr_redirect do
+      {path, mode} = stderr_redirect
+      File.mkdir_p!(Path.dirname(path))
+
+      case mode do
+        :write -> File.write!(path, "")
+        :append -> File.touch!(path)
+      end
     end
 
     with_stdout_redirect(stdout_redirect, fn ->
-      run_command(command, input, stderr_file)
+      run_command(command, input, stderr_redirect)
     end)
 
     listen()
   end
 
-  defp run_command(command, input, stderr_file) do
+  defp run_command(command, input, stderr_redirect) do
     case Commands.executable_in_path?(command) do
       {:ok, res} ->
-        if stderr_file do
-          Execute.execute([res, input, stderr_file])
+        if stderr_redirect do
+          Execute.execute([res, input, stderr_redirect])
         else
           Execute.execute([res, input])
         end
@@ -62,16 +67,20 @@ defmodule CLI do
   end
 
   defp extract_stderr_redirect(tokens) do
-    case Enum.split_while(tokens, &(&1 != "2>")) do
-      {before, ["2>", file | rest]} -> {before ++ rest, file}
-      {before, []} -> {before, nil}
+    case Enum.split_while(tokens, &(&1 not in ["2>", "2>>"])) do
+      {before, [op, file | rest]} ->
+        mode = if op == "2>>", do: :append, else: :write
+        {before ++ rest, {file, mode}}
+
+      {tokens, _} ->
+        {tokens, nil}
     end
   end
 
   defp extract_stdout_redirect(tokens) do
-    case Enum.split_while(tokens, &(&1 not in [">", "1>", ">>", "1>>", "2>>"])) do
+    case Enum.split_while(tokens, &(&1 not in [">", "1>", ">>", "1>>"])) do
       {before, [op, file | rest]} ->
-        mode = if op in [">>", "1>>", "2>>"], do: :append, else: :write
+        mode = if op in [">>", "1>>"], do: :append, else: :write
         {before ++ rest, {file, mode}}
 
       {tokens, _} ->

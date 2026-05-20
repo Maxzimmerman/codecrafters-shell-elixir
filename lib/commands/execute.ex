@@ -1,10 +1,12 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
-  def execute([command_path, args, stderr_file]) when is_binary(stderr_file) do
+  def execute([command_path, args, {stderr_file, mode}]) when is_binary(stderr_file) do
+    op = if mode == :append, do: " 2>> ", else: " 2> "
+
     cmd_string =
       ([command_path | args] |> Enum.map(&shell_escape/1) |> Enum.join(" ")) <>
-        " 2> " <> shell_escape(stderr_file)
+        op <> shell_escape(stderr_file)
 
     sh = System.find_executable("sh")
 
