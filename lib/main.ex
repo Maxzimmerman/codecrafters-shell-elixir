@@ -35,6 +35,7 @@ defmodule CLI do
     IO.write("$ ")
 
     input = IO.gets("")
+    IO.puts("HURENSOHN")
 
     [command | input] = decode_console_input(input)
 
@@ -123,8 +124,6 @@ defmodule CLI do
   end
 
   defp decode_console_input(input) do
-    IO.puts("HURENSOHN")
-
     input
     |> String.trim_trailing("\n")
     |> tokenize([], "", :none, false)
