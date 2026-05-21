@@ -27,9 +27,9 @@ defmodule CLI do
       {:ok, "\t"} ->
         IO.puts("PRESSED TAB")
         check_for_tab_complete()
-
-        check_for_tab_complete()
     end
+
+    check_for_tab_complete()
   end
 
   defp listen do
