@@ -24,6 +24,7 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
     input = IO.gets("")
+    IO.puts("LISTENING")
 
     [command | input] = decode_console_input(input)
 
@@ -112,8 +113,6 @@ defmodule CLI do
   defp decode_console_input(input) do
     input
     |> String.trim_trailing("\n")
-
-    IO.inspect(input, label: "TEST")
     |> tokenize([], "", :none, false)
   end
 
