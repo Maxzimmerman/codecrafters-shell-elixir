@@ -24,20 +24,11 @@ defmodule CLI do
   defp check_for_tab_complete do
     # Read exactly 1 raw character from the IO device
     case :io.get_chars(:standard_io, "", 1) do
-      {:ok, "q"} ->
-        IO.puts("\r\nExiting...")
-
       {:ok, "\t"} ->
         IO.puts("PRESSED TAB")
         check_for_tab_complete()
 
-      {:ok, binary_char} ->
-        # Print the byte/character representation
-        IO.puts("\r\nYou pressed: #{inspect(binary_char)}")
         check_for_tab_complete()
-
-      {:error, reason} ->
-        IO.puts("\r\nError: #{inspect(reason)}")
     end
   end
 
