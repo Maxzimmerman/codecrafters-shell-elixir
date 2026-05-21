@@ -33,10 +33,12 @@ defmodule CLI do
 
   defp listen do
     IO.write("$ ")
-    IO.puts("HELLO")
+
     input = IO.gets("")
 
     [command | input] = decode_console_input(input)
+
+    check_for_tab_complete(command)
 
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
