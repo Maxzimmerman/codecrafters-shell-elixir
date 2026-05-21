@@ -24,7 +24,6 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
     input = IO.gets("")
-    IO.puts("LISTENING")
 
     [command | input] = decode_console_input(input)
 
