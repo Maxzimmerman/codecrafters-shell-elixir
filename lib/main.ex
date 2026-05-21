@@ -24,9 +24,9 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
     input = IO.gets("")
+    IO.inspect(input)
     [command | input] = decode_console_input(input)
 
-    IO.inspect(input)
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
