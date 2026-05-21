@@ -21,14 +21,19 @@ defmodule CLI do
     listen()
   end
 
-  def check_for_tab_complete(command_partial) do
-    case(Process.find_executable(command_partial)) do
-      path ->
-        IO.puts("FOUND PROGRAM: #{command_partial}")
+  defp check_for_tab_complete do
+    # Read exactly 1 raw character from the IO device
+    case :io.get_chars(:standard_io, "", 1) do
+      {:ok, "q"} ->
+        IO.puts("\r\nExiting...")
 
-      nil ->
-        IO.puts("DID NOT FOUND PROGRAM: #{command_partial}")
-    end
+      {:ok, binary_char} ->
+        # Print the byte/character representation
+        IO.puts("\r\nYou pressed: #{inspect(binary_char)}")
+        loop()
+
+      {:error, reason} ->
+        IO.puts("\r\nError: #{inspect(reason)}")
   end
 
   def listen_for_keystroke() do
@@ -44,7 +49,8 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
 
-    {:ok, _} = :io.setopts(:stdio, raw: true)
+    {:ok, _} = :io.setopts(:standard_io, binary: true, echo: false, expand_fun: [])
+
     listen_for_keystroke()
 
     input = IO.gets()
