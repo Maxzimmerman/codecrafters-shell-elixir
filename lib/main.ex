@@ -32,22 +32,12 @@ defmodule CLI do
     end
   end
 
-  def listen_for_keystroke() do
-    case :io.get_chars(:stdio, "", 100) do
-      data ->
-        IO.puts("CHARS: #{data}")
-
-      :eof ->
-        IO.puts("REACHED END")
-    end
-  end
-
   defp listen do
     IO.write("$ ")
 
     {:ok, _} = :io.setopts(:standard_io, binary: true, echo: false, expand_fun: [])
 
-    listen_for_keystroke()
+    check_for_tab_complete()
 
     input = IO.gets()
     IO.puts("HERE")
