@@ -27,6 +27,10 @@ defmodule CLI do
       {:ok, "q"} ->
         IO.puts("\r\nExiting...")
 
+      {:ok, "\t"} ->
+        IO.puts("PRESSED TAB")
+        check_for_tab_complete()
+
       {:ok, binary_char} ->
         # Print the byte/character representation
         IO.puts("\r\nYou pressed: #{inspect(binary_char)}")
