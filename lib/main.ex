@@ -113,7 +113,8 @@ defmodule CLI do
     input
     |> String.trim_trailing("\n")
 
-    IO.inspect(input)
+    IO.inspect(input, label: "TEST")
+    |> tokenize([], "", :none, false)
   end
 
   defp tokenize("", tokens, "", :none, false), do: Enum.reverse(tokens)
