@@ -21,6 +21,16 @@ defmodule CLI do
     listen()
   end
 
+  def check_for_tab_complete(command_partial) do
+    case(Process.find_executable(command_partial)) do
+      path ->
+        IO.puts("FOUND PROGRAM: #{command_partial}")
+
+      nil ->
+        IO.puts("DID NOT FOUND PROGRAM: #{command_partial}")
+    end
+  end
+
   defp listen do
     IO.write("$ ")
     IO.puts("HELLO")
