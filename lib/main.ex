@@ -31,11 +31,23 @@ defmodule CLI do
     end
   end
 
+  def listen_for_keystroke() do
+    case :io.get_chars(:stdio, "", 100) do
+      data ->
+        IO.puts("CHARS: #{data}")
+
+      :eof ->
+        IO.puts("REACHED END")
+    end
+  end
+
   defp listen do
     IO.write("$ ")
 
     {:ok, _} = :io.setopts(:stdio, raw: true)
-    input = IO.gets("")
+    listen_for_keystroke()
+
+    input = IO.gets()
     IO.puts("HERE")
 
     [command | input] = decode_console_input(input)
