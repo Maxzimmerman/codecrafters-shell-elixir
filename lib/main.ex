@@ -24,7 +24,7 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
     input = IO.gets("")
-    IO.inspect(input)
+
     [command | input] = decode_console_input(input)
 
     {input, stderr_redirect} = extract_stderr_redirect(input)
@@ -112,7 +112,8 @@ defmodule CLI do
   defp decode_console_input(input) do
     input
     |> String.trim_trailing("\n")
-    |> tokenize([], "", :none, false)
+
+    IO.inspect(input)
   end
 
   defp tokenize("", tokens, "", :none, false), do: Enum.reverse(tokens)
