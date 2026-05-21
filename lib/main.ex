@@ -34,8 +34,8 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
 
-    IO.puts("HERE")
     input = IO.gets("")
+    IO.puts("HERE")
 
     [command | input] = decode_console_input(input)
 
