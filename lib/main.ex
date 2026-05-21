@@ -23,6 +23,7 @@ defmodule CLI do
 
   defp listen do
     IO.write("$ ")
+    IO.puts("HELLO")
     input = IO.gets("")
 
     [command | input] = decode_console_input(input)
