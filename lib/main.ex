@@ -26,6 +26,7 @@ defmodule CLI do
     input = IO.gets("")
     [command | input] = decode_console_input(input)
 
+    dbg(input)
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
