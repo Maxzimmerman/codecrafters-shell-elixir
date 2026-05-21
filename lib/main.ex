@@ -30,10 +30,11 @@ defmodule CLI do
       {:ok, binary_char} ->
         # Print the byte/character representation
         IO.puts("\r\nYou pressed: #{inspect(binary_char)}")
-        loop()
+        check_for_tab_complete()
 
       {:error, reason} ->
         IO.puts("\r\nError: #{inspect(reason)}")
+    end
   end
 
   def listen_for_keystroke() do
@@ -58,7 +59,7 @@ defmodule CLI do
 
     [command | input] = decode_console_input(input)
 
-    check_for_tab_complete(command)
+    check_for_tab_complete()
 
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
