@@ -123,6 +123,8 @@ defmodule CLI do
   end
 
   defp decode_console_input(input) do
+    IO.puts("HURENSOHN")
+
     input
     |> String.trim_trailing("\n")
     |> tokenize([], "", :none, false)
