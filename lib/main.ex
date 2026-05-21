@@ -34,7 +34,7 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
 
-    {:ok, _} = :io.setopts(:group_leader.(), raw: true)
+    {:ok, _} = :io.setopts(:stdio, raw: true)
     input = IO.gets("")
     IO.puts("HERE")
 
