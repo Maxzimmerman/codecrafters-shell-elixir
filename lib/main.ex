@@ -20,27 +20,101 @@ defmodule CLI do
   @builtins ~w(echo exit)
 
   def main(_args) do
-    :io.setopts(:standard_io, expand_fun: &expand/1)
+    :io.setopts(:standard_io, binary: true)
+    enable_raw_mode()
+    System.at_exit(fn _ -> disable_raw_mode() end)
     listen()
   end
 
-  defp expand(reverse_prefix) do
-    word = reverse_prefix |> Enum.reverse() |> to_string()
+  defp enable_raw_mode do
+    :os.cmd(~c"stty -icanon -echo min 1 </dev/tty")
+  end
 
-    case Enum.filter(@builtins, &String.starts_with?(&1, word)) do
-      [match] when word != "" ->
-        insertion = String.replace_prefix(match <> " ", word, "")
-        {:yes, String.to_charlist(insertion), []}
+  defp disable_raw_mode do
+    :os.cmd(~c"stty icanon echo </dev/tty")
+  end
+
+  defp read_line(buf) do
+    case IO.binread(:stdio, 1) do
+      :eof ->
+        if buf == "", do: :eof, else: buf
+
+      {:error, _} ->
+        :eof
+
+      "\r" ->
+        IO.write("\r\n")
+        buf
+
+      "\n" ->
+        IO.write("\r\n")
+        buf
+
+      "\t" ->
+        buf |> handle_tab() |> read_line()
+
+      <<127>> ->
+        buf |> backspace() |> read_line()
+
+      <<8>> ->
+        buf |> backspace() |> read_line()
+
+      <<3>> ->
+        IO.write("^C\r\n")
+        System.halt(130)
+
+      <<4>> ->
+        if buf == "", do: :eof, else: read_line(buf)
+
+      char when is_binary(char) ->
+        IO.write(char)
+        read_line(buf <> char)
+    end
+  end
+
+  defp backspace(""), do: ""
+
+  defp backspace(buf) do
+    IO.write("\b \b")
+    String.slice(buf, 0..-2//1)
+  end
+
+  defp handle_tab(buf) do
+    case Enum.filter(@builtins, &String.starts_with?(&1, buf)) do
+      [match] when buf != "" ->
+        suffix = String.replace_prefix(match <> " ", buf, "")
+        IO.write(suffix)
+        match <> " "
 
       _ ->
-        {:no, ~c"", []}
+        buf
     end
   end
 
   defp listen do
-    input = IO.gets("$ ")
+    IO.write("$ ")
 
-    [command | input] = decode_console_input(input)
+    case read_line("") do
+      :eof ->
+        :ok
+
+      input ->
+        process_line(input)
+        listen()
+    end
+  end
+
+  defp process_line(input) do
+    case decode_console_input(input) do
+      [] ->
+        :ok
+
+      [command | input] ->
+        dispatch(command, input)
+    end
+  end
+
+  defp dispatch(command, input) do
 
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
