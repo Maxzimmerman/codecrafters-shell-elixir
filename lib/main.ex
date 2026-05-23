@@ -83,6 +83,7 @@ defmodule CLI do
         match <> " "
 
       _ ->
+        IO.puts("\x07")
         buf
     end
   end
@@ -111,7 +112,6 @@ defmodule CLI do
   end
 
   defp dispatch(command, input) do
-
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
