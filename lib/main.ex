@@ -29,7 +29,10 @@ defmodule CLI do
   end
 
   defp enable_raw_mode do
-    :os.cmd(~c"stty -icanon -echo min 1 </dev/tty")
+    out = :os.cmd(~c"stty -icanon -echo min 1 </dev/tty 2>&1")
+    IO.write(:stderr, "[debug stty enable: #{out}]\r\n")
+    out2 = :os.cmd(~c"stty -a </dev/tty 2>&1 | head -2")
+    IO.write(:stderr, "[debug stty state: #{out2}]\r\n")
   end
 
   defp disable_raw_mode do
