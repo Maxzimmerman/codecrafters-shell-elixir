@@ -21,27 +21,12 @@ defmodule CLI do
 
   def main(_args) do
     :io.setopts(:standard_io, binary: true)
-    enable_raw_mode()
-    {:ok, tty} = :file.open(~c"/dev/tty", [:read, :binary, :raw])
-    :persistent_term.put({__MODULE__, :tty}, tty)
-    System.at_exit(fn _ -> disable_raw_mode() end)
     listen()
   end
 
-  defp enable_raw_mode do
-    out1 = :os.cmd(~c"readlink /dev/fd/0 2>&1; readlink /dev/fd/1 2>&1; lsof -p $$ 2>&1 | head -20")
-    IO.write(:stderr, "[debug fds: #{out1}]\r\n")
-  end
-
-  defp disable_raw_mode do
-    :os.cmd(~c"stty icanon echo </dev/tty")
-  end
-
-  defp tty, do: :persistent_term.get({__MODULE__, :tty})
-
   defp read_byte do
-    case :file.read(tty(), 1) do
-      {:ok, <<b>>} -> b
+    case :io.get_chars(:standard_io, ~c"", 1) do
+      <<b>> -> b
       :eof -> :eof
       {:error, _} -> :eof
     end
