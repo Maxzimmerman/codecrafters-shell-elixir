@@ -22,6 +22,8 @@ defmodule CLI do
   def main(_args) do
     :io.setopts(:standard_io, binary: true)
     enable_raw_mode()
+    {:ok, tty} = :file.open(~c"/dev/tty", [:read, :binary, :raw])
+    :persistent_term.put({__MODULE__, :tty}, tty)
     System.at_exit(fn _ -> disable_raw_mode() end)
     listen()
   end
@@ -34,39 +36,47 @@ defmodule CLI do
     :os.cmd(~c"stty icanon echo </dev/tty")
   end
 
+  defp tty, do: :persistent_term.get({__MODULE__, :tty})
+
+  defp read_byte do
+    case :file.read(tty(), 1) do
+      {:ok, <<b>>} -> b
+      :eof -> :eof
+      {:error, _} -> :eof
+    end
+  end
+
   defp read_line(buf) do
-    case IO.binread(:stdio, 1) do
+    case read_byte() do
       :eof ->
         if buf == "", do: :eof, else: buf
 
-      {:error, _} ->
-        :eof
-
-      "\r" ->
+      ?\r ->
         IO.write("\r\n")
         buf
 
-      "\n" ->
+      ?\n ->
         IO.write("\r\n")
         buf
 
-      "\t" ->
+      ?\t ->
         buf |> handle_tab() |> read_line()
 
-      <<127>> ->
+      127 ->
         buf |> backspace() |> read_line()
 
-      <<8>> ->
+      8 ->
         buf |> backspace() |> read_line()
 
-      <<3>> ->
+      3 ->
         IO.write("^C\r\n")
         System.halt(130)
 
-      <<4>> ->
+      4 ->
         if buf == "", do: :eof, else: read_line(buf)
 
-      char when is_binary(char) ->
+      b when is_integer(b) ->
+        char = <<b>>
         IO.write(char)
         read_line(buf <> char)
     end
