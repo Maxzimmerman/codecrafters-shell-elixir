@@ -132,8 +132,6 @@ defmodule CLI do
     with_stdout_redirect(stdout_redirect, fn ->
       run_command(command, input, stderr_redirect)
     end)
-
-    listen()
   end
 
   defp run_command(command, input, stderr_redirect) do
