@@ -8,4 +8,5 @@
 
 set -e # Exit on failure
 
+stty -icanon -echo min 1 2>/dev/null || true
 exec /tmp/codecrafters-build-shell-elixir "$@"
