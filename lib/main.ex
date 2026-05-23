@@ -17,34 +17,30 @@ defmodule CLI do
     "" => Execute
   }
 
+  @builtins ~w(echo exit)
+
   def main(_args) do
+    :io.setopts(:standard_io, expand_fun: &expand/1)
     listen()
   end
 
-  defp check_for_tab_complete do
-    # Read exactly 1 raw character from the IO device
-    case :io.get_chars(:standard_io, "", 1) do
-      {:ok, "\t"} ->
-        IO.puts("PRESSED TAB")
-        check_for_tab_complete()
-    end
+  defp expand(reverse_prefix) do
+    word = reverse_prefix |> Enum.reverse() |> to_string()
 
-    check_for_tab_complete()
+    case Enum.filter(@builtins, &String.starts_with?(&1, word)) do
+      [match] when word != "" ->
+        insertion = String.replace_prefix(match <> " ", word, "")
+        {:yes, String.to_charlist(insertion), []}
+
+      _ ->
+        {:no, ~c"", []}
+    end
   end
 
   defp listen do
-    IO.write("$ ")
-
-    {:ok, _} = :io.setopts(:standard_io, binary: true, echo: false, expand_fun: [])
-
-    check_for_tab_complete()
-
-    input = IO.gets()
-    IO.puts("HERE")
+    input = IO.gets("$ ")
 
     [command | input] = decode_console_input(input)
-
-    check_for_tab_complete()
 
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
