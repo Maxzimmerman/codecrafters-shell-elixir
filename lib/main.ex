@@ -29,12 +29,8 @@ defmodule CLI do
   end
 
   defp enable_raw_mode do
-    out1 = :os.cmd(~c"tty 2>&1")
-    IO.write(:stderr, "[debug tty: #{out1}]\r\n")
-    out2 = :os.cmd(~c"ls -l /proc/self/fd/0 2>&1 || ls -l /dev/fd/0 2>&1")
-    IO.write(:stderr, "[debug fd0: #{out2}]\r\n")
-    out3 = :os.cmd(~c"stty -icanon -echo min 1 2>&1")
-    IO.write(:stderr, "[debug stty: #{out3}]\r\n")
+    out1 = :os.cmd(~c"readlink /dev/fd/0 2>&1; readlink /dev/fd/1 2>&1; lsof -p $$ 2>&1 | head -20")
+    IO.write(:stderr, "[debug fds: #{out1}]\r\n")
   end
 
   defp disable_raw_mode do
