@@ -16,20 +16,19 @@ defmodule Commands do
   end
 
   def executables_in_path do
-    dirs_in_path =
-      System.get_env("PATH") |> String.split(":")
+    executables_in_path =
+      System.get_env("PATH")
+      |> String.split(":")
+      |> Enum.find(&list_executables_for_dir(&1))
 
-    Enum.each(dirs_in_path, &list_files_in_dir(&1))
-    dirs_in_path
+    IO.inspect(executables_in_path)
+    executables_in_path
   end
 
-  def list_files_in_dir(dir) do
+  def list_executables_for_dir(dir) do
     case File.ls(dir) do
       {:ok, files} ->
-        executables =
-          Enum.filter(files, &executable?(Path.join(dir, &1)))
-
-        IO.puts("executable files: #{inspect(executables)} in #{dir}")
+        Enum.filter(files, &executable?(Path.join(dir, &1)))
 
       {:error, _reason} ->
         []
