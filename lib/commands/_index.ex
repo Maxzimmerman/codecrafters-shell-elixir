@@ -24,7 +24,7 @@ defmodule Commands do
   end
 
   def list_files_in_dir(dir) do
-    IO.inspect(File.ls(dir))
+    IO.puts("files: #{inspect(File.ls(dir))} in #{dir}")
   end
 
   defp executable?(path) do
