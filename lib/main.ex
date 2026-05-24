@@ -76,9 +76,7 @@ defmodule CLI do
   end
 
   defp handle_tab(buf) do
-    IO.puts("Path executables: #{inspect(Commands.executables_in_path())}")
-
-    case Enum.filter(@builtins, &String.starts_with?(&1, buf)) do
+    case Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf)) do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")
         IO.write(suffix)
