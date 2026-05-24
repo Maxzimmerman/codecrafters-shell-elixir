@@ -20,6 +20,7 @@ defmodule Commands do
       System.get_env("PATH") |> String.split(":")
 
     Enum.each(dirs_in_path, &list_files_in_dir(&1))
+    dirs_in_path
   end
 
   def list_files_in_dir(dir) do
