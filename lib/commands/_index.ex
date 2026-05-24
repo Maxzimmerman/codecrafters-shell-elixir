@@ -15,7 +15,10 @@ defmodule Commands do
     end
   end
 
-  def executables_in_path, do: System.get_env("PATH") |> String.split(":")
+  def executables_in_path do
+    IO.inspect(System.get_env("PATH"))
+    System.get_env("PATH") |> String.split(":")
+  end
 
   defp executable?(path) do
     case File.stat(path) do
