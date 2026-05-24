@@ -46,7 +46,6 @@ defmodule CLI do
         buf
 
       ?\t ->
-        IO.puts("HIT TAB for: #{inspect(buf)}")
         buf |> handle_tab() |> read_line()
 
       127 ->
@@ -77,6 +76,8 @@ defmodule CLI do
   end
 
   defp handle_tab(buf) do
+    IO.puts("Path executables: #{inspect(Commands.executables_in_path())}")
+
     case Enum.filter(@builtins, &String.starts_with?(&1, buf)) do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")

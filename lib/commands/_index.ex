@@ -15,6 +15,8 @@ defmodule Commands do
     end
   end
 
+  def executables_in_path, do: System.get_env("PATH") |> String.split(":")
+
   defp executable?(path) do
     case File.stat(path) do
       {:ok, %File.Stat{mode: mode}} ->
