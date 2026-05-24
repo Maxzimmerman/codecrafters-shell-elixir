@@ -24,12 +24,16 @@ defmodule Commands do
   end
 
   def list_files_in_dir(dir) do
-    {:ok, files} = File.ls(dir)
+    case File.ls(dir) do
+      {:ok, files} ->
+        executables =
+          Enum.filter(files, &executable?(&1))
 
-    executables =
-      Enum.find(files, &executable?(&1))
+        IO.puts("executable files: #{inspect(executables)} in #{dir}")
 
-    IO.puts("executable files: #{inspect(executables)} in #{dir}")
+      {:error, _reason} ->
+        []
+    end
   end
 
   defp executable?(path) do
