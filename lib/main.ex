@@ -83,6 +83,7 @@ defmodule CLI do
         match <> " "
 
       _ ->
+        IO.puts("WRONG")
         IO.puts("\x07")
         buf
     end
