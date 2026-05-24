@@ -16,8 +16,14 @@ defmodule Commands do
   end
 
   def executables_in_path do
-    IO.inspect(System.get_env("PATH"))
-    System.get_env("PATH") |> String.split(":")
+    dirs_in_path =
+      System.get_env("PATH") |> String.split(":")
+
+    Enum.each(dirs_in_path, &list_files_in_dir(&1))
+  end
+
+  def list_files_in_dir(dir) do
+    IO.inspect(File.ls(dir))
   end
 
   defp executable?(path) do
