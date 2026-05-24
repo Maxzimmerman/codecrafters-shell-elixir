@@ -19,7 +19,7 @@ defmodule Commands do
     executables_in_path =
       System.get_env("PATH")
       |> String.split(":")
-      |> Enum.find(&list_executables_for_dir(&1))
+      |> Enum.each(&list_executables_for_dir(&1))
 
     IO.inspect(executables_in_path)
     executables_in_path
