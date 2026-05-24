@@ -83,7 +83,7 @@ defmodule CLI do
         match <> " "
 
       _ ->
-        IO.puts("WRONG")
+        IO.puts("WRONG for: #{buf} #{inspect(@builtins ++ Commands.executables_in_path())}")
         IO.puts("\x07")
         buf
     end
