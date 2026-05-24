@@ -76,7 +76,11 @@ defmodule CLI do
   end
 
   defp handle_tab(buf) do
-    case Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf)) do
+    matches =
+      Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
+      |> Enum.uniq()
+
+    case matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")
         IO.write(suffix)
