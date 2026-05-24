@@ -1,0 +1,69 @@
+#separator:tab
+#html:true
+#tags:terminals-shell-beam
+What is Unix?	An OS family from Bell Labs (1969-70). Key ideas: everything is accessed through a file-like interface, small composable programs, and a kernel/user-space split mediated by syscalls.
+What is a syscall?	A request from a user-space program to the kernel. The only way user code can touch hardware, files, network, or any privileged resource.
+What does "everything is a file" really mean?	Everything is accessed through a file-like interface (read/write/close syscalls) — but the thing on the other side may be a pipe, socket, terminal, or device, not a file on disk.
+What is the kernel/user-space split?	User programs run unprivileged in user space and cannot touch hardware. They make syscalls to ask the privileged kernel to do it on their behalf.
+What is the difference between an executable file and a process?	The executable is bytes on disk (Mach-O on macOS, ELF on Linux). A process is a running instance after the kernel loads that file into memory via exec().
+What does fork() do?	The kernel duplicates the current process. It returns twice — once in the parent (child's PID) and once in the child (0).
+What does exec() do?	Replaces the current process's memory with a new program loaded from an executable file. fds survive across exec.
+What is a file descriptor (fd)?	A small integer, per process, indexing into a kernel-managed table. Each entry points to an open kernel-side resource.
+Are fd numbers shared across processes?	No. Each process has its own fd table. Process A's fd 3 and process B's fd 3 are unrelated.
+What kinds of resources can an fd point to?	Regular files, directories, pipes, sockets, terminals (pty), devices like /dev/null or /dev/random.
+What happens to fds when a process exits?	The kernel closes them all automatically.
+Which syscall reads from an fd?	read(fd, buf, count)
+Which syscall writes to an fd?	write(fd, buf, count)
+What is stdin?	The name for fd 0 — a process's default input channel.
+What is stdout?	The name for fd 1 — a process's default normal-output channel.
+What is stderr?	The name for fd 2 — a process's default error-output channel, kept separate so it survives "> /dev/null".
+Are stdin/stdout/stderr files?	No. They are three reserved fd numbers (0, 1, 2). What they point to is set up by whoever launched the process.
+Why are stdin/stdout/stderr useful?	They are a universal I/O convention. A program reads/writes them blindly while its parent decides what is on the other end — terminal, file, pipe, socket, /dev/null.
+Who sets up stdin/stdout/stderr before a program runs?	Its parent — almost always the shell — before calling exec.
+How does "cmd > out.txt" work mechanically?	Shell opens out.txt (gets a new fd, say 5), forks, in the child calls dup2(5, 1) so fd 1 now points to the file, then execs cmd.
+What does dup2(src, dst) do?	Makes dst point to the same kernel object as src in the fd table.
+What is a Unix pipe?	A kernel-side ring buffer with two fds — read end and write end — created by the pipe() syscall.
+How does "a | b" work mechanically?	Shell calls pipe(), getting (read_fd, write_fd). Forks twice. In a: dup2(write_fd, 1). In b: dup2(read_fd, 0). Then execs both.
+Does a piped program know it is piped?	No. It just sees an fd. The pipe is transparent to the program.
+What was a terminal in 1970?	A physical device — a teletype or CRT — with a keyboard and printer/screen, connected to a mainframe over a serial line.
+What does TTY stand for?	Teletype.
+What is a terminal emulator?	A user-space graphical program (iTerm, Terminal.app, Alacritty) that pretends to be a 1970s TTY so the kernel's terminal abstractions still apply.
+What is the TTY driver?	A piece of the kernel that sits between a terminal and a program: line editing, echo, and signal generation (Ctrl+C → SIGINT).
+What is a pseudo-terminal (pty)?	A kernel construct emulating a serial terminal connection. It has two endpoints: master and slave.
+What is the pty master?	The endpoint held by the terminal emulator. Keystrokes go in, program output comes out.
+What is the pty slave?	The endpoint connected to the shell as its stdin/stdout/stderr. Looks like a real terminal to the program.
+What sits between the pty master and slave?	The kernel TTY driver.
+What is canonical (cooked) mode?	Default TTY mode. The kernel buffers input one line at a time, handles backspace, and only delivers a completed line when Enter is pressed.
+What is raw mode?	A TTY mode where every keystroke reaches the program immediately, with no echo, line editing, or signal interpretation.
+What is termios?	The C struct and syscall family (tcgetattr/tcsetattr) used to configure the kernel TTY driver.
+What is stty?	The command-line front-end to termios. Example: stty -icanon -echo enables raw mode.
+What does the ICANON flag control?	Whether the TTY driver runs in canonical (line-buffered) mode.
+What does the ECHO flag control?	Whether the kernel automatically echoes typed characters back to the terminal.
+What is a Unix signal?	A kernel-delivered asynchronous notification to a process — for example SIGINT, SIGTERM, SIGKILL.
+What does Ctrl+C cause at the TTY level?	The TTY driver sends SIGINT to the foreground process group.
+What does Ctrl+Z cause?	The TTY driver sends SIGTSTP, suspending the foreground process group.
+Why does Ctrl+C only kill the foreground program?	The TTY driver sends SIGINT to the foreground *process group*. Background processes are in different groups and unaffected.
+Why does SIGTERM matter in production?	Kubernetes/Heroku/Fly send SIGTERM and wait ~30 seconds before SIGKILL. Your app must drain connections during that window.
+What are ANSI escape sequences?	Magic byte sequences starting with ESC [ (0x1B 0x5B) that instruct the terminal emulator to change colors, move the cursor, clear lines, etc.
+Who interprets ANSI escape sequences?	The terminal emulator. The kernel just passes the bytes through unchanged.
+How many OS processes does a running BEAM application have?	One. beam.smp. All BEAM "processes" are green threads inside it.
+What is a BEAM process?	A lightweight green thread scheduled by the BEAM scheduler in user space. Not an OS thread.
+What is a BEAM scheduler?	An OS thread inside the BEAM that runs many BEAM processes cooperatively. Usually one scheduler per CPU core.
+What is a Port in BEAM?	BEAM's primitive for talking to anything outside the VM — subprocesses, fds, drivers. From your code it looks like a process you message.
+What is a BEAM I/O server?	A BEAM process that owns an I/O resource (file, terminal, etc.) via a Port. Other processes send it io_request messages to read or write.
+What is the group_leader of a BEAM process?	Another BEAM process — typically an I/O server — that this process routes its IO.puts / IO.read messages to.
+How does IO.puts work under the hood?	It sends an io_request message to the calling process's group_leader. The group leader (an I/O server) performs the actual write syscall through its Port.
+How does Elixir do output redirection without dup2?	Swap a process's group_leader to a different I/O server (one backed by a file, in-memory buffer, etc.). No fd manipulation needed.
+What does File.open return by default?	{:ok, pid} — the pid of a BEAM I/O server process that owns the underlying fd via a Port.
+What does File.open with the :raw option return?	{:ok, {:file_descriptor, ...}} — a direct file handle. Faster, fewer features, no I/O server hop.
+Why is :os.cmd dangerous in production Elixir code?	It blocks the BEAM scheduler thread for the entire subprocess lifetime. A few concurrent calls can collapse throughput.
+What is the safer alternative to :os.cmd?	System.cmd or Port.open with :spawn_executable. They cooperate with the scheduler and stream I/O via messages.
+What does Port.open({:spawn_executable, "/bin/ls"}, ...) do at the OS level?	fork() and exec("/bin/ls"), wiring pipes between the BEAM and the child's stdin/stdout.
+What does a shell do, fundamentally?	Decide what is connected to each child's stdin/stdout/stderr (via open/pipe/dup2), then fork and exec the child.
+Why does a shell need raw mode for tab completion?	In canonical mode the program only receives bytes after Enter. Tab completion must react to each keystroke, so input must be read one byte at a time.
+What is an "open file description" in the kernel?	The kernel-side object an fd points to. It holds the resource type, offset, and access mode. Multiple fds (even across processes) can share one open file description.
+Where does the file offset live for an open file?	In the kernel's open file description, not in the fd or in user space.
+Which five terms are the minimum vocabulary for shell-building?	fd, tty driver, pty (master/slave), raw mode, group_leader.
+For a Phoenix backend developer, what OS-level topic matters most day-to-day?	File descriptors and ulimit — every production app eventually hits "too many open files".
+For a Phoenix backend developer, which signal matters most?	SIGTERM — for graceful shutdown under Kubernetes/Heroku/Fly.
+For a Phoenix backend developer, what's the most important BEAM-internals topic?	The scheduler/Port model — understanding why blocking calls (NIFs, :os.cmd) can collapse throughput.

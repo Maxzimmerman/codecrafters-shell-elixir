@@ -46,6 +46,7 @@ defmodule CLI do
         buf
 
       ?\t ->
+        IO.puts("HIT TAB for: #{inspect(buf)}")
         buf |> handle_tab() |> read_line()
 
       127 ->

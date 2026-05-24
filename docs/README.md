@@ -20,6 +20,11 @@ Topics covered:
 8. Ports (subprocess execution)
 9. Hand-rolled tokenizer (state machines)
 
+## External references — `RESOURCES.md`
+
+[RESOURCES.md](RESOURCES.md) collects YouTube tutorials and official docs that
+pair with each LEARNING section, with a suggested viewing order.
+
 ## Per-code-piece docs — `code/`
 
 Each file in `code/` explains one chunk of `lib/main.ex` in detail: what it
