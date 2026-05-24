@@ -22,7 +22,6 @@ defmodule Commands do
       |> Enum.flat_map(&list_executables_for_dir(&1))
       |> Enum.uniq()
 
-    IO.inspect(executables_in_path)
     executables_in_path
   end
 
