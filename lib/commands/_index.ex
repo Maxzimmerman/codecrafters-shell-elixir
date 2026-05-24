@@ -27,7 +27,7 @@ defmodule Commands do
     case File.ls(dir) do
       {:ok, files} ->
         executables =
-          Enum.filter(files, &executable?(&1))
+          Enum.filter(files, &executable?(Path.join(dir, &1)))
 
         IO.puts("executable files: #{inspect(executables)} in #{dir}")
 
