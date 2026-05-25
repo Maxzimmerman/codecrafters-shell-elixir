@@ -91,7 +91,7 @@ defmodule CLI do
         buf
 
       found_matches when length(found_matches) > 1 and count == 1 ->
-        IO.write(Enum.join(found_matches, ""))
+        IO.write(Enum.join(found_matches, " "))
 
       _ ->
         IO.puts("\x07")
