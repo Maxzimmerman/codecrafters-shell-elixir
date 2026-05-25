@@ -87,6 +87,7 @@ defmodule CLI do
         match <> " "
 
       found_matches when length(found_matches) > 1 ->
+        IO.puts("\x07")
         IO.puts("more thena one: #{inspect(found_matches)}")
 
       _ ->
