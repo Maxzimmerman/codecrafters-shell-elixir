@@ -79,6 +79,7 @@ defmodule CLI do
     matches =
       Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
       |> Enum.uniq()
+      |> Enum.sort()
 
     case matches do
       [match] = found_matches when buf != "" and length(found_matches) == 1 ->
