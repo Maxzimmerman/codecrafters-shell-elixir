@@ -86,6 +86,9 @@ defmodule CLI do
         IO.write(suffix)
         match <> " "
 
+      found_matches when length(found_matches) > 1 ->
+        IO.puts("more thena one")
+
       _ ->
         IO.puts("WRONG for: #{buf} #{inspect(@builtins ++ Commands.executables_in_path())}")
         IO.puts("\x07")
