@@ -32,7 +32,7 @@ defmodule CLI do
     end
   end
 
-  defp read_line(buf) do
+  defp read_line(buf, tab_count) do
     case read_byte() do
       :eof ->
         if buf == "", do: :eof, else: buf
@@ -46,25 +46,25 @@ defmodule CLI do
         buf
 
       ?\t ->
-        buf |> handle_tab() |> read_line()
+        buf |> handle_tab(tab_count) |> read_line(tab_count + 1)
 
       127 ->
-        buf |> backspace() |> read_line()
+        buf |> backspace() |> read_line(tab_count)
 
       8 ->
-        buf |> backspace() |> read_line()
+        buf |> backspace() |> read_line(tab_count)
 
       3 ->
         IO.write("^C\r\n")
         System.halt(130)
 
       4 ->
-        if buf == "", do: :eof, else: read_line(buf)
+        if buf == "", do: :eof, else: read_line(buf, tab_count)
 
       b when is_integer(b) ->
         char = <<b>>
         IO.write(char)
-        read_line(buf <> char)
+        read_line(buf <> char, tab_count)
     end
   end
 
@@ -75,7 +75,7 @@ defmodule CLI do
     String.slice(buf, 0..-2//1)
   end
 
-  defp handle_tab(buf) do
+  defp handle_tab(buf, count) do
     matches =
       Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
       |> Enum.uniq()
@@ -86,12 +86,13 @@ defmodule CLI do
         IO.write(suffix)
         match <> " "
 
-      found_matches when length(found_matches) > 1 ->
+      found_matches when length(found_matches) > 1 and count == 1 ->
         IO.puts("\x07")
-        IO.puts("more thena one: #{inspect(found_matches)}")
+
+      found_matches when length(found_matches) > 1 and count == 2 ->
+        IO.puts("SECOND TAB")
 
       _ ->
-        IO.puts("WRONG for: #{buf} #{inspect(@builtins ++ Commands.executables_in_path())}")
         IO.puts("\x07")
         buf
     end
@@ -100,7 +101,7 @@ defmodule CLI do
   defp listen do
     IO.write("$ ")
 
-    case read_line("") do
+    case read_line("", 0) do
       :eof ->
         :ok
 
