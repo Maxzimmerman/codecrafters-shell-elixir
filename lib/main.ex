@@ -96,7 +96,7 @@ defmodule CLI do
         IO.puts("FOUND IT")
 
       found_matches when length(found_matches) > 1 ->
-        IO.puts("HERE")
+        IO.puts("HERE #{count}")
 
       _ ->
         IO.puts("\x07")
