@@ -93,10 +93,7 @@ defmodule CLI do
         IO.puts("SECOND TAB")
 
       found_matches when length(found_matches) > 1 and count >= 1 ->
-        IO.puts("FOUND IT")
-
-      found_matches when length(found_matches) > 1 ->
-        IO.puts("HERE #{count}")
+        IO.puts("FOUND IT #{count}")
 
       _ ->
         IO.puts("\x07")
