@@ -81,7 +81,7 @@ defmodule CLI do
       |> Enum.uniq()
 
     case matches do
-      [match] when buf != "" ->
+      [match] = found_matches when buf != "" and length(found_matches) == 1 ->
         suffix = String.replace_prefix(match <> " ", buf, "")
         IO.write(suffix)
         match <> " "
