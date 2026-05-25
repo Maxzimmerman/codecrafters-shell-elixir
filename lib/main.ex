@@ -83,18 +83,14 @@ defmodule CLI do
     case matches do
       [match] = found_matches when buf != "" and length(found_matches) == 1 ->
         suffix = String.replace_prefix(match <> " ", buf, "")
-        IO.puts("NOT HERE")
         IO.write(suffix)
         match <> " "
 
-      found_matches when length(found_matches) > 1 and count == 1 ->
+      found_matches when length(found_matches) > 1 and count == 0 ->
         IO.puts("\x07")
 
-      found_matches when length(found_matches) > 1 and count == 2 ->
+      found_matches when length(found_matches) > 1 and count == 1 ->
         IO.puts("SECOND TAB")
-
-      found_matches when length(found_matches) > 1 and count >= 1 ->
-        IO.puts("FOUND IT #{count}")
 
       _ ->
         IO.puts("\x07")
