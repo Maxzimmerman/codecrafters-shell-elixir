@@ -94,7 +94,10 @@ defmodule CLI do
         buf
 
       found_matches when length(found_matches) > 1 and count == 1 ->
-        IO.inspect(Commands.longest_common_prefix(found_matches))
+        IO.inspect(
+          "found longest common prefix #{inspect(Commands.longest_common_prefix(found_matches))} for #{inspect(found_matches)}"
+        )
+
         IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
