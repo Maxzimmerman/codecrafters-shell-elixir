@@ -89,8 +89,6 @@ defmodule CLI do
         "."
       end
 
-    IO.puts(file_name)
-
     file_matches =
       Enum.filter(
         Commands.list_files_in_dir(dir_to_look_for),
