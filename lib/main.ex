@@ -81,6 +81,14 @@ defmodule CLI do
 
   defp handle_file_completion_tab(buf, _count) do
     file_name = String.split(buf, " ") |> Enum.at(-1)
+
+    dir_to_look_for =
+      if length(String.split(file_name, "/")) do
+        file_name
+      else
+        "."
+      end
+
     IO.puts(file_name)
 
     file_matches =
