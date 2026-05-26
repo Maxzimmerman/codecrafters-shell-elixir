@@ -296,11 +296,4 @@ defmodule CLI do
   defp tokenize(<<c::utf8, rest::binary>>, tokens, current, :none, _has_token) do
     tokenize(rest, tokens, current <> <<c::utf8>>, :none, true)
   end
-
-  defp split_path(file_name) do
-    case String.split(file_name, "/") |> Enum.reverse() do
-      [base] -> {".", base}
-      [base | dir_parts] -> {dir_parts |> Enum.reverse() |> (Enum.join("/") <> "/"), base}
-    end
-  end
 end
