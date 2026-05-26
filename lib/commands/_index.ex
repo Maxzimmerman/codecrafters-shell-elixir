@@ -52,7 +52,7 @@ defmodule Commands do
   end
 
   def list_files_in_dir(dir) do
-    File.ls(dir)
+    IO.inspect(File.ls(dir))
   end
 
   defp executable?(path) do
