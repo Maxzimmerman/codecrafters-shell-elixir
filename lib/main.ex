@@ -90,7 +90,7 @@ defmodule CLI do
       |> Enum.sort()
 
     is_dir = File.dir?(file_name)
-    IO.inspect(file_name, label: "TES")
+    IO.puts(file_name)
 
     case file_matches do
       [match] when buf != "" and not is_dir ->
