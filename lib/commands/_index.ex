@@ -35,6 +35,20 @@ defmodule Commands do
     end
   end
 
+  def longest_common_prefix(words) do
+    min_len = Enum.map(words, &length(&1)) |> Enum.min()
+    first = hd(words)
+
+    11..(min_len - 1)//1
+    |> Enum.reduce_while("", fn i, acc ->
+      ch = String.at(first, i)
+
+      if Enum.all?(words, &(String.at(&1, i) == ch)),
+        do: {:cont, acc <> ch},
+        else: {:halt, acc}
+    end)
+  end
+
   defp executable?(path) do
     case File.stat(path) do
       {:ok, %File.Stat{mode: mode}} ->
