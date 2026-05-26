@@ -46,7 +46,7 @@ defmodule CLI do
         buf
 
       ?\t ->
-        if length(Enum.split(buf, "")) > 1 do
+        if length(Enum.split(buf, " ")) > 1 do
           IO.puts("File completion")
         else
           buf |> handle_tab(tab_count) |> read_line(tab_count + 1)
