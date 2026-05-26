@@ -81,29 +81,30 @@ defmodule CLI do
 
   defp handle_file_completion_tab(buf, _count) do
     file_name = String.split(buf, " ") |> Enum.at(-1)
-
-    dir_to_look_for =
-      if length(String.split(file_name, "/")) > 1 do
-        file_name
-      else
-        "."
-      end
-
-    IO.puts("#{inspect(Commands.list_files_in_dir(dir_to_look_for))} - #{file_name}")
+    {dir, base} = split_path(file_name)
 
     file_matches =
-      Enum.filter(
-        Commands.list_files_in_dir(dir_to_look_for),
-        &String.starts_with?(&1, file_name)
-      )
+      Commands.list_files_in_dir(dir)
+      |> Enum.filter(&String.starts_with?(&1, base))
       |> Enum.uniq()
       |> Enum.sort()
 
     case file_matches do
       [match] when buf != "" ->
-        suffix = String.replace_prefix(match <> " ", file_name, "")
+        suffix = String.replace_prefix(match <> " ", base, "")
         IO.write(suffix)
-        match <> " "
+        String.replace_suffix(buf, base, match <> " ")
+
+      _ ->
+        IO.write("\a")
+        buf
+    end
+  end
+
+  defp split_path(file_name) do
+    case String.split(file_name, "/") |> Enum.reverse() do
+      [base] -> {".", base}
+      [base | dir_parts] -> {dir_parts |> Enum.reverse() |> Enum.join("/") <> "/", base}
     end
   end
 
@@ -294,5 +295,12 @@ defmodule CLI do
 
   defp tokenize(<<c::utf8, rest::binary>>, tokens, current, :none, _has_token) do
     tokenize(rest, tokens, current <> <<c::utf8>>, :none, true)
+  end
+
+  defp split_path(file_name) do
+    case String.split(file_name, "/") |> Enum.reverse() do
+      [base] -> {".", base}
+      [base | dir_parts] -> {dir_parts |> Enum.reverse() |> (Enum.join("/") <> "/"), base}
+    end
   end
 end
