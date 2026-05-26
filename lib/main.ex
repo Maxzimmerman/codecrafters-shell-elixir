@@ -89,8 +89,7 @@ defmodule CLI do
 
     case file_matches do
       [match] when buf != "" ->
-        suffix = String.replace_prefix(match <> " ", buf, "")
-        IO.puts("suffix: #{suffix} match: #{match}")
+        suffix = String.replace_prefix(match <> " ", file_name, "")
         IO.write(suffix)
         match <> " "
     end
