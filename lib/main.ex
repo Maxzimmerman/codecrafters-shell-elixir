@@ -88,8 +88,7 @@ defmodule CLI do
         match <> " "
 
       found_matches when length(found_matches) > 1 and count == 0 ->
-        IO.puts(Commands.longest_common_prefix(found_matches))
-        IO.write("\x07")
+        IO.write(Commands.longest_common_prefix(found_matches))
         buf
 
       found_matches when length(found_matches) > 1 and count == 1 ->
