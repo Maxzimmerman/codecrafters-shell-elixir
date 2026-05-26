@@ -90,6 +90,7 @@ defmodule CLI do
     case file_matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")
+        IO.puts("suffix: #{suffix}")
         IO.write(suffix)
         match <> " "
     end
