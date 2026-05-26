@@ -100,6 +100,7 @@ defmodule CLI do
         end
 
       found_matches when length(found_matches) > 1 and count == 1 ->
+        IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
       _ ->
