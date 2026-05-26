@@ -89,7 +89,7 @@ defmodule CLI do
         "."
       end
 
-    IO.puts("#{inspect(Commands.list_files_in_dir(dir))} - #{file_name}")
+    IO.puts("#{inspect(Commands.list_files_in_dir(dir_to_look_for))} - #{file_name}")
 
     file_matches =
       Enum.filter(
