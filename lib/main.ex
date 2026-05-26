@@ -97,6 +97,8 @@ defmodule CLI do
       |> Enum.uniq()
       |> Enum.sort()
 
+    IO.inspect(file_matches, label: "TEST")
+
     case file_matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", file_name, "")
