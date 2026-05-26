@@ -104,7 +104,7 @@ defmodule CLI do
         buf
 
       found_matches ->
-        IO.puts("FAILS HERE")
+        IO.puts("FAILS HERE: #{inspect(found_matches)} - #{inspect(buf)} - #{inspect(count)}")
         IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
