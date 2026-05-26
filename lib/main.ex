@@ -90,7 +90,7 @@ defmodule CLI do
       |> Enum.sort()
 
     case file_matches do
-      [match] when buf != "" and not is_dir ->
+      [match] when buf != "" ->
         match_path = Path.join(dir, match)
 
         if File.dir?(match_path) do
