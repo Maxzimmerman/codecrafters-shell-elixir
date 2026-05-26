@@ -49,10 +49,10 @@ defmodule CLI do
         buf |> handle_tab(tab_count) |> read_line(tab_count + 1)
 
       127 ->
-        buf |> backspace() |> read_line(tab_count)
+        buf |> backspace() |> read_line(0)
 
       8 ->
-        buf |> backspace() |> read_line(tab_count)
+        buf |> backspace() |> read_line(0)
 
       3 ->
         IO.write("^C\r\n")
@@ -64,7 +64,7 @@ defmodule CLI do
       b when is_integer(b) ->
         char = <<b>>
         IO.write(char)
-        read_line(buf <> char, tab_count)
+        read_line(buf <> char, 0)
     end
   end
 
