@@ -46,7 +46,11 @@ defmodule CLI do
         buf
 
       ?\t ->
-        buf |> handle_tab(tab_count) |> read_line(tab_count + 1)
+        if length(Enum.split(buf, "")) > 1 do
+          IO.puts("File completion")
+        else
+          buf |> handle_tab(tab_count) |> read_line(tab_count + 1)
+        end
 
       127 ->
         buf |> backspace() |> read_line(0)
