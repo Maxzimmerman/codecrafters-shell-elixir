@@ -98,6 +98,7 @@ defmodule CLI do
         String.replace_suffix(buf, base, match <> " ")
 
       [match] when buf != "" and is_dir ->
+        IO.puts("RIGHT")
         suffix = String.replace_prefix(match <> " ", base, "")
         IO.write(suffix <> "/")
         String.replace_suffix(buf, base, match <> " ")
