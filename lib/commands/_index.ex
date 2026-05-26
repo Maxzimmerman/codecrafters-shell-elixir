@@ -41,14 +41,17 @@ defmodule Commands do
     min_len = Enum.map(words, &String.length(&1)) |> Enum.min()
     first = hd(words)
 
-    0..(min_len - 1)//1
-    |> Enum.reduce_while("", fn i, acc ->
-      ch = String.at(first, i)
+    IO.inspect(
+      0..(min_len - 1)//1
+      |> Enum.reduce_while("", fn i, acc ->
+        ch = String.at(first, i)
 
-      if Enum.all?(words, &(String.at(&1, i) == ch)),
-        do: {:cont, acc <> ch},
-        else: {:halt, acc}
-    end)
+        if Enum.all?(words, &(String.at(&1, i) == ch)),
+          do: {:cont, acc <> ch},
+          else: {:halt, acc}
+      end),
+      label: "TEST"
+    )
   end
 
   defp executable?(path) do
