@@ -51,6 +51,10 @@ defmodule Commands do
     end)
   end
 
+  def list_files_in_dir(dir) do
+    File.ls(dir)
+  end
+
   defp executable?(path) do
     case File.stat(path) do
       {:ok, %File.Stat{mode: mode}} ->

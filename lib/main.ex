@@ -81,6 +81,11 @@ defmodule CLI do
       |> Enum.uniq()
       |> Enum.sort()
 
+    file_matches =
+      Enum.filter(Commands.list_files_in_dir("."), &String.starts_with?(&1, buf))
+      |> Enum.uniq()
+      |> Enum.sort()
+
     case matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")
@@ -104,7 +109,7 @@ defmodule CLI do
         buf
 
       found_matches ->
-        IO.puts("FAILS HERE: #{inspect(found_matches)} - #{inspect(buf)} - #{inspect(count)}")
+        IO.inspect(file_matches)
         IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
