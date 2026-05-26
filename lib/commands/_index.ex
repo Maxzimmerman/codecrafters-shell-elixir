@@ -53,7 +53,7 @@ defmodule Commands do
 
   def list_files_in_dir(dir) do
     {:ok, files} = File.ls(dir)
-    inspect(files)
+    IO.inspect(files)
     files
   end
 
