@@ -103,8 +103,12 @@ defmodule CLI do
         IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
+      found_matches ->
+        IO.puts("FAILS HERE")
+        IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
+        buf
+
       _ ->
-        IO.puts("HERE")
         IO.write("\a")
         buf
     end
