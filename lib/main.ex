@@ -90,7 +90,7 @@ defmodule CLI do
       |> Enum.sort()
 
     case file_matches do
-      [match] when buf != "" and !File.dir?(file_name) ->
+      [match] when buf != "" and not File.dir?(file_name) ->
         suffix = String.replace_prefix(match <> " ", base, "")
         IO.write(suffix)
         String.replace_suffix(buf, base, match <> " ")
