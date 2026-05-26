@@ -81,12 +81,18 @@ defmodule CLI do
 
   defp handle_file_completion_tab(buf, _count) do
     file_name = String.split(buf, " ") |> Enum.at(-1)
-    IO.puts(file_name)
 
     file_matches =
-      Enum.filter(Commands.list_files_in_dir("."), &String.starts_with?(&1, buf))
+      Enum.filter(Commands.list_files_in_dir("."), &String.starts_with?(&1, file_name))
       |> Enum.uniq()
       |> Enum.sort()
+
+    case file_matches do
+      [match] when buf != "" ->
+        suffix = String.replace_prefix(match <> " ", buf, "")
+        IO.write(suffix)
+        match <> " "
+    end
   end
 
   defp handle_tab(buf, count) do
