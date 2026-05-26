@@ -89,10 +89,6 @@ defmodule CLI do
         match <> " "
 
       found_matches when length(found_matches) > 1 and count == 0 ->
-        IO.inspect(
-          "found longest common prefix #{inspect(Commands.longest_common_prefix(found_matches))} for #{inspect(found_matches)}"
-        )
-
         IO.write("\x07")
         buf
 
