@@ -47,7 +47,7 @@ defmodule CLI do
 
       ?\t ->
         if length(String.split(buf, " ")) > 1 do
-          IO.puts("File completion")
+          buf |> handle_file_completion_tab(tab_count) |> read_line(tab_count + 1)
         else
           buf |> handle_tab(tab_count) |> read_line(tab_count + 1)
         end
@@ -79,14 +79,19 @@ defmodule CLI do
     String.slice(buf, 0..-2//1)
   end
 
-  defp handle_tab(buf, count) do
-    matches =
-      Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
-      |> Enum.uniq()
-      |> Enum.sort()
+  defp handle_file_completion_tab(buf, _count) do
+    file_name = String.split(buf, " ") |> Enum.at(-1)
+    IO.puts(file_name)
 
     file_matches =
       Enum.filter(Commands.list_files_in_dir("."), &String.starts_with?(&1, buf))
+      |> Enum.uniq()
+      |> Enum.sort()
+  end
+
+  defp handle_tab(buf, count) do
+    matches =
+      Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
       |> Enum.uniq()
       |> Enum.sort()
 
@@ -109,14 +114,6 @@ defmodule CLI do
         end
 
       found_matches when length(found_matches) > 1 and count == 1 ->
-        IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
-        buf
-
-      found_matches ->
-        IO.puts(
-          "FAILS HERE: #{inspect(found_matches)} - #{inspect(buf)} - #{inspect(file_matches)}"
-        )
-
         IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
