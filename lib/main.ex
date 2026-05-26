@@ -63,7 +63,6 @@ defmodule CLI do
 
       b when is_integer(b) ->
         char = <<b>>
-        IO.write(char)
         read_line(buf <> char, tab_count)
     end
   end
