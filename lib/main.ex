@@ -82,13 +82,16 @@ defmodule CLI do
       |> Enum.sort()
 
     case matches do
-      [match] = found_matches when buf != "" and length(found_matches) == 1 ->
+      [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")
+        IO.write(suffix)
         match <> " "
 
       found_matches when length(found_matches) > 1 and count == 0 ->
-        IO.write(Commands.longest_common_prefix(found_matches))
-        buf
+        prefix = Commands.longest_common_prefix(found_matches)
+        suffix = String.replace_prefix(prefix, buf, "")
+        IO.write(suffix)
+        buf <> suffix
 
       found_matches when length(found_matches) > 1 and count == 1 ->
         buf
