@@ -84,6 +84,7 @@ defmodule CLI do
     case matches do
       [match] = found_matches when buf != "" and length(found_matches) == 1 ->
         suffix = String.replace_prefix(match <> " ", buf, "")
+        IO.puts("hits here")
         IO.write(suffix)
         match <> " "
 
@@ -96,7 +97,7 @@ defmodule CLI do
         buf
 
       _ ->
-        IO.write("\x07")
+        IO.puts("\x07")
         buf
     end
   end
