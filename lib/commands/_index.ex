@@ -41,7 +41,7 @@ defmodule Commands do
     min_len = Enum.map(words, &length(&1)) |> Enum.min()
     first = hd(words)
 
-    1..(min_len - 1)//1
+    0..(min_len - 1)//1
     |> Enum.reduce_while("", fn i, acc ->
       ch = String.at(first, i)
 
