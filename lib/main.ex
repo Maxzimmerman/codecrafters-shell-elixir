@@ -83,7 +83,7 @@ defmodule CLI do
     file_name = String.split(buf, " ") |> Enum.at(-1)
 
     dir_to_look_for =
-      if length(String.split(file_name, "/")) do
+      if length(String.split(file_name, "/")) > 1 do
         file_name
       else
         "."
