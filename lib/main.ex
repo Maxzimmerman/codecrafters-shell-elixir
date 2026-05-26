@@ -80,6 +80,7 @@ defmodule CLI do
   end
 
   defp handle_file_completion_tab(buf, _count) do
+    IO.puts("#{inspect(buf)} TEST")
     file_name = String.split(buf, " ") |> Enum.at(-1)
     {dir, base} = split_path(file_name)
 
@@ -99,7 +100,6 @@ defmodule CLI do
         String.replace_suffix(buf, base, match <> " ")
 
       [match] when buf != "" and is_dir ->
-        IO.puts("RIGHT")
         suffix = String.replace_prefix(match <> " ", base, "")
         IO.write(suffix <> "/")
         String.replace_suffix(buf, base, match <> " ")
