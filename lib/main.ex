@@ -86,6 +86,8 @@ defmodule CLI do
       |> Enum.uniq()
       |> Enum.sort()
 
+    matches = matches ++ file_matches
+
     case matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")
@@ -109,7 +111,6 @@ defmodule CLI do
         buf
 
       found_matches ->
-        IO.inspect(file_matches)
         IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
