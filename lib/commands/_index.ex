@@ -38,6 +38,7 @@ defmodule Commands do
   def longest_common_prefix([]), do: ""
 
   def longest_common_prefix(words) do
+    IO.inspect(words, label: "INPUT")
     min_len = Enum.map(words, &length(&1)) |> Enum.min()
     first = hd(words)
 
