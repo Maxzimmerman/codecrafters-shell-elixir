@@ -104,7 +104,7 @@ defmodule CLI do
   defp split_path(file_name) do
     case String.split(file_name, "/") |> Enum.reverse() do
       [base] -> {".", base}
-      [base | dir_parts] -> {dir_parts |> Enum.reverse() |> Enum.join("/") <> "/", base}
+      [base | dir_parts] -> {(dir_parts |> Enum.reverse() |> Enum.join("/")) <> "/", base}
     end
   end
 
