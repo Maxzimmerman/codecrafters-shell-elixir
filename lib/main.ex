@@ -93,6 +93,7 @@ defmodule CLI do
         buf
 
       found_matches when length(found_matches) > 1 and count == 1 ->
+        IO.puts("hits right here.")
         IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
