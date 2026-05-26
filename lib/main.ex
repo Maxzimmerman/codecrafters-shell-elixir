@@ -95,6 +95,7 @@ defmodule CLI do
           IO.write("\a")
           buf
         else
+          IO.puts("HERE")
           IO.write(suffix)
           buf <> suffix
         end
