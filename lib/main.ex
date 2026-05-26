@@ -90,8 +90,14 @@ defmodule CLI do
       found_matches when length(found_matches) > 1 and count == 0 ->
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, buf, "")
-        IO.write(suffix)
-        buf <> suffix
+
+        if suffix == "" do
+          IO.write("\a")
+          buf
+        else
+          IO.write(suffix)
+          buf <> suffix
+        end
 
       found_matches when length(found_matches) > 1 and count == 1 ->
         buf
