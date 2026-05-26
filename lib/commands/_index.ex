@@ -53,6 +53,7 @@ defmodule Commands do
 
   def list_files_in_dir(dir) do
     {:ok, files} = File.ls(dir)
+    dbg(files)
     files
   end
 
