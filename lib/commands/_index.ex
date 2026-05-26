@@ -52,7 +52,8 @@ defmodule Commands do
   end
 
   def list_files_in_dir(dir) do
-    IO.inspect(File.ls(dir))
+    {:ok, files} = File.ls(dir)
+    files
   end
 
   defp executable?(path) do
