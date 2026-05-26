@@ -84,7 +84,6 @@ defmodule CLI do
     case matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")
-        IO.puts("HERE")
         IO.write(suffix)
         match <> " "
 
@@ -93,17 +92,14 @@ defmodule CLI do
         suffix = String.replace_prefix(prefix, buf, "")
 
         if suffix == "" do
-          IO.puts("HERE")
           IO.write("\a")
           buf
         else
-          IO.puts("HERE")
           IO.write(suffix)
           buf <> suffix
         end
 
       found_matches when length(found_matches) > 1 and count == 1 ->
-        IO.puts("HERE")
         IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
