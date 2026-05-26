@@ -89,6 +89,7 @@ defmodule CLI do
         match <> " "
 
       found_matches when length(found_matches) > 1 and count == 0 ->
+        IO.puts("WAS HERE")
         IO.write("\x07")
         buf
 
