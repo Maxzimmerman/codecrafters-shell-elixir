@@ -104,6 +104,7 @@ defmodule CLI do
         buf
 
       _ ->
+        IO.write("\a")
         buf
     end
   end
