@@ -125,14 +125,13 @@ defmodule CLI do
     case matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")
+        IO.puts("HERE")
         IO.write(suffix)
         match <> " "
 
       found_matches when length(found_matches) > 1 and count == 0 ->
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, buf, "")
-
-        IO.puts("HERE")
 
         if suffix == "" do
           IO.write("\a")
