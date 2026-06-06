@@ -46,6 +46,8 @@ defmodule CLI do
         buf
 
       ?\t ->
+        IO.puts("HERE")
+
         if length(String.split(buf, " ")) > 1 do
           buf |> handle_file_completion_tab(tab_count) |> read_line(tab_count + 1)
         else
