@@ -89,14 +89,14 @@ defmodule CLI do
       |> Enum.uniq()
       |> Enum.sort()
 
-    IO.inspect(file_matches, label: "matches")
-
     case file_matches do
       [match] when buf != "" ->
         match_path = Path.join(dir, match)
 
         if File.dir?(match_path) do
           suffix = String.replace_prefix(match <> "/", base, "")
+
+          IO.inspect(file_matches, label: "TEST")
           IO.write(suffix)
           String.replace_suffix(buf, base, match <> "/")
         else
