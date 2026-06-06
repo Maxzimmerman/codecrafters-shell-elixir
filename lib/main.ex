@@ -96,10 +96,10 @@ defmodule CLI do
         if File.dir?(match_path) do
           suffix = String.replace_prefix(match <> "/", base, "")
 
-          IO.inspect(file_matches, label: "TEST")
           IO.write(suffix)
           String.replace_suffix(buf, base, match <> "/")
         else
+          IO.inspect(file_matches, label: "TEST")
           suffix = String.replace_prefix(match <> " ", base, "")
           IO.write(suffix)
           String.replace_suffix(buf, base, match <> " ")
