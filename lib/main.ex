@@ -47,6 +47,7 @@ defmodule CLI do
 
       ?\t ->
         if length(String.split(buf, " ")) > 1 do
+          IO.puts("here")
           buf |> handle_file_completion_tab(tab_count) |> read_line(tab_count + 1)
         else
           buf |> handle_tab(tab_count) |> read_line(tab_count + 1)
@@ -117,8 +118,6 @@ defmodule CLI do
   end
 
   defp handle_tab(buf, count) do
-    IO.puts("HERE")
-
     matches =
       Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
       |> Enum.uniq()
