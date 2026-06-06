@@ -132,6 +132,8 @@ defmodule CLI do
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, buf, "")
 
+        IO.puts("HERE")
+
         if suffix == "" do
           IO.write("\a")
           buf
@@ -141,7 +143,6 @@ defmodule CLI do
         end
 
       found_matches when length(found_matches) > 1 and count == 1 ->
-        IO.puts("HERE")
         IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
         buf
 
