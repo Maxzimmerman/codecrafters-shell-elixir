@@ -117,6 +117,8 @@ defmodule CLI do
   end
 
   defp handle_tab(buf, count) do
+    IO.puts("HERE")
+
     matches =
       Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
       |> Enum.uniq()
@@ -125,7 +127,6 @@ defmodule CLI do
     case matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match <> " ", buf, "")
-        IO.puts("HERE")
         IO.write(suffix)
         match <> " "
 
