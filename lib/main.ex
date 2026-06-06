@@ -89,7 +89,7 @@ defmodule CLI do
       |> Enum.uniq()
       |> Enum.sort()
 
-    IO.inspect(file_matches, label: "TEST")
+    IO.inspect(file_matches)
 
     case file_matches do
       [match] when buf != "" ->
