@@ -3,7 +3,13 @@ defmodule Commands.Complete do
 
   alias Commands
 
-  def execute(args) do
-    IO.inspect(args)
+  @registered
+
+  def execute(["-p", executable | _] = args) do
+    if executable in @registered do
+      IO.print("valid")
+    else
+      IO.print("not valid")
+    end
   end
 end
