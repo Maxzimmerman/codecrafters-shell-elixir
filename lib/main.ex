@@ -97,6 +97,7 @@ defmodule CLI do
         IO.puts("second")
 
       _ ->
+        IO.puts("here")
         IO.write("\a")
         buf
     end
