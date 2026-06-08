@@ -9,7 +9,7 @@ defmodule Commands.Complete do
     if executable in @registered do
       IO.write("")
     else
-      IO.write("complete: systemctl: no completion specification")
+      IO.write("complete: #{executable}: no completion specification")
     end
   end
 end
