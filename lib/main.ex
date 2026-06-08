@@ -79,7 +79,7 @@ defmodule CLI do
     String.slice(buf, 0..-2//1)
   end
 
-  defp handle_file_completion_tab(buf, _count) do
+  defp handle_file_completion_tab(buf, count) do
     file_name = String.split(buf, " ") |> Enum.at(-1)
     {dir, base} = split_path(file_name)
 
@@ -88,8 +88,6 @@ defmodule CLI do
       |> Enum.filter(&String.starts_with?(&1, base))
       |> Enum.uniq()
       |> Enum.sort()
-
-    IO.inspect(file_matches, label: "TEST")
 
     case file_matches do
       [match] when buf != "" ->
@@ -105,6 +103,12 @@ defmodule CLI do
           IO.write(suffix)
           String.replace_suffix(buf, base, match <> " ")
         end
+
+      found_matches when length(found_matches) > 1 and count == 0 ->
+        IO.puts("first")
+
+      found_matches when length(found_matches) > 1 and count >= 1 ->
+        IO.puts("second")
 
       _ ->
         IO.write("\a")
