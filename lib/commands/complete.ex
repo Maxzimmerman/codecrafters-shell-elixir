@@ -4,5 +4,6 @@ defmodule Commands.Complete do
   alias Commands
 
   def execute(args) do
+    IO.inspect(args)
   end
 end
