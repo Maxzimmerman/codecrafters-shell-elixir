@@ -3,7 +3,7 @@ defmodule Commands.Complete do
 
   alias Commands
 
-  @registered
+  @registered []
 
   def execute(["-p", executable | _] = args) do
     if executable in @registered do
