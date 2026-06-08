@@ -94,10 +94,7 @@ defmodule CLI do
         IO.write("\n")
 
       found_matches when length(found_matches) > 1 and count == 0 ->
-        [match | _] = found_matches
-        suffix = String.replace_prefix(match <> " ", buf, "")
         IO.write("\n")
-        match <> " "
 
       found_matches when length(found_matches) > 1 and count == 1 ->
         IO.puts("second")
