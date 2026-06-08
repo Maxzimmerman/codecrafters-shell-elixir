@@ -5,6 +5,7 @@ defmodule CLI do
   alias Commands.PWD
   alias Commands.CD
   alias Commands.Execute
+  alias Commands.Complete
 
   alias Commands
 
@@ -14,6 +15,7 @@ defmodule CLI do
     "type" => Type,
     "pwd" => PWD,
     "cd" => CD,
+    "complete" => Complete,
     "" => Execute
   }
 

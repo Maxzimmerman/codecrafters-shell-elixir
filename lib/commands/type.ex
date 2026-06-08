@@ -8,7 +8,8 @@ defmodule Commands.Type do
     "echo",
     "type",
     "pwd",
-    "cd"
+    "cd",
+    "complete"
   ]
 
   def execute(args) do
