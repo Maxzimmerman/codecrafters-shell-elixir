@@ -91,13 +91,31 @@ defmodule CLI do
 
     case file_matches do
       [match] when buf != "" ->
-        IO.write("\n")
+        suffix = String.replace_prefix(match, base, "")
+        trailing = if File.dir?(Path.join(dir, match)), do: "/", else: " "
+        IO.write(suffix <> trailing)
+        buf <> suffix <> trailing
 
       found_matches when length(found_matches) > 1 and count == 0 ->
-        IO.write("\n")
+        prefix = Commands.longest_common_prefix(found_matches)
+        suffix = String.replace_prefix(prefix, base, "")
+
+        if suffix == "" do
+          IO.write("\a")
+          buf
+        else
+          IO.write(suffix)
+          buf <> suffix
+        end
 
       found_matches when length(found_matches) > 1 and count == 1 ->
-        IO.puts("second")
+        display =
+          Enum.map_join(found_matches, "  ", fn match ->
+            if File.dir?(Path.join(dir, match)), do: match <> "/", else: match
+          end)
+
+        IO.write("\r\n" <> display <> "\r\n$ " <> buf)
+        buf
 
       _ ->
         IO.write("\a")
