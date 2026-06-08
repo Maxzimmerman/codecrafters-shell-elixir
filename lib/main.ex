@@ -89,8 +89,6 @@ defmodule CLI do
       |> Enum.uniq()
       |> Enum.sort()
 
-    IO.inspect(file_matches, label: "TEST")
-
     case file_matches do
       found_matches when length(found_matches) > 1 and count == 0 ->
         IO.puts("first")
