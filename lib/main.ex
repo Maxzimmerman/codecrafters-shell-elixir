@@ -90,20 +90,6 @@ defmodule CLI do
       |> Enum.sort()
 
     case file_matches do
-      [match] when buf != "" ->
-        match_path = Path.join(dir, match)
-
-        if File.dir?(match_path) do
-          suffix = String.replace_prefix(match <> "/", base, "")
-
-          IO.write(suffix)
-          String.replace_suffix(buf, base, match <> "/")
-        else
-          suffix = String.replace_prefix(match <> " ", base, "")
-          IO.write(suffix)
-          String.replace_suffix(buf, base, match <> " ")
-        end
-
       found_matches when length(found_matches) > 1 and count == 0 ->
         IO.puts("first")
 
