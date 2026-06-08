@@ -101,7 +101,7 @@ defmodule CLI do
         IO.write("\n")
         match <> " "
 
-      found_matches when length(found_matches) > 1 and count >= 1 ->
+      found_matches when length(found_matches) > 1 and count == 1 ->
         IO.puts("second")
 
       _ ->
