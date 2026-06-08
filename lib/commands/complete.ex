@@ -7,9 +7,9 @@ defmodule Commands.Complete do
 
   def execute(["-p", executable | _] = args) do
     if executable in @registered do
-      IO.print("valid")
+      IO.write("")
     else
-      IO.print("not valid")
+      IO.write("complete: systemctl: no completion specification")
     end
   end
 end
