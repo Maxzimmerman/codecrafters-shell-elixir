@@ -90,6 +90,11 @@ defmodule CLI do
       |> Enum.sort()
 
     case file_matches do
+      [match] when buf != "" ->
+        suffix = String.replace_prefix(match <> " ", buf, "")
+        IO.write(suffix)
+        match <> " "
+
       found_matches when length(found_matches) > 1 and count == 0 ->
         [match | _] = found_matches
         suffix = String.replace_prefix(match <> " ", buf, "")
@@ -100,7 +105,6 @@ defmodule CLI do
         IO.puts("second")
 
       _ ->
-        IO.puts("here")
         IO.write("\a")
         buf
     end
