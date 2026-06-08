@@ -91,9 +91,7 @@ defmodule CLI do
 
     case file_matches do
       [match] when buf != "" ->
-        suffix = String.replace_prefix(match <> " ", buf, "")
-        IO.write(suffix)
-        match <> " "
+        IO.write("\n")
 
       found_matches when length(found_matches) > 1 and count == 0 ->
         [match | _] = found_matches
