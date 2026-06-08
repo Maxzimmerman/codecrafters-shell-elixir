@@ -93,7 +93,6 @@ defmodule CLI do
       found_matches when length(found_matches) > 1 and count == 0 ->
         [match | _] = found_matches
         suffix = String.replace_prefix(match <> " ", buf, "")
-        IO.write(match)
         match <> " "
 
       found_matches when length(found_matches) > 1 and count >= 1 ->
