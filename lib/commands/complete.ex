@@ -25,6 +25,8 @@ defmodule Commands.Complete do
 
     if script_map not in state do
       IO.puts("valid")
+      RegisteredCompletionScriptsCache.set_state(script_map)
+      state = RegisteredCompletionScriptsCache.get_state()
     end
 
     if executable_name in @registered do
