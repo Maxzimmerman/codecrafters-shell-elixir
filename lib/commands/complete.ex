@@ -17,7 +17,7 @@ defmodule Commands.Complete do
     if executable_name in @registered do
       IO.write("")
     else
-      IO.puts("complete: #{executable}: no completion specification")
+      IO.puts("complete: #{executable_name}: no completion specification")
     end
   end
 end
