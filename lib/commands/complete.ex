@@ -14,7 +14,7 @@ defmodule Commands.Complete do
   end
 
   def execute(["-C", path, executable_name | _] = args) do
-    if executable in @registered do
+    if executable_name in @registered do
       IO.write("")
     else
       IO.puts("complete: #{executable}: no completion specification")
