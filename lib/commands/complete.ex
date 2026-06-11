@@ -21,7 +21,7 @@ defmodule Commands.Complete do
   def handle_complete(["-C", path, executable_name | _] = args, pid) do
     IO.puts("Called")
     script_map = %{executable_name => path}
-    sate = RegisteredCompletionScriptsCache.get_state()
+    state = RegisteredCompletionScriptsCache.get_state()
 
     if script_map not in state do
       IO.puts("valid")
