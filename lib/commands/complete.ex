@@ -6,11 +6,10 @@ defmodule Commands.Complete do
   @registered []
 
   def execute(args) do
-    {:ok, pid} = RegisteredCompletionScriptsCache.start_link()
-    handle_complete(args, pid)
+    handle_complete(args)
   end
 
-  def handle_complete(["-p", executable | _] = args, pid) do
+  def handle_complete(["-p", executable | _] = args) do
     if executable in state() do
       IO.write("")
     else
@@ -18,7 +17,7 @@ defmodule Commands.Complete do
     end
   end
 
-  def handle_complete(["-C", path, executable_name | _] = args, pid) do
+  def handle_complete(["-C", path, executable_name | _] = args) do
     if executable_name not in state() do
       RegisteredCompletionScriptsCache.set_state(executable_name)
     end
