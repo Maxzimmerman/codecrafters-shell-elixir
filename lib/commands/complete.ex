@@ -22,12 +22,6 @@ defmodule Commands.Complete do
     if executable_name not in state() do
       RegisteredCompletionScriptsCache.set_state(executable_name)
     end
-
-    if executable_name in @registered do
-      IO.write("")
-    else
-      IO.puts("complete: #{executable_name}: no completion specification")
-    end
   end
 
   defp state do
