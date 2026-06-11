@@ -19,8 +19,6 @@ defmodule Commands.Complete do
   end
 
   def handle_complete(["-C", path, executable_name | _] = args, pid) do
-    IO.puts("Called")
-
     if executable_name not in state() do
       RegisteredCompletionScriptsCache.set_state(executable_name)
     end
