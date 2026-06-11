@@ -11,7 +11,7 @@ defmodule Commands.Complete do
   end
 
   def handle_complete(["-p", executable | _] = args, pid) do
-    if executable in @registered do
+    if executable in state() do
       IO.write("")
     else
       IO.puts("complete: #{executable}: no completion specification")
@@ -20,13 +20,9 @@ defmodule Commands.Complete do
 
   def handle_complete(["-C", path, executable_name | _] = args, pid) do
     IO.puts("Called")
-    script_map = %{executable_name => path}
-    state = RegisteredCompletionScriptsCache.get_state()
 
-    if script_map not in state do
-      IO.puts("valid")
+    if executable_name not in state() do
       RegisteredCompletionScriptsCache.set_state(executable_name)
-      state = RegisteredCompletionScriptsCache.get_state()
     end
 
     if executable_name in @registered do
@@ -34,5 +30,9 @@ defmodule Commands.Complete do
     else
       IO.puts("complete: #{executable_name}: no completion specification")
     end
+  end
+
+  defp state do
+    RegisteredCompletionScriptsCache.get_state()
   end
 end
