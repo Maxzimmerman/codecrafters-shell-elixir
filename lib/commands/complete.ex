@@ -13,7 +13,7 @@ defmodule Commands.Complete do
     end
   end
 
-  def execute(["-p", "-C", executable | _] = args) do
+  def execute(["-C", path, executable_name | _] = args) do
     if executable in @registered do
       IO.write("")
     else
