@@ -11,7 +11,7 @@ defmodule RegisteredCompletionScriptsCache do
   end
 
   @impl true
-  def handle_cast(:get_state, state) do
+  def handle_call(:get_state, _from, state) do
     IO.inspect(state, label: "STATE")
     {:noreply, state}
   end
