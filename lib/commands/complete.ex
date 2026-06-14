@@ -18,9 +18,6 @@ defmodule Commands.Complete do
   def handle_complete(["-C", path, executable_name | _] = _args) do
     if executable_name not in state() do
       RegisteredCompletionScriptsCache.set_state(executable_name)
-      IO.write("")
-    else
-      IO.puts("complete -C #{path} #{executable_name}")
     end
   end
 
