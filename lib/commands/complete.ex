@@ -8,7 +8,7 @@ defmodule Commands.Complete do
   end
 
   def handle_complete(["-p", executable | _] = _args) do
-    if executable in state() do
+    if executable in Map.keys(state()) do
       IO.inspect(state())
       IO.puts("complete -C # #{executable}")
     else
