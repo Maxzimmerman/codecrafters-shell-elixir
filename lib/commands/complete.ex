@@ -22,6 +22,8 @@ defmodule Commands.Complete do
       RegisteredCompletionScriptsCache.set_state(executable_name)
     end
 
+    IO.puts("complete -C #{path} #{executable_name}")
+
     IO.puts("correct")
 
     IO.write("")
