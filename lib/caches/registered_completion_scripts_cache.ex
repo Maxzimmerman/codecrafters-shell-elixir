@@ -21,8 +21,8 @@ defmodule RegisteredCompletionScriptsCache do
   end
 
   @impl true
-  def handle_cast({:get_script, name}, state) do
-    {:noreply, Map.get(state, name)}
+  def handle_call({:get_script, name}, state) do
+    {:reply, Map.get(state, name), state}
   end
 
   def get_state do
