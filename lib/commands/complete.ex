@@ -21,9 +21,9 @@ defmodule Commands.Complete do
     if executable_name not in state() do
       RegisteredCompletionScriptsCache.set_state(executable_name)
       IO.puts("complete -C #{path} #{executable_name}")
+    else
+      IO.write("")
     end
-
-    IO.write("")
   end
 
   defp state do
