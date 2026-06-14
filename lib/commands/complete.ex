@@ -9,7 +9,8 @@ defmodule Commands.Complete do
 
   def handle_complete(["-p", executable | _] = _args) do
     if executable in state() do
-      IO.write("")
+      IO.inspect(state())
+      IO.puts("complete -C # #{executable}")
     else
       IO.puts("complete: #{executable}: no completion specification")
     end
