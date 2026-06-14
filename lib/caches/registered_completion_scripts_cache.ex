@@ -34,6 +34,6 @@ defmodule RegisteredCompletionScriptsCache do
   end
 
   def get_with_name(name) do
-    GenServer.cast(__MODULE__, {:get_script, name})
+    GenServer.call(__MODULE__, {:get_script, name})
   end
 end
