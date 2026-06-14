@@ -9,7 +9,7 @@ defmodule Commands.Complete do
 
   def handle_complete(["-p", executable | _] = _args) do
     if executable in Map.keys(state()) do
-      IO.inspect(state())
+      IO.inspect(RegisteredCompletionScriptsCache.get_with_name(executable))
       IO.puts("complete -C # #{executable}")
     else
       IO.inspect(state())
