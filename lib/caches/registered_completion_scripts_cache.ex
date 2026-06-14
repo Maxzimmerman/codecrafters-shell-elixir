@@ -7,7 +7,7 @@ defmodule RegisteredCompletionScriptsCache do
 
   @impl true
   def init(_) do
-    {:ok, []}
+    {:ok, %{}}
   end
 
   @impl true
@@ -16,15 +16,15 @@ defmodule RegisteredCompletionScriptsCache do
   end
 
   @impl true
-  def handle_cast({:add_script, script}, state) do
-    {:noreply, [script | state]}
+  def handle_cast({:add_script, name, path}, state) do
+    {:noreply, Map.put(state, name, path)}
   end
 
   def get_state do
     GenServer.call(__MODULE__, :get_state)
   end
 
-  def set_state(script) do
-    GenServer.cast(__MODULE__, {:add_script, script})
+  def set_state(name, path) do
+    GenServer.cast(__MODULE__, {:add_script, name, path})
   end
 end
