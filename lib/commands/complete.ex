@@ -12,6 +12,7 @@ defmodule Commands.Complete do
       IO.inspect(state())
       IO.puts("complete -C # #{executable}")
     else
+      IO.inspect(state())
       IO.puts("complete: #{executable}: no completion specification")
     end
   end
