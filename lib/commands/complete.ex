@@ -10,7 +10,7 @@ defmodule Commands.Complete do
   def handle_complete(["-p", executable | _] = _args) do
     if executable in Map.keys(state()) do
       path = RegisteredCompletionScriptsCache.get_with_name(executable)
-      IO.puts("complete -C #{path} #{executable}")
+      IO.puts("complete -C '#{path}' #{executable}")
     else
       IO.inspect(state())
       IO.puts("complete: #{executable}: no completion specification")
