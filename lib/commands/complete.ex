@@ -8,12 +8,9 @@ defmodule Commands.Complete do
   end
 
   def handle_complete(["-p", executable | _] = _args) do
-    if executable in Map.keys(state()) do
-      path = RegisteredCompletionScriptsCache.get_with_name(executable)
+    with true <- executable_in_state?(executable),
+         {:ok, path} <- get_path(executable) do
       IO.puts("complete -C '#{path}' #{executable}")
-    else
-      IO.inspect(state())
-      IO.puts("complete: #{executable}: no completion specification")
     end
   end
 
@@ -25,5 +22,15 @@ defmodule Commands.Complete do
 
   defp state do
     RegisteredCompletionScriptsCache.get_state()
+  end
+
+  defp executable_in_state?(executable),
+    do: RegisteredCompletionScriptsCache.get_with_name(executable)
+
+  defp get_path(executable) do
+    case RegisteredCompletionScriptsCache.get_with_name(executable) do
+      %{} -> IO.puts("complete: #{executable}: no completion specification")
+      path -> {:ok, path}
+    end
   end
 end
