@@ -7,10 +7,10 @@ defmodule Commands.Complete do
     handle_complete(args)
   end
 
-  def handle_complete(["-p", executable | _] = _args) do
-    with true <- executable_in_state?(executable),
-         {:ok, path} <- get_path(executable) do
-      IO.puts("complete -C '#{path}' #{executable}")
+  def handle_complete(["-p", executable | _]) do
+    case get_path(executable) do
+      {:ok, path} -> IO.puts("complete -C '#{path}' #{executable}")
+      {:error, :not_found} -> IO.puts("complete: #{executable}: no completion specification")
     end
   end
 
@@ -24,14 +24,11 @@ defmodule Commands.Complete do
     RegisteredCompletionScriptsCache.get_state()
   end
 
-  defp executable_in_state?(executable),
-    do: RegisteredCompletionScriptsCache.get_with_name(executable)
-
   defp get_path(executable) do
     case RegisteredCompletionScriptsCache.get_with_name(executable) do
-      %{} -> IO.puts("complete: #{executable}: no completion specification")
-      nil -> IO.puts("complete: #{executable}: no completion specification")
-      path -> {:ok, path}
+      nil -> {:error, :not_found}
+      %{} -> {:error, :not_found}
+      path when is_binary(path) -> {:ok, path}
     end
   end
 end
