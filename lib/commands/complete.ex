@@ -31,6 +31,8 @@ defmodule Commands.Complete do
     case RegisteredCompletionScriptsCache.get_with_name(executable) do
       path -> {:ok, path}
       %{} -> IO.puts("complete: #{executable}: no completion specification")
+      nil -> IO.puts("complete: #{executable}: no completion specification")
+      _ -> IO.puts("complete: #{executable}: no completion specification")
     end
   end
 end
