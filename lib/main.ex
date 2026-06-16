@@ -97,7 +97,9 @@ defmodule CLI do
     buf = String.split(buf, " ") |> Enum.at(0)
 
     if buf in Map.keys(RegisteredCompletionScriptsCache.get_state()) do
-      IO.inspect(Commands.Complete.get_path(buf))
+      with {:ok, path} <- Commands.Complete.get_path(buf) do
+        IO.inspect(path, label: "path")
+      end
     end
 
     case file_matches do
