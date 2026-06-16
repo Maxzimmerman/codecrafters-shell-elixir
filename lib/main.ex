@@ -335,9 +335,6 @@ defmodule CLI do
   end
 
   defp in_cache?(command) do
-    case Commands.Complete.get_path(command) do
-      {:ok, _path} -> true
-      {:error, :not_found} -> false
-    end
+    command in Map.keys(RegisteredCompletionScriptsCache.get_state())
   end
 end
