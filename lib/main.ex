@@ -92,6 +92,8 @@ defmodule CLI do
       |> Enum.uniq()
       |> Enum.sort()
 
+    cache_matches = get_completion_cache_matches(file_matches)
+
     case file_matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match, base, "")
@@ -99,11 +101,12 @@ defmodule CLI do
         IO.write(suffix <> trailing)
         buf <> suffix <> trailing
 
+      found_matches when length(cache_matches) == 1 ->
+        IO.inspect(found_matches, label: "TEST")
+
       found_matches when length(found_matches) > 1 and count == 0 ->
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, base, "")
-        cache_matches = get_completion_cache_matches(found_matches)
-        IO.inspect(cache_matches, label: "TEST")
 
         if suffix == "" do
           IO.write("\a")
