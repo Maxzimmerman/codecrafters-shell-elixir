@@ -97,6 +97,7 @@ defmodule CLI do
     cache_matches = get_completion_cache_matches(file_matches)
 
     if length(cache_matches) == 0 do
+      IO.inspecrt(file_matches, label: "FILE MATCHES")
       IO.inspect(cache_matches, label: "TEST")
       IO.inspect(RegisteredCompletionScriptsCache.get_state(), label: "TETST @")
       IO.inspect("docker" in Map.keys(RegisteredCompletionScriptsCache.get_state()))
