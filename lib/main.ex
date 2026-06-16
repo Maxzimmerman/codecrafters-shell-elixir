@@ -337,7 +337,6 @@ defmodule CLI do
         command in Map.keys(RegisteredCompletionScriptsCache.get_state())
       end)
 
-    IO.inspect(commands, label: "matches")
-    IO.inspect(Map.keys(RegisteredCompletionScriptsCache.get_state()))
+    commands
   end
 end
