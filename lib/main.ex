@@ -97,9 +97,7 @@ defmodule CLI do
     buf = String.split(buf, " ") |> Enum.at(0)
 
     if buf in Map.keys(RegisteredCompletionScriptsCache.get_state()) do
-      IO.inspect(String.split(buf, " ") |> Enum.at(0), label: "FILE MATCHES")
-      IO.inspect(RegisteredCompletionScriptsCache.get_state(), label: "TETST @")
-      IO.inspect("docker" in Map.keys(RegisteredCompletionScriptsCache.get_state()))
+      IO.inspect(Commands.Complete.get_path(buf))
     end
 
     case file_matches do
