@@ -96,7 +96,7 @@ defmodule CLI do
 
     if length(cache_matches) >= 1 do
       IO.inspect(cache_matches, label: "TEST")
-      IO.inspect(RegisteredCompletionScriptsCache.get_state())
+      IO.inspect(RegisteredCompletionScriptsCache.get_state(), label: "TETST @")
     end
 
     case file_matches do
