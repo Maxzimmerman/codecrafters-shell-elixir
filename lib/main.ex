@@ -96,6 +96,7 @@ defmodule CLI do
 
     if length(cache_matches) >= 1 do
       IO.inspect(cache_matches, label: "TEST")
+      IO.inspect(RegisteredCompletionScriptsCache.get_state())
     end
 
     case file_matches do
@@ -333,7 +334,7 @@ defmodule CLI do
 
   defp get_completion_cache_matches(commands) do
     commands
-    |> Enum.reject(fn command -> in_cache?(command) end)
+    |> Enum.filter(fn command -> in_cache?(command) end)
   end
 
   defp in_cache?(command) do
