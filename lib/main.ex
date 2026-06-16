@@ -335,6 +335,7 @@ defmodule CLI do
     |> Enum.filter(fn command -> in_cache?(command) end)
 
     IO.inspect(commands, label: "matches")
+    IO.inspect(Map.keys(RegisteredCompletionScriptsCache.get_state()))
   end
 
   defp in_cache?(command) do
