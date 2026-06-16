@@ -339,7 +339,4 @@ defmodule CLI do
     IO.inspect(commands, label: "matches")
     IO.inspect(Map.keys(RegisteredCompletionScriptsCache.get_state()))
   end
-
-  defp in_cache?(command) do
-  end
 end
