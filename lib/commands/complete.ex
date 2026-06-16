@@ -24,7 +24,7 @@ defmodule Commands.Complete do
     RegisteredCompletionScriptsCache.get_state()
   end
 
-  defp get_path(executable) do
+  def get_path(executable) do
     case RegisteredCompletionScriptsCache.get_with_name(executable) do
       nil -> {:error, :not_found}
       %{} -> {:error, :not_found}
