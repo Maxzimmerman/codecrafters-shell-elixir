@@ -331,8 +331,7 @@ defmodule CLI do
   end
 
   defp get_completion_cache_matches(commands) do
-    commands
-    |> Enum.filter(fn command ->
+    Enum.filter(commands, fn command ->
       command in Map.keys(RegisteredCompletionScriptsCache.get_state())
     end)
 
