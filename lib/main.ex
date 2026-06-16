@@ -333,7 +333,7 @@ defmodule CLI do
 
   defp get_completion_cache_matches(commands) do
     commands
-    |> Enum.filter(fn command -> in_cache?(command) end)
+    |> Enum.reject(fn command -> in_cache?(command) end)
   end
 
   defp in_cache?(command) do
