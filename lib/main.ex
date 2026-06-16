@@ -94,7 +94,6 @@ defmodule CLI do
 
     case file_matches do
       [match] when buf != "" ->
-        IO.puts("called here tab file")
         suffix = String.replace_prefix(match, base, "")
         trailing = if File.dir?(Path.join(dir, match)), do: "/", else: " "
         IO.write(suffix <> trailing)
@@ -113,6 +112,8 @@ defmodule CLI do
         end
 
       found_matches when length(found_matches) > 1 and count == 1 ->
+        IO.puts("called here tab file")
+
         display =
           Enum.map_join(found_matches, "  ", fn match ->
             if File.dir?(Path.join(dir, match)), do: match <> "/", else: match
