@@ -101,8 +101,8 @@ defmodule CLI do
         IO.write(suffix <> trailing)
         buf <> suffix <> trailing
 
-      found_matches when length(cache_matches) == 0 ->
-        IO.inspect(found_matches, label: "TEST")
+      cache_matches when length(cache_matches) == 0 ->
+        IO.inspect(cache_matches, label: "TEST")
 
       found_matches when length(found_matches) > 1 and count == 0 ->
         prefix = Commands.longest_common_prefix(found_matches)
@@ -139,8 +139,6 @@ defmodule CLI do
   end
 
   defp handle_tab(buf, count) do
-    IO.puts("called here tab")
-
     matches =
       Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
       |> Enum.uniq()
