@@ -95,12 +95,12 @@ defmodule CLI do
     case file_matches do
       [match] when buf != "" ->
         suffix = String.replace_prefix(match, base, "")
+        IO.puts("called here tab file")
         trailing = if File.dir?(Path.join(dir, match)), do: "/", else: " "
         IO.write(suffix <> trailing)
         buf <> suffix <> trailing
 
       found_matches when length(found_matches) > 1 and count == 0 ->
-        IO.puts("called here tab file")
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, base, "")
 
