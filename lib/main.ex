@@ -94,9 +94,8 @@ defmodule CLI do
 
     cache_matches = get_completion_cache_matches(file_matches)
 
-    case cache_matches do
-      cache_matches when length(cache_matches) >= 1 ->
-        IO.inspect(cache_matches, label: "TEST")
+    if length(cache_matches) >= 1 do
+      IO.inspect(cache_matches, label: "TEST")
     end
 
     case file_matches do
