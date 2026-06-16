@@ -49,8 +49,6 @@ defmodule CLI do
         buf
 
       ?\t ->
-        IO.inspect(buf, label: "BUF")
-
         if length(String.split(buf, " ")) > 1 do
           buf |> handle_file_completion_tab(tab_count) |> read_line(tab_count + 1)
         else
@@ -99,6 +97,7 @@ defmodule CLI do
     if buf in Map.keys(RegisteredCompletionScriptsCache.get_state()) do
       with {:ok, path} <- Commands.Complete.get_path(buf) do
         IO.inspect(path, label: "path")
+        dispatch(path, "")
       end
     end
 
