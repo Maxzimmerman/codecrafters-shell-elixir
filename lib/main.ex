@@ -83,7 +83,6 @@ defmodule CLI do
   end
 
   defp handle_file_completion_tab(buf, count) do
-    IO.puts("called here tab file")
     file_name = String.split(buf, " ") |> Enum.at(-1)
     {dir, base} = split_path(file_name)
 
@@ -101,6 +100,7 @@ defmodule CLI do
         buf <> suffix <> trailing
 
       found_matches when length(found_matches) > 1 and count == 0 ->
+        IO.puts("called here tab file")
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, base, "")
 
