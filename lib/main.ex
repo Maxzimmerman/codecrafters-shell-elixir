@@ -97,6 +97,7 @@ defmodule CLI do
     if length(cache_matches) == 0 do
       IO.inspect(cache_matches, label: "TEST")
       IO.inspect(RegisteredCompletionScriptsCache.get_state(), label: "TETST @")
+      IO.inspect("git" in Map.keys(RegisteredCompletionScriptsCache.get_state()))
     end
 
     case file_matches do
