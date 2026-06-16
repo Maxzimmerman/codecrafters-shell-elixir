@@ -134,6 +134,8 @@ defmodule CLI do
   end
 
   defp handle_tab(buf, count) do
+    IO.puts("called here")
+
     matches =
       Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
       |> Enum.uniq()
