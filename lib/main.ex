@@ -94,8 +94,8 @@ defmodule CLI do
 
     case file_matches do
       [match] when buf != "" ->
-        suffix = String.replace_prefix(match, base, "")
         IO.puts("called here tab file")
+        suffix = String.replace_prefix(match, base, "")
         trailing = if File.dir?(Path.join(dir, match)), do: "/", else: " "
         IO.write(suffix <> trailing)
         buf <> suffix <> trailing
