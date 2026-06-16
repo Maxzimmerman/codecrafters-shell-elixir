@@ -106,9 +106,6 @@ defmodule CLI do
         IO.write(suffix <> trailing)
         buf <> suffix <> trailing
 
-      cache_matches when length(cache_matches) >= 1 ->
-        IO.inspect(cache_matches, label: "TEST")
-
       found_matches when length(found_matches) > 1 and count == 0 ->
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, base, "")
