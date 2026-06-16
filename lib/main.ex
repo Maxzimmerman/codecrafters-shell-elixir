@@ -102,6 +102,8 @@ defmodule CLI do
       found_matches when length(found_matches) > 1 and count == 0 ->
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, base, "")
+        cache_matches = get_completion_cache_matches(found_matches)
+        IO.inspect(cache_matches, label: "TEST")
 
         if suffix == "" do
           IO.write("\a")
@@ -322,5 +324,17 @@ defmodule CLI do
 
   defp tokenize(<<c::utf8, rest::binary>>, tokens, current, :none, _has_token) do
     tokenize(rest, tokens, current <> <<c::utf8>>, :none, true)
+  end
+
+  defp get_completion_cache_matches(commands) do
+    commands
+    |> Enum.filter(&in_cache?(&1))
+  end
+
+  defp in_cache?(command) do
+    case Commands.Complete.get_path(command) do
+      {:ok, _path} -> true
+      {:error, :not_found} -> false
+    end
   end
 end
