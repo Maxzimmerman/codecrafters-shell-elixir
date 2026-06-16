@@ -101,7 +101,7 @@ defmodule CLI do
         IO.write(suffix <> trailing)
         buf <> suffix <> trailing
 
-      found_matches when length(cache_matches) == 1 ->
+      found_matches when length(cache_matches) == 0 ->
         IO.inspect(found_matches, label: "TEST")
 
       found_matches when length(found_matches) > 1 and count == 0 ->
