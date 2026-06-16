@@ -112,8 +112,6 @@ defmodule CLI do
         end
 
       found_matches when length(found_matches) > 1 and count == 1 ->
-        IO.puts("called here tab file")
-
         display =
           Enum.map_join(found_matches, "  ", fn match ->
             if File.dir?(Path.join(dir, match)), do: match <> "/", else: match
