@@ -83,6 +83,7 @@ defmodule CLI do
   end
 
   defp handle_file_completion_tab(buf, count) do
+    IO.puts("called here tab file")
     file_name = String.split(buf, " ") |> Enum.at(-1)
     {dir, base} = split_path(file_name)
 
@@ -134,7 +135,7 @@ defmodule CLI do
   end
 
   defp handle_tab(buf, count) do
-    IO.puts("called here")
+    IO.puts("called here tab")
 
     matches =
       Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
