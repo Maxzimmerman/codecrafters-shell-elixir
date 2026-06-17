@@ -96,7 +96,22 @@ defmodule CLI do
 
     if buf in Map.keys(RegisteredCompletionScriptsCache.get_state()) do
       with {:ok, path} <- Commands.Complete.get_path(buf) do
-        dispatch(path, [])
+        current_word = String.split(buf, " ") |> List.last() || ""
+
+        prev_word = buf
+
+        {output, _exit} =
+          System.cmd(path, [buf, current_word, prev_word],
+            env: [
+              {"COMP_LINE", buf},
+              {"COMP_POINT", Integer.to_string(String.length(buf))},
+              {"COMP_TYPE", "9"},
+              {"COMP_KEY", "9"}
+            ],
+            stderr_to_stdout: false
+          )
+
+        matches = output |> String.split("\n", trim: true)
       end
     end
 
