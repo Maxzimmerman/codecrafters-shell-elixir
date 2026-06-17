@@ -19,7 +19,7 @@ defmodule Commands.Complete do
   end
 
   def handle_complete(["-C", path, executable_name | _] = _args) do
-    if executable_name not in state() do
+    if executable_name not in Map.keys(state()) do
       RegisteredCompletionScriptsCache.set_state(executable_name, path)
     end
   end
