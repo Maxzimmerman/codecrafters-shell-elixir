@@ -87,7 +87,7 @@ defmodule CLI do
     command = Enum.at(parts, 0)
     current_word = List.last(parts) || ""
 
-    prev_word = if length(parts) >= 3, do: Enum.at(parts, -2), else: ""
+    prev_word = if length(parts) >= 2, do: Enum.at(parts, -2), else: ""
 
     if Map.has_key?(RegisteredCompletionScriptsCache.get_state(), command) do
       handle_programmable_completion(buf, command, current_word, prev_word, count)
