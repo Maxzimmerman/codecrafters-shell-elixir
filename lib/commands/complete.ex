@@ -20,7 +20,7 @@ defmodule Commands.Complete do
     end
   end
 
-  def handle_complete(["-r", path, executable_name | _]) do
+  def handle_complete(["-r", executable_name | _]) do
     IO.puts("HERE")
   end
 
