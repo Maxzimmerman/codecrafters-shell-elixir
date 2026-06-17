@@ -21,13 +21,13 @@ defmodule RegisteredCompletionScriptsCache do
   end
 
   @impl true
-  def handle_call({:get_script, name}, _from, state) do
-    {:reply, Map.get(state, name), state}
+  def handle_call({:delete_script, name}, state) do
+    {:noreply, Map.delete(state, name)}
   end
 
   @impl true
-  def handle_call({:delete_script, name}, _from, state) do
-    {:reply, Map.delete(state, name), state}
+  def handle_call({:get_script, name}, _from, state) do
+    {:reply, Map.get(state, name), state}
   end
 
   def get_state do
