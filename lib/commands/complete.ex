@@ -4,7 +4,6 @@ defmodule Commands.Complete do
   alias Commands
 
   def execute(args) do
-    IO.inspect(args, label: "ARGUENTS")
     handle_complete(args)
   end
 
