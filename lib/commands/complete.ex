@@ -21,7 +21,9 @@ defmodule Commands.Complete do
   end
 
   def handle_complete(["-r", executable_name | _]) do
-    # IO.puts("complete: #{executable_name}: no completion specification")
+    if executable_name in state() do
+      RegisteredCompletionScriptsCache.delete_with_name(executable_name)
+    end
   end
 
   defp state do

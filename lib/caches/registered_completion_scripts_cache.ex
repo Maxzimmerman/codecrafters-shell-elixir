@@ -25,6 +25,11 @@ defmodule RegisteredCompletionScriptsCache do
     {:reply, Map.get(state, name), state}
   end
 
+  @impl true
+  def handle_call({:delete_script, name}, _from, state) do
+    {:reply, Map.delete(state, name), state}
+  end
+
   def get_state do
     GenServer.call(__MODULE__, :get_state)
   end
@@ -35,5 +40,9 @@ defmodule RegisteredCompletionScriptsCache do
 
   def get_with_name(name) do
     GenServer.call(__MODULE__, {:get_script, name})
+  end
+
+  def delete_with_name(name) do
+    GenServer.call(__MODULE__, {:delete_script, name})
   end
 end
