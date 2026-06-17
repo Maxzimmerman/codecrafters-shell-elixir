@@ -22,6 +22,7 @@ defmodule RegisteredCompletionScriptsCache do
 
   @impl true
   def handle_call({:delete_script, name}, state) do
+    IO.inspect(state, label: "state before removing")
     {:noreply, Map.delete(state, name)}
   end
 
