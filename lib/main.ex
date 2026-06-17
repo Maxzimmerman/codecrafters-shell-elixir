@@ -96,7 +96,6 @@ defmodule CLI do
 
     if buf in Map.keys(RegisteredCompletionScriptsCache.get_state()) do
       with {:ok, path} <- Commands.Complete.get_path(buf) do
-        IO.inspect(path, label: "path")
         dispatch(path, [])
       end
     end
