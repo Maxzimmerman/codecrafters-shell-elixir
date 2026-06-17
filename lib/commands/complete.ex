@@ -9,8 +9,12 @@ defmodule Commands.Complete do
 
   def handle_complete(["-p", executable | _]) do
     case get_path(executable) do
-      {:ok, path} -> IO.puts("complete -C '#{path}' #{executable}")
-      {:error, :not_found} -> IO.puts("complete: #{executable}: no completion specification")
+      {:ok, path} ->
+        IO.puts("complete -C '#{path}' #{executable}")
+        IO.inspect(state(), label: "state")
+
+      {:error, :not_found} ->
+        IO.puts("complete: #{executable}: no completion specification")
     end
   end
 
