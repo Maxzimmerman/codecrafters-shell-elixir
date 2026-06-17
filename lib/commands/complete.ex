@@ -11,7 +11,6 @@ defmodule Commands.Complete do
     case get_path(executable) do
       {:ok, path} ->
         IO.puts("complete -C '#{path}' #{executable}")
-        IO.inspect(state(), label: "state")
 
       {:error, :not_found} ->
         IO.puts("complete: #{executable}: no completion specification")
@@ -25,7 +24,7 @@ defmodule Commands.Complete do
   end
 
   def handle_complete(["-r", executable_name | _]) do
-    if executable_name in state() do
+    if executable_name in Map.keys(state()) do
       RegisteredCompletionScriptsCache.delete_with_name(executable_name)
     end
   end
