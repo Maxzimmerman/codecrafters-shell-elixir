@@ -43,6 +43,6 @@ defmodule RegisteredCompletionScriptsCache do
   end
 
   def delete_with_name(name) do
-    GenServer.call(__MODULE__, {:delete_script, name})
+    GenServer.cast(__MODULE__, {:delete_script, name})
   end
 end
