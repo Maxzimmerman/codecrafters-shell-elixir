@@ -20,6 +20,10 @@ defmodule Commands.Complete do
     end
   end
 
+  def handle_complete(["-r", path, executable_name | _]) do
+    IO.puts("HERE")
+  end
+
   defp state do
     RegisteredCompletionScriptsCache.get_state()
   end
