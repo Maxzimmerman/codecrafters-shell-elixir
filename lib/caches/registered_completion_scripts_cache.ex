@@ -21,8 +21,7 @@ defmodule RegisteredCompletionScriptsCache do
   end
 
   @impl true
-  def handle_call({:delete_script, name}, state) do
-    IO.inspect(state, label: "state before removing")
+  def handle_cast({:delete_script, name}, state) do
     {:noreply, Map.delete(state, name)}
   end
 
