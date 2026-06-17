@@ -21,6 +21,7 @@ defmodule Commands.Complete do
   end
 
   def handle_complete(["-r", executable_name | _]) do
+    IO.puts("complete: #{executable_name}: no completion specification")
   end
 
   defp state do
