@@ -19,6 +19,7 @@ defmodule Commands.Complete do
       RegisteredCompletionScriptsCache.set_state(executable_name, path)
     else
       IO.puts("complete: #{executable_name}: no completion specification")
+      IO.inspect(state(), label: "state")
     end
   end
 
