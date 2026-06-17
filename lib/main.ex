@@ -83,37 +83,69 @@ defmodule CLI do
   end
 
   defp handle_file_completion_tab(buf, count) do
-    file_name = String.split(buf, " ") |> Enum.at(-1)
-    {dir, base} = split_path(file_name)
+    parts = String.split(buf, " ")
+    command = Enum.at(parts, 0)
+    current_word = List.last(parts) || ""
+
+    if Map.has_key?(RegisteredCompletionScriptsCache.get_state(), command) do
+      handle_programmable_completion(buf, command, current_word, count)
+    else
+      handle_default_file_completion(buf, current_word, count)
+    end
+  end
+
+  defp handle_programmable_completion(buf, command, current_word, count) do
+    {:ok, path} = Commands.Complete.get_path(command)
+
+    {output, _exit} =
+      System.cmd(path, [command, current_word, command],
+        env: [
+          {"COMP_LINE", buf},
+          {"COMP_POINT", Integer.to_string(String.length(buf))},
+          {"COMP_TYPE", "9"},
+          {"COMP_KEY", "9"}
+        ],
+        stderr_to_stdout: false
+      )
+
+    matches = output |> String.split("\n", trim: true)
+
+    case matches do
+      [match] ->
+        suffix = String.replace_prefix(match, current_word, "") <> " "
+        IO.write(suffix)
+        buf <> suffix
+
+      found_matches when length(found_matches) > 1 and count == 0 ->
+        prefix = Commands.longest_common_prefix(found_matches)
+        suffix = String.replace_prefix(prefix, current_word, "")
+
+        if suffix == "" do
+          IO.write("\a")
+          buf
+        else
+          IO.write(suffix)
+          buf <> suffix
+        end
+
+      found_matches when length(found_matches) > 1 and count == 1 ->
+        IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
+        buf
+
+      _ ->
+        IO.write("\a")
+        buf
+    end
+  end
+
+  defp handle_default_file_completion(buf, current_word, count) do
+    {dir, base} = split_path(current_word)
 
     file_matches =
       Commands.list_files_in_dir(dir)
       |> Enum.filter(&String.starts_with?(&1, base))
       |> Enum.uniq()
       |> Enum.sort()
-
-    buf = String.split(buf, " ") |> Enum.at(0)
-
-    if buf in Map.keys(RegisteredCompletionScriptsCache.get_state()) do
-      with {:ok, path} <- Commands.Complete.get_path(buf) do
-        current_word = String.split(buf, " ") |> List.last() || ""
-
-        prev_word = buf
-
-        {output, _exit} =
-          System.cmd(path, [buf, current_word, prev_word],
-            env: [
-              {"COMP_LINE", buf},
-              {"COMP_POINT", Integer.to_string(String.length(buf))},
-              {"COMP_TYPE", "9"},
-              {"COMP_KEY", "9"}
-            ],
-            stderr_to_stdout: false
-          )
-
-        matches = output |> String.split("\n", trim: true)
-      end
-    end
 
     case file_matches do
       [match] when buf != "" ->
