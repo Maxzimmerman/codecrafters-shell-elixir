@@ -21,12 +21,14 @@ defmodule CLI do
 
   @builtins ~w(echo exit)
 
+  # Entry point: switch stdin to binary mode, start the completion cache, enter REPL.
   def main(_args) do
     :io.setopts(:standard_io, binary: true)
     {:ok, _pid} = RegisteredCompletionScriptsCache.start_link()
     listen()
   end
 
+  # Read exactly one byte from stdin (returns the int code or :eof).
   defp read_byte do
     case :io.get_chars(:standard_io, ~c"", 1) do
       <<b>> -> b
@@ -35,6 +37,7 @@ defmodule CLI do
     end
   end
 
+  # Byte-by-byte line reader; handles Enter, Tab, Backspace, Ctrl-C, Ctrl-D, printable chars.
   defp read_line(buf, tab_count) do
     case read_byte() do
       :eof ->
@@ -75,6 +78,7 @@ defmodule CLI do
     end
   end
 
+  # Erase the last char from both the buffer and the terminal display.
   defp backspace(""), do: ""
 
   defp backspace(buf) do
@@ -82,6 +86,7 @@ defmodule CLI do
     String.slice(buf, 0..-2//1)
   end
 
+  # Tab pressed once the user has typed past the command name; routes to programmable or file completion.
   defp handle_file_completion_tab(buf, count) do
     parts = String.split(buf, " ")
     command = Enum.at(parts, 0)
@@ -96,6 +101,7 @@ defmodule CLI do
     end
   end
 
+  # Invoke the -C completer script, parse its stdout into candidates, and apply standard tab behavior.
   defp handle_programmable_completion(buf, command, current_word, prev_word, count) do
     {:ok, path} = Commands.Complete.get_path(command)
 
@@ -144,6 +150,7 @@ defmodule CLI do
     end
   end
 
+  # Complete the current word against filenames in the resolved directory.
   defp handle_default_file_completion(buf, current_word, count) do
     {dir, base} = split_path(current_word)
 
@@ -187,6 +194,7 @@ defmodule CLI do
     end
   end
 
+  # Split a path-like string into {directory, basename} for file completion lookup.
   defp split_path(file_name) do
     case String.split(file_name, "/") |> Enum.reverse() do
       [base] -> {".", base}
@@ -194,6 +202,7 @@ defmodule CLI do
     end
   end
 
+  # Tab pressed at the command position; complete against builtins + PATH executables.
   defp handle_tab(buf, count) do
     matches =
       Enum.filter(@builtins ++ Commands.executables_in_path(), &String.starts_with?(&1, buf))
@@ -228,6 +237,7 @@ defmodule CLI do
     end
   end
 
+  # REPL loop: print prompt, read a line, dispatch it, repeat until EOF.
   defp listen do
     IO.write("$ ")
 
@@ -241,6 +251,7 @@ defmodule CLI do
     end
   end
 
+  # Tokenize the raw line into argv, then split off the command head for dispatch.
   defp process_line(input) do
     case decode_console_input(input) do
       [] ->
@@ -251,6 +262,7 @@ defmodule CLI do
     end
   end
 
+  # Strip redirect operators from argv, pre-create stderr file, run command under stdout redirect.
   defp dispatch(command, input) do
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
@@ -270,6 +282,7 @@ defmodule CLI do
     end)
   end
 
+  # Run an external binary via Execute if found in PATH, otherwise dispatch to the builtin module.
   defp run_command(command, input, stderr_redirect) do
     case Commands.executable_in_path?(command) do
       {:ok, res} ->
@@ -290,6 +303,7 @@ defmodule CLI do
     end
   end
 
+  # Pull "2>" / "2>>" + filename out of argv; return {remaining_tokens, {file, mode} | nil}.
   defp extract_stderr_redirect(tokens) do
     case Enum.split_while(tokens, &(&1 not in ["2>", "2>>"])) do
       {before, [op, file | rest]} ->
@@ -301,6 +315,7 @@ defmodule CLI do
     end
   end
 
+  # Pull ">" / "1>" / ">>" / "1>>" + filename out of argv; return {remaining_tokens, {file, mode} | nil}.
   defp extract_stdout_redirect(tokens) do
     case Enum.split_while(tokens, &(&1 not in [">", "1>", ">>", "1>>"])) do
       {before, [op, file | rest]} ->
@@ -312,6 +327,7 @@ defmodule CLI do
     end
   end
 
+  # Run fun with the group leader swapped to a file (so IO.* writes go there); no-op when nil.
   defp with_stdout_redirect(nil, fun), do: fun.()
 
   defp with_stdout_redirect({path, mode}, fun) do
@@ -328,16 +344,19 @@ defmodule CLI do
     end
   end
 
+  # Look up the builtin module that implements a given command name.
   defp command(name) do
     Map.fetch!(@commands, name)
   end
 
+  # Parse the raw input line into a list of argv tokens with quote/escape handling.
   defp decode_console_input(input) do
     input
     |> String.trim_trailing("\n")
     |> tokenize([], "", :none, false)
   end
 
+  # Char-by-char tokenizer; tracks current token, quote mode (:none/:single/:double), and "started a token" flag.
   defp tokenize("", tokens, "", :none, false), do: Enum.reverse(tokens)
   defp tokenize("", tokens, current, :none, true), do: Enum.reverse([current | tokens])
 
@@ -383,6 +402,7 @@ defmodule CLI do
     tokenize(rest, tokens, current <> <<c::utf8>>, :none, true)
   end
 
+  # Filter a command list to only those with a registered -C completer (currently unused).
   defp get_completion_cache_matches(commands) do
     commands =
       commands
