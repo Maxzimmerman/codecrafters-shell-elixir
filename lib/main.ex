@@ -87,18 +87,20 @@ defmodule CLI do
     command = Enum.at(parts, 0)
     current_word = List.last(parts) || ""
 
+    prev_word = if length(parts) >= 3, do: Enum.at(parts, -2), else: ""
+
     if Map.has_key?(RegisteredCompletionScriptsCache.get_state(), command) do
-      handle_programmable_completion(buf, command, current_word, count)
+      handle_programmable_completion(buf, command, current_word, prev_word, count)
     else
       handle_default_file_completion(buf, current_word, count)
     end
   end
 
-  defp handle_programmable_completion(buf, command, current_word, count) do
+  defp handle_programmable_completion(buf, command, current_word, prev_word, count) do
     {:ok, path} = Commands.Complete.get_path(command)
 
     {output, _exit} =
-      System.cmd(path, [command, current_word, command],
+      System.cmd(path, [command, current_word, prev_word],
         env: [
           {"COMP_LINE", buf},
           {"COMP_POINT", Integer.to_string(String.length(buf))},
