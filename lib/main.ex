@@ -6,6 +6,7 @@ defmodule CLI do
   alias Commands.CD
   alias Commands.Execute
   alias Commands.Complete
+  alias Commands.Jobs
 
   alias Commands
 
@@ -16,6 +17,7 @@ defmodule CLI do
     "pwd" => PWD,
     "cd" => CD,
     "complete" => Complete,
+    "jobs" => Jobs,
     "" => Execute
   }
 
@@ -253,10 +255,6 @@ defmodule CLI do
 
   # Tokenize the raw line into argv, then split off the command head for dispatch.
   defp process_line(input) do
-    if String.contains?(input, "&") do
-      IO.inspect(input, label: "Run in Background")
-    end
-
     case decode_console_input(input) do
       [] ->
         :ok
