@@ -260,7 +260,7 @@ defmodule CLI do
         :ok
 
       [command, input, "&" | _] ->
-        IO.puts("[1] #{self()}")
+        IO.inspect("[1] #{self()}")
         Task.async(fn -> dispatch(command, input) end)
 
       [command | input] ->
