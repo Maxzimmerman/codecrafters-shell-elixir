@@ -2,6 +2,6 @@ defmodule Commands.Jobs do
   @behaviour Command
 
   @impl true
-  def execute do
+  def execute(_args) do
   end
 end
