@@ -259,8 +259,8 @@ defmodule CLI do
       [] ->
         :ok
 
-      val ->
-        IO.inspect(val, label: "TESET")
+      [command, input, "&" | _] ->
+        IO.puts("YAU")
 
       [command | input] ->
         dispatch(command, input)
