@@ -255,6 +255,10 @@ defmodule CLI do
 
   # Tokenize the raw line into argv, then split off the command head for dispatch.
   defp process_line(input) do
+    if String.contains?(input, "&") do
+      IO.inspect(input, label: "TEST")
+    end
+
     case decode_console_input(input) do
       [] ->
         :ok
