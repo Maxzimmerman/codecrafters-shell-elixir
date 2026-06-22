@@ -260,7 +260,7 @@ defmodule CLI do
         :ok
 
       val ->
-        IO.inpsect(val, label: "TESET")
+        IO.inspect(val, label: "TESET")
 
       [command | input] ->
         dispatch(command, input)
