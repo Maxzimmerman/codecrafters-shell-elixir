@@ -255,13 +255,12 @@ defmodule CLI do
 
   # Tokenize the raw line into argv, then split off the command head for dispatch.
   defp process_line(input) do
-    if String.contains?(input, "&") do
-      IO.inspect(input, label: "TEST")
-    end
-
     case decode_console_input(input) do
       [] ->
         :ok
+
+      val ->
+        IO.inpsect(val, label: "TESET")
 
       [command | input] ->
         dispatch(command, input)
@@ -270,6 +269,25 @@ defmodule CLI do
 
   # Strip redirect operators from argv, pre-create stderr file, run command under stdout redirect.
   defp dispatch(command, input) do
+    {input, stderr_redirect} = extract_stderr_redirect(input)
+    {input, stdout_redirect} = extract_stdout_redirect(input)
+
+    if stderr_redirect do
+      {path, mode} = stderr_redirect
+      File.mkdir_p!(Path.dirname(path))
+
+      case mode do
+        :write -> File.write!(path, "")
+        :append -> File.touch!(path)
+      end
+    end
+
+    with_stdout_redirect(stdout_redirect, fn ->
+      run_command(command, input, stderr_redirect)
+    end)
+  end
+
+  defp dispatch_async(command, input) do
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
