@@ -260,15 +260,15 @@ defmodule CLI do
         :ok
 
       [command, input, "&" | _] ->
-        dispatch(command, input, true)
+        dispatch_async(command, input)
 
       [command | input] ->
-        dispatch(command, input, false)
+        dispatch(command, input)
     end
   end
 
   # Strip redirect operators from argv, pre-create stderr file, run command under stdout redirect.
-  defp dispatch(command, input, run_async) do
+  defp dispatch(command, input) do
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
@@ -283,7 +283,26 @@ defmodule CLI do
     end
 
     with_stdout_redirect(stdout_redirect, fn ->
-      run_command(command, input, stderr_redirect, run_async)
+      run_command(command, input, stderr_redirect, false)
+    end)
+  end
+
+  defp dispatch_async(command, input) do
+    {input, stderr_redirect} = extract_stderr_redirect(input)
+    {input, stdout_redirect} = extract_stdout_redirect(input)
+
+    if stderr_redirect do
+      {path, mode} = stderr_redirect
+      File.mkdir_p!(Path.dirname(path))
+
+      case mode do
+        :write -> File.write!(path, "")
+        :append -> File.touch!(path)
+      end
+    end
+
+    with_stdout_redirect(stdout_redirect, fn ->
+      run_command(command, input, stderr_redirect, true)
     end)
   end
 
