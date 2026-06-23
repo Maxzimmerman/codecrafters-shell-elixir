@@ -259,8 +259,8 @@ defmodule CLI do
       [] ->
         :ok
 
-      [command, input, "&" | _] ->
-        dispatch_async(command, input)
+      [command, input, "&" | rest] ->
+        dispatch_async(command, [input, "&"] ++ rest)
 
       [command | input] ->
         dispatch(command, input)
