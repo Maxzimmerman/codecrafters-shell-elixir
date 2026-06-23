@@ -54,8 +54,6 @@ defmodule Commands.Execute do
       ])
 
     {:os_pid, pid} = :erlang.port_info(port, :os_pid)
-
-    IO.puts("[1] #{pid}")
   end
 
   def execute([path, args], true) do
@@ -69,8 +67,6 @@ defmodule Commands.Execute do
       ])
 
     {:os_pid, pid} = :erlang.port_info(port, :os_pid)
-
-    IO.puts("[1] #{pid}")
   end
 
   def execute(_args), do: :error
