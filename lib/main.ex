@@ -260,6 +260,7 @@ defmodule CLI do
         :ok
 
       [command, input, "&" | _] ->
+        IO.puts("[1] #{System.pid()}")
         Task.async(fn -> dispatch_async(command, input) end)
 
       [command | input] ->
@@ -288,7 +289,6 @@ defmodule CLI do
   end
 
   defp dispatch_async(command, input) do
-    IO.puts("[1] #{System.pid()}")
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
