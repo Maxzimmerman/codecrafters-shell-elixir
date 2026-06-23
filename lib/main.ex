@@ -260,7 +260,6 @@ defmodule CLI do
         :ok
 
       [command, input, "&" | _] ->
-        IO.puts("[1] #{System.pid()}")
         dispatch(command, input, true)
 
       [command | input] ->
