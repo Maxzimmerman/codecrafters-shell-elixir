@@ -288,7 +288,6 @@ defmodule CLI do
   end
 
   defp dispatch_async(command, input) do
-    IO.inspect(input, label: "input")
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
