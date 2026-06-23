@@ -261,15 +261,15 @@ defmodule CLI do
 
       [command, input, "&" | _] ->
         IO.puts("[1] #{System.pid()}")
-        Task.async(fn -> dispatch_async(command, input) end)
+        dispatch(command, input, true)
 
       [command | input] ->
-        dispatch(command, input)
+        dispatch(command, input, false)
     end
   end
 
   # Strip redirect operators from argv, pre-create stderr file, run command under stdout redirect.
-  defp dispatch(command, input) do
+  defp dispatch(command, input, run_async) do
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
@@ -284,38 +284,18 @@ defmodule CLI do
     end
 
     with_stdout_redirect(stdout_redirect, fn ->
-      run_command(command, input, stderr_redirect)
-    end)
-  end
-
-  defp dispatch_async(command, input) do
-    IO.inspect(System.pid(), label: "TESET")
-    {input, stderr_redirect} = extract_stderr_redirect(input)
-    {input, stdout_redirect} = extract_stdout_redirect(input)
-
-    if stderr_redirect do
-      {path, mode} = stderr_redirect
-      File.mkdir_p!(Path.dirname(path))
-
-      case mode do
-        :write -> File.write!(path, "")
-        :append -> File.touch!(path)
-      end
-    end
-
-    with_stdout_redirect(stdout_redirect, fn ->
-      run_command(command, input, stderr_redirect)
+      run_command(command, input, stderr_redirect, run_async)
     end)
   end
 
   # Run an external binary via Execute if found in PATH, otherwise dispatch to the builtin module.
-  defp run_command(command, input, stderr_redirect) do
+  defp run_command(command, input, stderr_redirect, run_async) do
     case Commands.executable_in_path?(command) do
       {:ok, res} ->
         if stderr_redirect do
-          Execute.execute([res, input, stderr_redirect])
+          Execute.execute([res, input, stderr_redirect], run_async)
         else
-          Execute.execute([res, input])
+          Execute.execute([res, input], run_async)
         end
 
       {:error, :no_exe} ->

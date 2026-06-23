@@ -1,7 +1,7 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
-  def execute([command_path, args, {stderr_file, mode}]) when is_binary(stderr_file) do
+  def execute([command_path, args, {stderr_file, mode}], false) when is_binary(stderr_file) do
     op = if mode == :append, do: " 2>> ", else: " 2> "
 
     cmd_string =
@@ -22,7 +22,7 @@ defmodule Commands.Execute do
     loop(port)
   end
 
-  def execute([path, args]) do
+  def execute([path, args], false) do
     port =
       Port.open({:spawn_executable, path}, [
         :binary,
