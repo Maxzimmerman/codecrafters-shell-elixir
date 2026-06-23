@@ -261,7 +261,7 @@ defmodule CLI do
 
       [command, input, "&" | _] ->
         IO.puts("[1] <PID>")
-        Task.async(fn -> dispatch(command, input) end)
+        Task.async(fn -> dispatch_async(command, input) end)
 
       [command | input] ->
         dispatch(command, input)
