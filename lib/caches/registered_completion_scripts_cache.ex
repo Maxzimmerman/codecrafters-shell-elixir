@@ -16,6 +16,11 @@ defmodule RegisteredCompletionScriptsCache do
   end
 
   @impl true
+  def handle_call({:get_script, name}, _from, state) do
+    {:reply, Map.get(state, name), state}
+  end
+
+  @impl true
   def handle_cast({:add_script, name, path}, state) do
     {:noreply, Map.put(state, name, path)}
   end
@@ -23,11 +28,6 @@ defmodule RegisteredCompletionScriptsCache do
   @impl true
   def handle_cast({:delete_script, name}, state) do
     {:noreply, Map.delete(state, name)}
-  end
-
-  @impl true
-  def handle_call({:get_script, name}, _from, state) do
-    {:reply, Map.get(state, name), state}
   end
 
   def get_state do
