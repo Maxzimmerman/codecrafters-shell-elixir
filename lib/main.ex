@@ -425,15 +425,4 @@ defmodule CLI do
   defp tokenize(<<c::utf8, rest::binary>>, tokens, current, :none, _has_token) do
     tokenize(rest, tokens, current <> <<c::utf8>>, :none, true)
   end
-
-  # Filter a command list to only those with a registered -C completer (currently unused).
-  defp get_completion_cache_matches(commands) do
-    commands =
-      commands
-      |> Enum.filter(fn command ->
-        command in Map.keys(RegisteredCompletionScriptsCache.get_state())
-      end)
-
-    commands
-  end
 end
