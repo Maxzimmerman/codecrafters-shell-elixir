@@ -289,6 +289,7 @@ defmodule CLI do
   end
 
   defp dispatch_async(command, input) do
+    IO.inspect(System.pid(), label: "TESET")
     {input, stderr_redirect} = extract_stderr_redirect(input)
     {input, stdout_redirect} = extract_stdout_redirect(input)
 
