@@ -75,7 +75,7 @@ defmodule Commands.Execute do
     :ok
   end
 
-  def execute([path, args], true) do
+  def execute([path, args] = full, true) do
     port =
       Port.open({:spawn_executable, path}, [
         :binary,
@@ -93,10 +93,12 @@ defmodule Commands.Execute do
 
     Port.connect(port, spawned)
 
+    command_str = Enum.join(full, " ")
+
     JobsCache.add_job(%BackgroundJob{
       job_number: 1,
       process_id: pid,
-      command_str: args,
+      command_str: command_str,
       status: :running
     })
 
