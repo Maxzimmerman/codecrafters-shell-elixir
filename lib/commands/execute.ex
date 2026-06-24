@@ -60,8 +60,6 @@ defmodule Commands.Execute do
 
       loop(port)
     end)
-
-    :ok
   end
 
   def execute([path, args], true) do
