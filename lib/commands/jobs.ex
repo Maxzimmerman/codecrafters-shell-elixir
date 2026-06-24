@@ -14,6 +14,9 @@ defmodule Commands.Jobs do
           |> Enum.at(-1)
 
         IO.puts("[#{job.job_number}]+  Running                 #{command}")
+
+      0 ->
+        :ok
     end
   end
 end
