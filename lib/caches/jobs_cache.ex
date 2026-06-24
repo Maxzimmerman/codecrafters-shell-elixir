@@ -18,6 +18,17 @@ defmodule JobsCache do
   end
 
   @impl true
+  def handle_cast({:pause_job, id}, state) do
+    state =
+      Enum.map(state, fn
+        %BackgroundJob{process_id: ^id} = job -> %{job | status: :obsolete}
+        job -> job
+      end)
+
+    {:noreply, state}
+  end
+
+  @impl true
   def handle_call({:get_job, id}, _from, state) do
     job =
       Enum.filter(state, fn %BackgroundJob{process_id: process_id} -> process_id == id end)
@@ -28,5 +39,9 @@ defmodule JobsCache do
 
   def add_job(%BackgroundJob{} = job) do
     GenServer.cast(__MODULE__, {:add_job, job})
+  end
+
+  def pause_job(process_id) do
+    GenServer.cast(__MODULE__, {:pause_job, process_id})
   end
 end

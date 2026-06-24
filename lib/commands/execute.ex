@@ -59,7 +59,7 @@ defmodule Commands.Execute do
 
     IO.puts("[1] #{pid}")
 
-    spawned = spawn(fn -> loop(port) end)
+    spawned = spawn(fn -> async_loop(port) end)
 
     Port.connect(port, spawned)
 
@@ -89,7 +89,7 @@ defmodule Commands.Execute do
 
     IO.puts("[1] #{pid}")
 
-    spawned = spawn(fn -> loop(port) end)
+    spawned = spawn(fn -> async_loop(port) end)
 
     Port.connect(port, spawned)
 
@@ -106,6 +106,19 @@ defmodule Commands.Execute do
   end
 
   def execute(_args), do: :error
+
+  defp async_loop(port) do
+    receive do
+      {^port, {:data, data}} ->
+        IO.write(data)
+        loop(port)
+
+      {^port, {:exit_status, _code}} ->
+        {:os_pid, pid} = :erlang.port_info(port, :os_pid)
+        JobsCache.pause_job(pid)
+        :ok
+    end
+  end
 
   defp loop(port) do
     receive do
