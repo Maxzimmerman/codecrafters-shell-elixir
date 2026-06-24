@@ -55,7 +55,7 @@ defmodule Commands.Execute do
 
     {:os_pid, pid} = :erlang.port_info(port, :os_pid)
 
-    IO.write("[1] #{pid}")
+    IO.puts("[1] #{pid}")
 
     spawn(fn -> loop(port) end)
 
