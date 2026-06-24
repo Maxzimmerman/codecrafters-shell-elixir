@@ -93,7 +93,7 @@ defmodule Commands.Execute do
 
     Port.connect(port, spawned)
 
-    command_str = Enum.join(full, " ")
+    command_str = Enum.join(full, " ") <> "&"
 
     JobsCache.add_job(%BackgroundJob{
       job_number: 1,
