@@ -115,7 +115,6 @@ defmodule Commands.Execute do
 
       {^port, {:exit_status, _code}} ->
         {:os_pid, pid} = :erlang.port_info(port, :os_pid)
-        IO.puts("PAUDED #{inspect(pid)}")
         JobsCache.pause_job(pid)
         :ok
     end

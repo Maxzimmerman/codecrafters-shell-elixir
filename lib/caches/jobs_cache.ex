@@ -37,6 +37,14 @@ defmodule JobsCache do
     {:reply, job, state}
   end
 
+  @impl true
+  def handle_call(:get_all_running, _form, state) do
+    running =
+      Enum.filter(state, fn %BackgroundJob{status: status} -> status == :running end)
+
+    {:reply, running, state}
+  end
+
   def add_job(%BackgroundJob{} = job) do
     GenServer.cast(__MODULE__, {:add_job, job})
   end
@@ -44,4 +52,6 @@ defmodule JobsCache do
   def pause_job(process_id) do
     GenServer.cast(__MODULE__, {:pause_job, process_id})
   end
+
+  def get_all_running, do: GenServer.call(__MODULE__, :get_all_running)
 end

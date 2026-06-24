@@ -3,5 +3,6 @@ defmodule Commands.Jobs do
 
   @impl true
   def execute(_args) do
+    jobs = JobsCache.get_all_running()
   end
 end
