@@ -86,6 +86,7 @@ defmodule Commands.Execute do
   defp loop(port) do
     receive do
       {^port, {:data, data}} ->
+        IO.puts("RECEIVING #{inspect(data)}")
         IO.write(data)
         loop(port)
 
