@@ -57,7 +57,10 @@ defmodule Commands.Execute do
 
     IO.puts("[1] #{pid}")
 
-    spawn(fn -> loop(port) end)
+    spawned = spawn(fn -> loop(port) end)
+
+    Port.connect(port, spawned)
+    send(spawned, {:go, port})
 
     :ok
   end
@@ -76,7 +79,10 @@ defmodule Commands.Execute do
 
     IO.puts("[1] #{pid}")
 
-    spawn(fn -> loop(port) end)
+    spawned = spawn(fn -> loop(port) end)
+
+    Port.connect(port, spawned)
+    send(spawned, {:go, port})
 
     :ok
   end
