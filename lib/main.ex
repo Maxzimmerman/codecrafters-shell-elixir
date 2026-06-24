@@ -241,8 +241,6 @@ defmodule CLI do
 
   # REPL loop: print prompt, read a line, dispatch it, repeat until EOF.
   defp listen do
-    IO.write("$ ")
-
     case read_line("", 0) do
       :eof ->
         :ok
