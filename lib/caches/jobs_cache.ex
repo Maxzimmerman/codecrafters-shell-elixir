@@ -25,4 +25,8 @@ defmodule JobsCache do
 
     {:reply, job, state}
   end
+
+  def add_job(%BackgroundJob{} = job) do
+    GenServer.cast(__MODULE__, {:add_job, job})
+  end
 end

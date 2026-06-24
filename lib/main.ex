@@ -27,6 +27,7 @@ defmodule CLI do
   def main(_args) do
     :io.setopts(:standard_io, binary: true)
     {:ok, _pid} = RegisteredCompletionScriptsCache.start_link()
+    {:ok, _} = JobsCache.start_link()
     listen()
   end
 

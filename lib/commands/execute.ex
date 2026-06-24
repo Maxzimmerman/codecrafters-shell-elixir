@@ -1,6 +1,8 @@
 defmodule Commands.Execute do
   @behaviour Commands.Command
 
+  alias DataTypes.BackgroundJob
+
   def execute([command_path, args, {stderr_file, mode}], false) when is_binary(stderr_file) do
     op = if mode == :append, do: " 2>> ", else: " 2> "
 
@@ -60,6 +62,14 @@ defmodule Commands.Execute do
     spawned = spawn(fn -> loop(port) end)
 
     Port.connect(port, spawned)
+
+    JobsCache.add_job(%BackgroundJob{
+      job_number: 1,
+      process_id: pid,
+      command_str: args,
+      status: :running
+    })
+
     send(spawned, {:go, port})
 
     :ok
@@ -82,6 +92,14 @@ defmodule Commands.Execute do
     spawned = spawn(fn -> loop(port) end)
 
     Port.connect(port, spawned)
+
+    JobsCache.add_job(%BackgroundJob{
+      job_number: 1,
+      process_id: pid,
+      command_str: args,
+      status: :running
+    })
+
     send(spawned, {:go, port})
 
     :ok
