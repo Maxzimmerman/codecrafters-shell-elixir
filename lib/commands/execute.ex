@@ -44,22 +44,20 @@ defmodule Commands.Execute do
 
     sh = System.find_executable("sh")
 
-    spawn(fn ->
-      port =
-        Port.open({:spawn_executable, sh}, [
-          :binary,
-          :exit_status,
-          :use_stdio,
-          arg0: "sh",
-          args: ["-c", cmd_string]
-        ])
+    port =
+      Port.open({:spawn_executable, sh}, [
+        :binary,
+        :exit_status,
+        :use_stdio,
+        arg0: "sh",
+        args: ["-c", cmd_string]
+      ])
 
-      {:os_pid, pid} = :erlang.port_info(port, :os_pid)
+    {:os_pid, pid} = :erlang.port_info(port, :os_pid)
 
-      IO.write("[1] #{pid}\n")
+    IO.write("[1] #{pid}")
 
-      loop(port)
-    end)
+    spawn(fn -> loop(port) end)
 
     :ok
   end
