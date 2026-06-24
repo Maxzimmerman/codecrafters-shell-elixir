@@ -8,7 +8,12 @@ defmodule Commands.Jobs do
     case length(jobs) do
       1 ->
         [job] = jobs
-        IO.puts("[#{job.job_number}]+  Running                 #{job.command_str}")
+
+        command =
+          String.split(job.command_str, "/")
+          |> Enum.at(-1)
+
+        IO.puts("[#{job.job_number}]+  Running                 #{job.command}")
     end
   end
 end
