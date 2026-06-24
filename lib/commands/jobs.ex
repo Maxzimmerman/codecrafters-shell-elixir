@@ -4,12 +4,11 @@ defmodule Commands.Jobs do
   @impl true
   def execute(_args) do
     jobs = JobsCache.get_all_running()
-    IO.inspect(jobs)
 
     case length(jobs) do
       1 ->
         [job] = jobs
-        IO.inspect(job)
+        IO.puts("[#{job.job_number}]+  Running                 #{job.command_str}")
     end
   end
 end
