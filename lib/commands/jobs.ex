@@ -35,4 +35,22 @@ defmodule Commands.Jobs do
       end
     end)
   end
+
+  def print_done(jobs) do
+    total = length(jobs)
+
+    jobs
+    |> Enum.with_index()
+    |> Enum.each(fn {job, idx} ->
+      marker =
+        case total - 1 - idx do
+          0 -> "+"
+          1 -> "-"
+          _ -> " "
+        end
+
+      done_command = String.replace_suffix(job.command_str, " &", "")
+      IO.puts("[#{job.job_number}]#{marker}  Done                 #{done_command}")
+    end)
+  end
 end
