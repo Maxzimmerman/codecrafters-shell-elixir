@@ -72,7 +72,7 @@ defmodule Commands.Execute do
 
     IO.puts("[#{job_number}] #{pid}")
 
-    spawned = spawn(fn -> async_loop(port) end)
+    spawned = spawn(fn -> async_loop(port, pid) end)
 
     Port.connect(port, spawned)
 
@@ -106,7 +106,7 @@ defmodule Commands.Execute do
 
     IO.puts("[#{job_number}] #{pid}")
 
-    spawned = spawn(fn -> async_loop(port) end)
+    spawned = spawn(fn -> async_loop(port, pid) end)
 
     Port.connect(port, spawned)
 
