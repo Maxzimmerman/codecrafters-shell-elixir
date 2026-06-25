@@ -117,14 +117,13 @@ defmodule Commands.Execute do
 
   def execute(_args), do: :error
 
-  defp async_loop(port) do
+  defp async_loop(port, pid) do
     receive do
       {^port, {:data, data}} ->
         IO.write(data)
-        loop(port)
+        async_loop(port, pid)
 
       {^port, {:exit_status, _code}} ->
-        {:os_pid, pid} = :erlang.port_info(port, :os_pid)
         JobsCache.pause_job(pid)
         :ok
     end
