@@ -37,7 +37,8 @@ defmodule Commands.Execute do
     loop(port)
   end
 
-  def execute([command_path, args, {stderr_file, mode}], true) when is_binary(stderr_file) do
+  def execute([command_path, args, {stderr_file, mode}] = full, true)
+      when is_binary(stderr_file) do
     op = if mode == :append, do: " 2>> ", else: " 2> "
 
     cmd_string =
@@ -63,10 +64,13 @@ defmodule Commands.Execute do
 
     Port.connect(port, spawned)
 
+    command_str = Enum.join(full, " ") <> " &"
+    length = JobsCache.get_all() |> length()
+
     JobsCache.add_job(%BackgroundJob{
-      job_number: 1,
+      job_number: length + 1,
       process_id: pid,
-      command_str: args,
+      command_str: command_str,
       status: :running
     })
 
@@ -94,9 +98,10 @@ defmodule Commands.Execute do
     Port.connect(port, spawned)
 
     command_str = Enum.join(full, " ") <> " &"
+    length = JobsCache.get_all() |> length()
 
     JobsCache.add_job(%BackgroundJob{
-      job_number: 1,
+      job_number: length + 1,
       process_id: pid,
       command_str: command_str,
       status: :running
