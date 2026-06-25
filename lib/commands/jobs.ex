@@ -29,6 +29,9 @@ defmodule Commands.Jobs do
           JobsCache.drop_job(job.process_id)
           done_command = String.replace_suffix(job.command_str, " &", "")
           IO.puts("[#{job.job_number}]#{marker}  Done                 #{done_command}")
+
+        nil ->
+          :ok
       end
     end)
   end
