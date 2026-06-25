@@ -65,7 +65,7 @@ defmodule JobsCache do
   end
 
   @impl true
-  def handle_call(:clean_obsolte_jobs, _form, state) do
+  def handle_call(:clean_obsolete_jobs, _form, state) do
     obsolets =
       Enum.filter(state, fn %BackgroundJob{status: status} -> status == :obsolte end)
 
