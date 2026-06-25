@@ -2,6 +2,7 @@ defmodule JobsCache do
   use GenServer
 
   alias DataTypes.BackgroundJob
+  alias Commands.Jobs
 
   def start_link(_opts \\ []) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -64,6 +65,16 @@ defmodule JobsCache do
   end
 
   @impl true
+  def handle_call(:clean_obsolte_jobs, _form, state) do
+    obsolets =
+      Enum.filter(state, fn %BackgroundJob{status: status} -> status == :obsolte end)
+
+    state = Enum.reject(state, fn %BackgroundJob{status: status} -> status == :obsolte end)
+
+    {:reply, obsolets, state}
+  end
+
+  @impl true
   def handle_call(:get_all, _form, state) do
     {:reply, state, state}
   end
@@ -92,5 +103,9 @@ defmodule JobsCache do
       :running ->
         false
     end
+  end
+
+  def clean_obsolete_jobs_and_print do
+    Jobs.print_jobs(GenServer.call(__MODULE__, :clean_obsolete_jobs))
   end
 end

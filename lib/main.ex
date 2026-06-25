@@ -243,6 +243,7 @@ defmodule CLI do
   # REPL loop: print prompt, read a line, dispatch it, repeat until EOF.
   defp listen do
     IO.write("$ ")
+    JobsCache.clean_obsolete_jobs_and_print()
 
     case read_line("", 0) do
       :eof ->

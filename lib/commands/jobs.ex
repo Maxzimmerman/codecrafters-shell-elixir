@@ -4,6 +4,11 @@ defmodule Commands.Jobs do
   @impl true
   def execute(_args) do
     jobs = JobsCache.get_all() |> Enum.sort_by(& &1.job_number)
+
+    print_jobs(jobs)
+  end
+
+  def print_jobs(jobs) do
     total = length(jobs)
 
     jobs
