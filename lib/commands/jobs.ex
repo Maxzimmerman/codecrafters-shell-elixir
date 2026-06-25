@@ -3,7 +3,7 @@ defmodule Commands.Jobs do
 
   @impl true
   def execute(_args) do
-    jobs = JobsCache.get_all()
+    jobs = JobsCache.get_all_running()
 
     case length(jobs) do
       1 ->
@@ -18,7 +18,8 @@ defmodule Commands.Jobs do
       0 ->
         :ok
 
-      length when length > 1 ->
+      length ->
+        IO.puts(length)
         IO.inspect(jobs)
     end
   end
