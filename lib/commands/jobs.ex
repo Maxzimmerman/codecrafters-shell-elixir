@@ -17,6 +17,9 @@ defmodule Commands.Jobs do
 
       0 ->
         :ok
+
+      length when length > 1 ->
+        IO.inspect(jobs)
     end
   end
 end
