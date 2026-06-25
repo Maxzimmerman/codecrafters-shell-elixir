@@ -37,7 +37,7 @@ defmodule Commands.Execute do
     loop(port)
   end
 
-  def execute([command_path, args, {stderr_file, mode}] = full, true)
+  def execute([command_path, args, {stderr_file, mode}], true)
       when is_binary(stderr_file) do
     op = if mode == :append, do: " 2>> ", else: " 2> "
 
@@ -58,7 +58,8 @@ defmodule Commands.Execute do
 
     {:os_pid, pid} = :erlang.port_info(port, :os_pid)
 
-    command_str = Enum.join(full, " ") <> " &"
+    redirect = op <> stderr_file
+    command_str = Enum.join([Path.basename(command_path) | args], " ") <> redirect <> " &"
     length = JobsCache.get_all() |> length()
     job_number = length + 1
 
