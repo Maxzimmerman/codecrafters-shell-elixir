@@ -10,7 +10,7 @@ defmodule Commands.Jobs do
 
     case length(jobs) do
       1 ->
-        [job] = jobs
+        [job | _] = jobs
 
         command =
           String.split(job.command_str, "/")
