@@ -66,12 +66,28 @@ defmodule JobsCache do
 
   @impl true
   def handle_call(:clean_obsolete_jobs, _form, state) do
+    state =
+      Enum.map(state, fn %BackgroundJob{process_id: pid, status: status} = job ->
+        if status == :running and not process_alive?(pid) do
+          %{job | status: :obsolete}
+        else
+          job
+        end
+      end)
+
     obsolets =
       Enum.filter(state, fn %BackgroundJob{status: status} -> status == :obsolete end)
 
     state = Enum.reject(state, fn %BackgroundJob{status: status} -> status == :obsolete end)
 
     {:reply, obsolets, state}
+  end
+
+  defp process_alive?(pid) do
+    case System.cmd("kill", ["-0", Integer.to_string(pid)], stderr_to_stdout: true) do
+      {_, 0} -> true
+      _ -> false
+    end
   end
 
   @impl true
