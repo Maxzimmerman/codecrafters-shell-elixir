@@ -80,7 +80,7 @@ defmodule Commands.Execute do
     :ok
   end
 
-  def execute([path, args] = full, true) do
+  def execute([path, args], true) do
     port =
       Port.open({:spawn_executable, path}, [
         :binary,
@@ -92,7 +92,7 @@ defmodule Commands.Execute do
 
     {:os_pid, pid} = :erlang.port_info(port, :os_pid)
 
-    command_str = Enum.join(full, " ") <> " &"
+    command_str = Enum.join([Path.basename(path) | args], " ") <> " &"
     length = JobsCache.get_all() |> length()
     job_number = length + 1
 
