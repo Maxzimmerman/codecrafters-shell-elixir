@@ -46,6 +46,18 @@ defmodule JobsCache do
   end
 
   @impl true
+  def handle_call({:check_job_status, job}, _form, state) do
+    job_status =
+      Enum.filter(state, fn %BackgroundJob{process_id: process_id} ->
+        process_id == job.process_id
+      end)
+      |> Enum.map(fn %BackgroundJob{status: status} -> status end)
+      |> Enum.at(0)
+
+    {:reply, job_status, state}
+  end
+
+  @impl true
   def handle_call(:get_all, _form, state) do
     {:reply, state, state}
   end
@@ -60,4 +72,14 @@ defmodule JobsCache do
 
   def get_all_running, do: GenServer.call(__MODULE__, :get_all_running)
   def get_all, do: GenServer.call(__MODULE__, :get_all)
+
+  def job_done?(%BackgroundJob{} = job) do
+    case GenServer.call(__MODULE__, {:check_job_status, job}) do
+      :obsolete ->
+        true
+
+      :running ->
+        false
+    end
+  end
 end

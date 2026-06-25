@@ -20,7 +20,13 @@ defmodule Commands.Jobs do
         String.split(job.command_str, "/")
         |> Enum.at(-1)
 
-      IO.puts("[#{job.job_number}]#{marker}  Running                 #{command}")
+      case JobsCache.job_done?(job) do
+        false ->
+          IO.puts("[#{job.job_number}]#{marker}  Running                 #{command}")
+
+        true ->
+          IO.puts("[#{job.job_number}]#{marker}  Done                    #{command}")
+      end
     end)
   end
 end
