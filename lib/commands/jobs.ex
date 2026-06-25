@@ -4,22 +4,21 @@ defmodule Commands.Jobs do
   alias DataTypes.BackgroundJob
 
   @impl true
-  def execute(_args) do
+  def execute(args) do
     jobs =
       JobsCache.get_all()
 
-    case length(jobs) do
-      0 ->
-        :ok
+    if length(jobs) == 0 do
+      :ok
+    else
+      [job | _] = jobs
 
-      length when length >= 1 ->
-        [job | _] = jobs
+      command =
+        String.split(job.command_str, "/")
+        |> Enum.at(-1)
 
-        command =
-          String.split(job.command_str, "/")
-          |> Enum.at(-1)
-
-        IO.puts("[#{job.job_number}]+  Running                 #{command}")
+      IO.inspect(args)
+      IO.puts("[#{job.job_number}]+  Running                 #{command}")
     end
   end
 end
