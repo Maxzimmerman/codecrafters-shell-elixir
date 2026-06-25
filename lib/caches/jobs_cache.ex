@@ -84,7 +84,7 @@ defmodule JobsCache do
   end
 
   def pause_job(process_id) do
-    GenServer.cast(__MODULE__, {:pause_job, process_id})
+    GenServer.call(__MODULE__, {:pause_job, process_id})
   end
 
   def drop_job(process_id) do
