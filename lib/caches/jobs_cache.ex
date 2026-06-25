@@ -125,6 +125,6 @@ defmodule JobsCache do
   end
 
   def clean_obsolete_jobs_and_print do
-    Jobs.print_jobs(GenServer.call(__MODULE__, :clean_obsolete_jobs))
+    Jobs.print_done(GenServer.call(__MODULE__, :clean_obsolete_jobs))
   end
 end
