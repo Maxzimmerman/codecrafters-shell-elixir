@@ -17,7 +17,7 @@ defmodule Commands.Jobs do
         String.split(job.command_str, "/")
         |> Enum.at(-1)
 
-      case Enum.find_index(jobs, &(&1.id == job.id)) do
+      case Enum.find_index(jobs, &(&1.job_number == job.job_number)) do
         nil ->
           :not_found
 
