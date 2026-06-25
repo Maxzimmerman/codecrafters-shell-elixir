@@ -102,6 +102,9 @@ defmodule JobsCache do
 
       :running ->
         false
+
+      _ ->
+        nil
     end
   end
 
