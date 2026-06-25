@@ -13,6 +13,8 @@ defmodule Commands.Jobs do
           String.split(job.command_str, "/")
           |> Enum.at(-1)
 
+        dbg(jobs)
+
         IO.puts("[#{job.job_number}]+  Running                 #{command}")
 
       0 ->
