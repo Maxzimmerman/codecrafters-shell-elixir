@@ -45,6 +45,11 @@ defmodule JobsCache do
     {:reply, running, state}
   end
 
+  @impl true
+  def handle_call(:get_all, _form, state) do
+    {:reply, state, state}
+  end
+
   def add_job(%BackgroundJob{} = job) do
     GenServer.cast(__MODULE__, {:add_job, job})
   end
@@ -54,4 +59,5 @@ defmodule JobsCache do
   end
 
   def get_all_running, do: GenServer.call(__MODULE__, :get_all_running)
+  def get_all, do: GenServer.call(__MODULE__, :get_running)
 end

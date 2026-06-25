@@ -3,7 +3,7 @@ defmodule Commands.Jobs do
 
   @impl true
   def execute(_args) do
-    jobs = JobsCache.get_all_running()
+    jobs = JobsCache.get_all()
 
     case length(jobs) do
       1 ->
