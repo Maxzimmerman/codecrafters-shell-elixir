@@ -47,72 +47,50 @@ defmodule Commands.Execute do
 
     sh = System.find_executable("sh")
 
-    port =
-      Port.open({:spawn_executable, sh}, [
-        :binary,
-        :exit_status,
-        :use_stdio,
-        arg0: "sh",
-        args: ["-c", cmd_string]
-      ])
-
-    {:os_pid, pid} = :erlang.port_info(port, :os_pid)
-
     redirect = op <> stderr_file
     command_str = Enum.join([Path.basename(command_path) | args], " ") <> redirect <> " &"
-    length = JobsCache.get_all() |> length()
-    job_number = length + 1
 
-    JobsCache.add_job(%BackgroundJob{
-      job_number: job_number,
-      process_id: pid,
-      command_str: command_str,
-      status: :running
-    })
-
-    IO.puts("[#{job_number}] #{pid}")
-
-    spawned = spawn(fn -> async_loop(port, pid) end)
-
-    Port.connect(port, spawned)
-
-    send(spawned, {:go, port})
-
-    :ok
+    spawn_async_job(sh, "sh", ["-c", cmd_string], command_str)
   end
 
   def execute([path, args], true) do
-    port =
-      Port.open({:spawn_executable, path}, [
-        :binary,
-        :exit_status,
-        :use_stdio,
-        arg0: Path.basename(path),
-        args: args
-      ])
-
-    {:os_pid, pid} = :erlang.port_info(port, :os_pid)
-
     command_str = Enum.join([Path.basename(path) | args], " ") <> " &"
-    length = JobsCache.get_all() |> length()
-    job_number = length + 1
+    spawn_async_job(path, Path.basename(path), args, command_str)
+  end
 
-    JobsCache.add_job(%BackgroundJob{
-      job_number: job_number,
-      process_id: pid,
-      command_str: command_str,
-      status: :running
-    })
+  defp spawn_async_job(exe, arg0, args, command_str) do
+    parent = self()
 
-    IO.puts("[#{job_number}] #{pid}")
+    spawn(fn ->
+      port =
+        Port.open({:spawn_executable, exe}, [
+          :binary,
+          :exit_status,
+          :use_stdio,
+          arg0: arg0,
+          args: args
+        ])
 
-    spawned = spawn(fn -> async_loop(port, pid) end)
+      {:os_pid, pid} = :erlang.port_info(port, :os_pid)
+      send(parent, {:port_started, pid})
+      async_loop(port, pid)
+    end)
 
-    Port.connect(port, spawned)
+    receive do
+      {:port_started, pid} ->
+        length = JobsCache.get_all() |> length()
+        job_number = length + 1
 
-    send(spawned, {:go, port})
+        JobsCache.add_job(%BackgroundJob{
+          job_number: job_number,
+          process_id: pid,
+          command_str: command_str,
+          status: :running
+        })
 
-    :ok
+        IO.puts("[#{job_number}] #{pid}")
+        :ok
+    end
   end
 
   def execute(_args), do: :error
