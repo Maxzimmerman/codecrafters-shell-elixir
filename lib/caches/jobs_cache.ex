@@ -19,14 +19,14 @@ defmodule JobsCache do
   end
 
   @impl true
-  def handle_cast({:pause_job, id}, state) do
+  def handle_call({:pause_job, id}, _from, state) do
     state =
       Enum.map(state, fn
         %BackgroundJob{process_id: ^id} = job -> %{job | status: :obsolete}
         job -> job
       end)
 
-    {:noreply, state}
+    {:reply, :ok, state}
   end
 
   @impl true
