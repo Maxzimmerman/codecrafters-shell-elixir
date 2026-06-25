@@ -9,7 +9,10 @@ defmodule Commands.Jobs do
       JobsCache.get_all()
 
     case length(jobs) do
-      1 ->
+      0 ->
+        :ok
+
+      length when length >= 1 ->
         [job | _] = jobs
 
         command =
@@ -17,9 +20,6 @@ defmodule Commands.Jobs do
           |> Enum.at(-1)
 
         IO.puts("[#{job.job_number}]+  Running                 #{command}")
-
-      0 ->
-        :ok
     end
   end
 end
