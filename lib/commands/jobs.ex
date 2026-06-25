@@ -7,9 +7,6 @@ defmodule Commands.Jobs do
   def execute(_args) do
     jobs =
       JobsCache.get_all()
-      |> Enum.sort(fn %BackgroundJob{job_number: job_number} ->
-        job_number
-      end)
 
     case length(jobs) do
       1 ->
@@ -23,10 +20,6 @@ defmodule Commands.Jobs do
 
       0 ->
         :ok
-
-      length ->
-        IO.puts(length)
-        IO.inspect(jobs)
     end
   end
 end
