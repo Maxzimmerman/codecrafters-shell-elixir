@@ -29,6 +29,12 @@ defmodule JobsCache do
   end
 
   @impl true
+  def handle_cast({:drop_job, id}, state) do
+    state = Enum.reject(state, fn %BackgroundJob{process_id: process_id} -> process_id == id end)
+    {:noreply, state}
+  end
+
+  @impl true
   def handle_call({:get_job, id}, _from, state) do
     job =
       Enum.filter(state, fn %BackgroundJob{process_id: process_id} -> process_id == id end)
@@ -70,8 +76,13 @@ defmodule JobsCache do
     GenServer.cast(__MODULE__, {:pause_job, process_id})
   end
 
+  def drop_job(process_id) do
+    GenServer.cast(__MODULE__, {:drop_job, process_id})
+  end
+
   def get_all_running, do: GenServer.call(__MODULE__, :get_all_running)
   def get_all, do: GenServer.call(__MODULE__, :get_all)
+  def get_job(job_id), do: GenServer.call(__MODULE__, {:get_job, job_id})
 
   def job_done?(%BackgroundJob{} = job) do
     case GenServer.call(__MODULE__, {:check_job_status, job}) do

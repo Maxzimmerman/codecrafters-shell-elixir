@@ -25,6 +25,7 @@ defmodule Commands.Jobs do
           IO.puts("[#{job.job_number}]#{marker}  Running                 #{command}")
 
         true ->
+          JobsCache.drop_job(job.process_id)
           IO.puts("[#{job.job_number}]#{marker}  Done                    #{command}")
       end
     end)
