@@ -91,12 +91,6 @@ defmodule Commands.Execute do
 
     {:os_pid, pid} = :erlang.port_info(port, :os_pid)
 
-    IO.puts("[1] #{pid}")
-
-    spawned = spawn(fn -> async_loop(port) end)
-
-    Port.connect(port, spawned)
-
     command_str = Enum.join(full, " ") <> " &"
     length = JobsCache.get_all() |> length()
 
@@ -106,6 +100,12 @@ defmodule Commands.Execute do
       command_str: command_str,
       status: :running
     })
+
+    IO.puts("[#{length + 1}] #{pid}")
+
+    spawned = spawn(fn -> async_loop(port) end)
+
+    Port.connect(port, spawned)
 
     send(spawned, {:go, port})
 
