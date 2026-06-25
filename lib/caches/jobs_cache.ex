@@ -59,5 +59,5 @@ defmodule JobsCache do
   end
 
   def get_all_running, do: GenServer.call(__MODULE__, :get_all_running)
-  def get_all, do: GenServer.call(__MODULE__, :get_running)
+  def get_all, do: GenServer.call(__MODULE__, :get_all)
 end
