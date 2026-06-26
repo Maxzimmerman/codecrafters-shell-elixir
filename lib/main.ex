@@ -250,6 +250,7 @@ defmodule CLI do
         :ok
 
       input ->
+        IO.inspect(input)
         process_line(input)
         listen()
     end
