@@ -262,7 +262,8 @@ defmodule CLI do
         :ok
 
       [command_one, input, "|", command_two] ->
-        output = dispatch(command_one, [input])
+        dispatch(command_one, [input])
+        output = IO.read()
         IO.inspect(output, label: "TEST OUPTPUT")
 
       [command, input, "&" | rest] ->
