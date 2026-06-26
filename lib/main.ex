@@ -250,7 +250,6 @@ defmodule CLI do
         :ok
 
       input ->
-        IO.inspect(input)
         process_line(input)
         listen()
     end
@@ -261,6 +260,9 @@ defmodule CLI do
     case decode_console_input(input) do
       [] ->
         :ok
+
+      [command_one, file, "|", command_two] ->
+        IO.puts("FOUND")
 
       [command, input, "&" | rest] ->
         dispatch_async(command, [input] ++ rest)
