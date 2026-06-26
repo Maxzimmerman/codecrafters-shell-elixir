@@ -261,8 +261,9 @@ defmodule CLI do
       [] ->
         :ok
 
-      [command_one, file, "|", command_two] ->
+      [command_one, input, "|", command_two] ->
         IO.puts("FOUND")
+        dispatch(command_one, [input])
 
       [command, input, "&" | rest] ->
         dispatch_async(command, [input] ++ rest)
