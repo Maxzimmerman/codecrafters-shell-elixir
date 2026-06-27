@@ -80,7 +80,7 @@ defmodule Commands.Execute do
         args: ["-c", cmd_string]
       ])
 
-    loop(port)
+    loop_pipe(port)
   end
 
   def execute_with_pipe([path, args], false) do
@@ -93,7 +93,7 @@ defmodule Commands.Execute do
         args: args
       ])
 
-    loop(port)
+    loop_pipe(port)
   end
 
   def execute_with_pipe([command_path, args, {stderr_file, mode}], true)
