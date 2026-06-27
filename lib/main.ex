@@ -262,7 +262,7 @@ defmodule CLI do
         :ok
 
       [command_one, input, "|", command_two] ->
-        dispatch(command_one, [input])
+        dispatch_pipe(command_one, [input])
         output = IO.read(:stdio, :eof)
         IO.inspect(output, label: "TEST OUPTPUT")
 
@@ -310,6 +310,25 @@ defmodule CLI do
 
     with_stdout_redirect(stdout_redirect, fn ->
       run_command(command, input, stderr_redirect, true)
+    end)
+  end
+
+  defp dispatch_pipe(command, input) do
+    {input, stderr_redirect} = extract_stderr_redirect(input)
+    {input, stdout_redirect} = extract_stdout_redirect(input)
+
+    if stderr_redirect do
+      {path, mode} = stderr_redirect
+      File.mkdir_p!(Path.dirname(path))
+
+      case mode do
+        :write -> File.write!(path, "")
+        :append -> File.touch!(path)
+      end
+    end
+
+    with_stdout_redirect(stdout_redirect, fn ->
+      run_command(command, input, stderr_redirect, false)
     end)
   end
 
