@@ -227,7 +227,6 @@ defmodule Commands.Execute do
   defp loop_pipe(port) do
     receive do
       {^port, {:data, data}} ->
-        IO.write(data)
         loop_pipe(port)
 
       {^port, {:exit_status, _code}} ->
