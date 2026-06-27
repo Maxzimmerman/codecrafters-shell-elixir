@@ -3,7 +3,7 @@ defmodule Commands.History do
 
   def execute([limit]) do
     HistoryCache.get_all()
-    |> print_history_limit(limit)
+    |> print_history_limit(limit |> String.to_integer())
   end
 
   def execute(_) do
