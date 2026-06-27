@@ -271,11 +271,11 @@ defmodule CLI do
         else
           case tokens do
             [command, arg, "&" | rest] ->
-              HistoryCache.add_one(command)
+              HistoryCache.add_one(tokens)
               dispatch_async(command, [arg] ++ rest)
 
             [command | args] ->
-              HistoryCache.add_one(command)
+              HistoryCache.add_one(tokens)
               dispatch(command, args)
           end
         end
