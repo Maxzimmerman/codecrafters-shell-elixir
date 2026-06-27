@@ -15,18 +15,27 @@ defmodule Commands.History do
     history
     |> Enum.map(&Enum.join(&1, " "))
     |> Enum.reverse()
-    |> Enum.with_index(fn line, index ->
-      IO.puts("#{index} #{line}")
+    |> Enum.with_index(1)
+    |> Enum.each(fn {line, index} ->
+      IO.puts("#{format_index(index)}  #{line}")
     end)
   end
 
   def print_history_limit(history, limit) do
-    history
-    |> Enum.map(&Enum.join(&1, " "))
-    |> Enum.reverse()
-    |> Enum.take(limit)
-    |> Enum.with_index(fn line, index ->
-      IO.puts("#{index + 1} #{line}")
+    lines =
+      history
+      |> Enum.map(&Enum.join(&1, " "))
+      |> Enum.reverse()
+      |> Enum.with_index(1)
+
+    lines
+    |> Enum.take(-limit)
+    |> Enum.each(fn {line, index} ->
+      IO.puts("#{format_index(index)}  #{line}")
     end)
+  end
+
+  defp format_index(index) do
+    index |> Integer.to_string() |> String.pad_leading(5)
   end
 end
