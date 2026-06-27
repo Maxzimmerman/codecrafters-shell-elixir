@@ -35,6 +35,19 @@ defmodule Commands.History do
     end)
   end
 
+  def print_most_recent(history) do
+    lines =
+      history
+      |> Enum.map(&Enum.join(&1, " "))
+      |> Enum.reverse()
+
+    lines
+    |> Enum.take(-1)
+    |> Enum.each(fn line ->
+      IO.puts("#{line}")
+    end)
+  end
+
   defp format_index(index) do
     index |> Integer.to_string() |> String.pad_leading(5)
   end

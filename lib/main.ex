@@ -101,7 +101,7 @@ defmodule CLI do
 
   def handle_up(_buf) do
     HistoryCache.get_all()
-    |> History.print_history_limit(1)
+    |> History.print_most_recent()
   end
 
   # Tab pressed once the user has typed past the command name; routes to programmable or file completion.
