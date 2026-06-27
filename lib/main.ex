@@ -30,6 +30,8 @@ defmodule CLI do
     :io.setopts(:standard_io, binary: true)
     {:ok, _pid} = RegisteredCompletionScriptsCache.start_link()
     {:ok, _} = JobsCache.start_link()
+    {:ok, _} = HistoryCache.start_link()
+
     listen()
   end
 
@@ -364,6 +366,8 @@ defmodule CLI do
         else
           Execute.execute([res, input], run_async)
         end
+
+        HistoryCache.add_one(command)
 
       {:error, :no_exe} ->
         try do
