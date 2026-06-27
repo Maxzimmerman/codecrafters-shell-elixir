@@ -99,8 +99,9 @@ defmodule CLI do
     String.slice(buf, 0..-2//1)
   end
 
-  def handle_up(buf) do
-    IO.inspect(buf, label: "handle up")
+  def handle_up(_buf) do
+    HistoryCache.get_all()
+    |> History.print_history_limit(1)
   end
 
   # Tab pressed once the user has typed past the command name; routes to programmable or file completion.
