@@ -328,7 +328,7 @@ defmodule CLI do
     end
 
     with_stdout_redirect(stdout_redirect, fn ->
-      run_command(command, input, stderr_redirect, false)
+      run_command_pipe(command, input, stderr_redirect, false)
     end)
   end
 
