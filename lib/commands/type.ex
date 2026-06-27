@@ -10,7 +10,8 @@ defmodule Commands.Type do
     "pwd",
     "cd",
     "complete",
-    "jobs"
+    "jobs",
+    "history"
   ]
 
   def execute(args) do

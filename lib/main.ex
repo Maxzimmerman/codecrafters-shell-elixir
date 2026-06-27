@@ -7,6 +7,7 @@ defmodule CLI do
   alias Commands.Execute
   alias Commands.Complete
   alias Commands.Jobs
+  alias Commands.History
 
   alias Commands
 
@@ -18,6 +19,7 @@ defmodule CLI do
     "cd" => CD,
     "complete" => Complete,
     "jobs" => Jobs,
+    "history" => History,
     "" => Execute
   }
 
