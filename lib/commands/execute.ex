@@ -58,6 +58,63 @@ defmodule Commands.Execute do
     spawn_async_job(path, Path.basename(path), args, command_str)
   end
 
+  # < --- PIPES --- >
+  def execute_with_pipe([command_path, args, {stderr_file, mode}], false)
+      when is_binary(stderr_file) do
+    op = if mode == :append, do: " 2>> ", else: " 2> "
+
+    cmd_string =
+      ([command_path | args] |> Enum.map(&shell_escape/1) |> Enum.join(" ")) <>
+        op <> shell_escape(stderr_file)
+
+    sh = System.find_executable("sh")
+
+    port =
+      Port.open({:spawn_executable, sh}, [
+        :binary,
+        :exit_status,
+        :use_stdio,
+        arg0: "sh",
+        args: ["-c", cmd_string]
+      ])
+
+    loop(port)
+  end
+
+  def execute_with_pipe([path, args], false) do
+    port =
+      Port.open({:spawn_executable, path}, [
+        :binary,
+        :exit_status,
+        :use_stdio,
+        arg0: Path.basename(path),
+        args: args
+      ])
+
+    loop(port)
+  end
+
+  def execute([command_path, args, {stderr_file, mode}], true)
+      when is_binary(stderr_file) do
+    op = if mode == :append, do: " 2>> ", else: " 2> "
+
+    cmd_string =
+      ([command_path | args] |> Enum.map(&shell_escape/1) |> Enum.join(" ")) <>
+        op <> shell_escape(stderr_file)
+
+    sh = System.find_executable("sh")
+
+    redirect = op <> stderr_file
+    command_str = Enum.join([Path.basename(command_path) | args], " ") <> redirect <> " &"
+
+    spawn_async_job(sh, "sh", ["-c", cmd_string], command_str)
+  end
+
+  def execute([path, args], true) do
+    command_str = Enum.join([Path.basename(path) | args], " ") <> " &"
+    spawn_async_job(path, Path.basename(path), args, command_str)
+  end
+
   defp spawn_async_job(exe, arg0, args, command_str) do
     parent = self()
 

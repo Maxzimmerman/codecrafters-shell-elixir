@@ -337,9 +337,9 @@ defmodule CLI do
     case Commands.executable_in_path?(command) do
       {:ok, res} ->
         if stderr_redirect do
-          Execute.execute_pipe([res, input, stderr_redirect], run_async)
+          Execute.execute([res, input, stderr_redirect], run_async)
         else
-          Execute.execute_pipe([res, input], run_async)
+          Execute.execute([res, input], run_async)
         end
 
       {:error, :no_exe} ->
@@ -358,9 +358,9 @@ defmodule CLI do
     case Commands.executable_in_path?(command) do
       {:ok, res} ->
         if stderr_redirect do
-          Execute.execute([res, input, stderr_redirect], run_async)
+          Execute.execute_with_pipe([res, input, stderr_redirect], run_async)
         else
-          Execute.execute([res, input], run_async)
+          Execute.execute_with_pipe([res, input], run_async)
         end
 
       {:error, :no_exe} ->
