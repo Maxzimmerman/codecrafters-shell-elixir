@@ -42,7 +42,7 @@ defmodule Commands.History do
       |> Enum.reverse()
 
     lines
-    |> Enum.take(1)
+    |> Enum.take(2)
     |> Enum.each(fn line ->
       IO.puts("#{line}")
     end)
