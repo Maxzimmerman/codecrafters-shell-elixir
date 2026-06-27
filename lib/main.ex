@@ -353,26 +353,6 @@ defmodule CLI do
     end)
   end
 
-  defp dispatch_pipe(command, input) do
-    {input, stderr_redirect} = extract_stderr_redirect(input)
-    {input, stdout_redirect} = extract_stdout_redirect(input)
-
-    if stderr_redirect do
-      {path, mode} = stderr_redirect
-      File.mkdir_p!(Path.dirname(path))
-
-      case mode do
-        :write -> File.write!(path, "")
-        :append -> File.touch!(path)
-      end
-    end
-
-    with_stdout_redirect(stdout_redirect, fn ->
-      output = run_command_pipe(command, input, stderr_redirect, false)
-      {:ok, output}
-    end)
-  end
-
   # Run an external binary via Execute if found in PATH, otherwise dispatch to the builtin module.
   defp run_command(command, input, stderr_redirect, run_async) do
     case Commands.executable_in_path?(command) do
@@ -381,29 +361,6 @@ defmodule CLI do
           Execute.execute([res, input, stderr_redirect], run_async)
         else
           Execute.execute([res, input], run_async)
-        end
-
-      {:error, :no_exe} ->
-        try do
-          command(command).execute(input)
-        rescue
-          _e in KeyError -> IO.puts("#{command}: not found")
-        catch
-          _error -> IO.puts("#{command}: not found")
-        end
-    end
-  end
-
-  # Run an external binary via Execute if found in PATH, otherwise dispatch to the builtin module.
-  defp run_command_pipe(command, input, stderr_redirect, run_async) do
-    case Commands.executable_in_path?(command) do
-      {:ok, res} ->
-        if stderr_redirect do
-          {:ok, output} = Execute.execute_with_pipe([res, input, stderr_redirect], run_async)
-          output
-        else
-          {:ok, output} = Execute.execute_with_pipe([res, input], run_async)
-          output
         end
 
       {:error, :no_exe} ->
