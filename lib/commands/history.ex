@@ -10,6 +10,8 @@ defmodule Commands.History do
     history
     |> Enum.reverse()
     |> Enum.map(&Enum.join(&1, " "))
-    |> IO.inspect()
+    |> Enum.with_index(fn line, index ->
+      IO.puts("#{index} #{line}")
+    end)
   end
 end
