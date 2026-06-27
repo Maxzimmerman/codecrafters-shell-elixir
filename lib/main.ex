@@ -367,8 +367,6 @@ defmodule CLI do
           Execute.execute([res, input], run_async)
         end
 
-        HistoryCache.add_one(command)
-
       {:error, :no_exe} ->
         try do
           command(command).execute(input)
