@@ -2,6 +2,6 @@ defmodule Commands.History do
   @behaviour Commands.Command
 
   def execute(_) do
-    IO.inspect(HistoryCache.get_all())
+    IO.inspect(HistoryCache.get_all() |> Enum.reverse())
   end
 end
