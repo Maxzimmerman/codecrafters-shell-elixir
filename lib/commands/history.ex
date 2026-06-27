@@ -26,7 +26,7 @@ defmodule Commands.History do
     |> Enum.reverse()
     |> Enum.take(limit)
     |> Enum.with_index(fn line, index ->
-      IO.puts("#{index} #{line}")
+      IO.puts("#{index + 1} #{line}")
     end)
   end
 end
