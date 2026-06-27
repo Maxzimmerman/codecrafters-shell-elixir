@@ -109,12 +109,12 @@ defmodule Commands.Execute do
     redirect = op <> stderr_file
     command_str = Enum.join([Path.basename(command_path) | args], " ") <> redirect <> " &"
 
-    spawn_async_job(sh, "sh", ["-c", cmd_string], command_str)
+    spawn_async_job_pipe(sh, "sh", ["-c", cmd_string], command_str)
   end
 
   def execute_with_pipe([path, args], true) do
     command_str = Enum.join([Path.basename(path) | args], " ") <> " &"
-    spawn_async_job(path, Path.basename(path), args, command_str)
+    spawn_async_job_pipe(path, Path.basename(path), args, command_str)
   end
 
   defp spawn_async_job(exe, arg0, args, command_str) do
