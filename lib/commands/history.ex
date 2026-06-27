@@ -1,9 +1,9 @@
 defmodule Commands.History do
   @behaviour Commands.Command
 
-  def execute([number]) do
+  def execute([limit]) do
     HistoryCache.get_all()
-    |> print_history_limit(number)
+    |> print_history_limit(limit)
   end
 
   def execute(_) do
