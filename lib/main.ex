@@ -262,7 +262,7 @@ defmodule CLI do
         :ok
 
       [command_one, input, "|", command_two] ->
-        output = dispatch_pipe(command_one, [input])
+        {:ok, output} = dispatch_pipe(command_one, [input])
         IO.inspect(output, label: "output")
 
       [command, input, "&" | rest] ->
@@ -328,7 +328,7 @@ defmodule CLI do
 
     with_stdout_redirect(stdout_redirect, fn ->
       output = run_command_pipe(command, input, stderr_redirect, false)
-      output
+      {:ok, output}
     end)
   end
 
