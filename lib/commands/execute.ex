@@ -80,7 +80,7 @@ defmodule Commands.Execute do
         args: ["-c", cmd_string]
       ])
 
-    loop_pipe(port)
+    loop_pipe(port, [])
   end
 
   def execute_with_pipe([path, args], false) do
@@ -93,7 +93,7 @@ defmodule Commands.Execute do
         args: args
       ])
 
-    loop_pipe(port)
+    loop_pipe(port, [])
   end
 
   def execute_with_pipe([command_path, args, {stderr_file, mode}], true)
@@ -224,14 +224,13 @@ defmodule Commands.Execute do
     end
   end
 
-  defp loop_pipe(port) do
+  defp loop_pipe(port, full_data) do
     receive do
       {^port, {:data, data}} ->
-        loop_pipe(port)
+        loop_pipe(port, [data | full_data])
 
       {^port, {:exit_status, _code}} ->
-        IO.puts("HITS")
-        :ok
+        IO.inspect(full_data, label: "TEST")
     end
   end
 
