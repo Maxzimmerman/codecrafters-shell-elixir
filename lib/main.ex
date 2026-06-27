@@ -362,7 +362,7 @@ defmodule CLI do
           IO.inspect(output, label: "output sync execution")
         else
           {:ok, output} = Execute.execute_with_pipe([res, input], run_async)
-          IO.puts(stderr_redirect)
+          IO.inspect(res)
           IO.inspect(output, label: "output async execution")
         end
 
