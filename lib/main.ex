@@ -263,6 +263,7 @@ defmodule CLI do
 
       [command_one, input, "|", command_two] ->
         IO.inspect(input, label: "input command 1")
+        IO.inspect(command_one, label: "command 1")
         {:ok, output} = dispatch_pipe(command_one, [input])
 
         dispatch(command_two, output)
