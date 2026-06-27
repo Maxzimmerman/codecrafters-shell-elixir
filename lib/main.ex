@@ -262,9 +262,8 @@ defmodule CLI do
         :ok
 
       [command_one, input, "|", command_two] ->
-        dispatch_pipe(command_one, [input])
-        output = IO.read(:stdio, :eof)
-        IO.inspect(output, label: "TEST OUPTPUT")
+        output = dispatch_pipe(command_one, [input])
+        IO.inspect(output, label: "output")
 
       [command, input, "&" | rest] ->
         dispatch_async(command, [input] ++ rest)
@@ -328,7 +327,8 @@ defmodule CLI do
     end
 
     with_stdout_redirect(stdout_redirect, fn ->
-      run_command_pipe(command, input, stderr_redirect, false)
+      output = run_command_pipe(command, input, stderr_redirect, false)
+      output
     end)
   end
 
@@ -359,11 +359,10 @@ defmodule CLI do
       {:ok, res} ->
         if stderr_redirect do
           {:ok, output} = Execute.execute_with_pipe([res, input, stderr_redirect], run_async)
-          IO.inspect(output, label: "output sync execution")
+          output
         else
           {:ok, output} = Execute.execute_with_pipe([res, input], run_async)
-          IO.inspect(res)
-          IO.inspect(output, label: "output async execution")
+          output
         end
 
       {:error, :no_exe} ->
