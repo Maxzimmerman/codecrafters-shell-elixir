@@ -337,6 +337,27 @@ defmodule CLI do
     case Commands.executable_in_path?(command) do
       {:ok, res} ->
         if stderr_redirect do
+          Execute.execute_pipe([res, input, stderr_redirect], run_async)
+        else
+          Execute.execute_pipe([res, input], run_async)
+        end
+
+      {:error, :no_exe} ->
+        try do
+          command(command).execute(input)
+        rescue
+          _e in KeyError -> IO.puts("#{command}: not found")
+        catch
+          _error -> IO.puts("#{command}: not found")
+        end
+    end
+  end
+
+  # Run an external binary via Execute if found in PATH, otherwise dispatch to the builtin module.
+  defp run_command_pipe(command, input, stderr_redirect, run_async) do
+    case Commands.executable_in_path?(command) do
+      {:ok, res} ->
+        if stderr_redirect do
           Execute.execute([res, input, stderr_redirect], run_async)
         else
           Execute.execute([res, input], run_async)
