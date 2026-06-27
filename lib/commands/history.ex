@@ -2,21 +2,29 @@ defmodule Commands.History do
   @behaviour Commands.Command
 
   def execute([number]) do
-    HistoryCache.get_all()
-    |> Enum.reverse()
-    |> Enum.take(number)
+    HistoryCache.get_all_limit(number)
     |> print_history()
   end
 
   def execute(_) do
     HistoryCache.get_all()
-    |> Enum.reverse()
     |> print_history()
   end
 
   def print_history(history) do
     history
     |> Enum.map(&Enum.join(&1, " "))
+    |> Enum.reverse()
+    |> Enum.with_index(fn line, index ->
+      IO.puts("#{index} #{line}")
+    end)
+  end
+
+  def print_history_limit(history, limit) do
+    history
+    |> Enum.map(&Enum.join(&1, " "))
+    |> Enum.reverse()
+    |> Enum.take(limit)
     |> Enum.with_index(fn line, index ->
       IO.puts("#{index} #{line}")
     end)
