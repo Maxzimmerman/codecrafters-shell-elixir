@@ -261,20 +261,58 @@ defmodule CLI do
       [] ->
         :ok
 
-      [command_one, input, "|", command_two] ->
-        IO.inspect(input, label: "input command 1")
-        IO.inspect(command_one, label: "command 1")
-        {:ok, output} = dispatch_pipe(command_one, [input])
+      tokens ->
+        if "|" in tokens do
+          run_pipeline(tokens)
+        else
+          case tokens do
+            [command, arg, "&" | rest] ->
+              dispatch_async(command, [arg] ++ rest)
 
-        dispatch(command_two, output)
-
-      [command, input, "&" | rest] ->
-        dispatch_async(command, [input] ++ rest)
-
-      [command | input] ->
-        dispatch(command, input)
+            [command | args] ->
+              dispatch(command, args)
+          end
+        end
     end
   end
+
+  # Build a shell pipeline string from argv tokens and run it via `sh -c`,
+  # which handles stdin/stdout wiring, SIGPIPE, and live streaming for us.
+  defp run_pipeline(tokens) do
+    cmd_str =
+      tokens
+      |> Enum.map(fn
+        "|" -> "|"
+        tok -> shell_quote(tok)
+      end)
+      |> Enum.join(" ")
+
+    sh = System.find_executable("sh")
+
+    port =
+      Port.open({:spawn_executable, sh}, [
+        :binary,
+        :exit_status,
+        :use_stdio,
+        arg0: "sh",
+        args: ["-c", cmd_str]
+      ])
+
+    pipeline_loop(port)
+  end
+
+  defp pipeline_loop(port) do
+    receive do
+      {^port, {:data, data}} ->
+        IO.write(data)
+        pipeline_loop(port)
+
+      {^port, {:exit_status, _code}} ->
+        :ok
+    end
+  end
+
+  defp shell_quote(s), do: "'" <> String.replace(s, "'", ~S('\'')) <> "'"
 
   # Strip redirect operators from argv, pre-create stderr file, run command under stdout redirect.
   defp dispatch(command, input) do
