@@ -39,9 +39,10 @@ defmodule Commands.History do
     lines =
       history
       |> Enum.map(&Enum.join(&1, " "))
+      |> Enum.reverse()
 
     lines
-    |> Enum.take(-1)
+    |> Enum.take(1)
     |> Enum.each(fn line ->
       IO.puts("#{line}")
     end)
