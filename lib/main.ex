@@ -263,7 +263,8 @@ defmodule CLI do
 
       [command_one, input, "|", command_two] ->
         {:ok, output} = dispatch_pipe(command_one, [input])
-        IO.inspect(output, label: "output")
+
+        dispatch(command_two, output)
 
       [command, input, "&" | rest] ->
         dispatch_async(command, [input] ++ rest)
