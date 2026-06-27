@@ -231,6 +231,7 @@ defmodule Commands.Execute do
         loop_pipe(port)
 
       {^port, {:exit_status, _code}} ->
+        IO.puts("HITS")
         :ok
     end
   end
