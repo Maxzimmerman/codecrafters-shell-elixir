@@ -78,6 +78,12 @@ defmodule CLI do
       4 ->
         if buf == "", do: :eof, else: read_line(buf, tab_count)
 
+      27 ->
+        case {read_byte(), read_byte()} do
+          {?[, ?A} -> handle_up(buf) |> read_line(0)
+          _ -> read_line(buf, 0)
+        end
+
       b when is_integer(b) ->
         char = <<b>>
         IO.write(char)
@@ -91,6 +97,10 @@ defmodule CLI do
   defp backspace(buf) do
     IO.write("\b \b")
     String.slice(buf, 0..-2//1)
+  end
+
+  def handle_up(buf) do
+    IO.inspect(buf, label: "handle up")
   end
 
   # Tab pressed once the user has typed past the command name; routes to programmable or file completion.
