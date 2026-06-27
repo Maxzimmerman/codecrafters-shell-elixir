@@ -230,7 +230,7 @@ defmodule Commands.Execute do
         loop_pipe(port, [data | full_data])
 
       {^port, {:exit_status, _code}} ->
-        IO.inspect(full_data, label: "TEST")
+        {:ok, full_data}
     end
   end
 

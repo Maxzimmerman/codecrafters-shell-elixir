@@ -358,9 +358,11 @@ defmodule CLI do
     case Commands.executable_in_path?(command) do
       {:ok, res} ->
         if stderr_redirect do
-          Execute.execute_with_pipe([res, input, stderr_redirect], run_async)
+          {:ok, output} = Execute.execute_with_pipe([res, input, stderr_redirect], run_async)
+          IO.inspect(output, label: "output sync execution")
         else
-          Execute.execute_with_pipe([res, input], run_async)
+          {:ok, output} = Execute.execute_with_pipe([res, input], run_async)
+          IO.inspect(output, label: "output async execution")
         end
 
       {:error, :no_exe} ->
