@@ -39,10 +39,11 @@ defmodule Commands.History do
     lines =
       history
       |> Enum.map(&Enum.join(&1, " "))
+      |> Enum.reverse()
 
     output =
       lines
-      |> Enum.at(count - 1)
+      |> Enum.at(count)
 
     IO.puts("#{output}")
   end
