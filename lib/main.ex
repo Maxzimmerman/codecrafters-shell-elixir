@@ -102,9 +102,21 @@ defmodule CLI do
     String.slice(buf, 0..-2//1)
   end
 
-  def handle_up(_buf, count) do
-    HistoryCache.get_all()
-    |> History.print_most_recent(count)
+  # Recall the count-th most recent history entry: erase the current line
+  # contents on screen, display the recalled command, and make it the new buffer.
+  def handle_up(buf, count) do
+    history = HistoryCache.get_all() |> Enum.map(&Enum.join(&1, " "))
+
+    case Enum.at(history, count - 1) do
+      nil ->
+        IO.write("\a")
+        buf
+
+      recalled ->
+        IO.write(String.duplicate("\b \b", String.length(buf)))
+        IO.write(recalled)
+        recalled
+    end
   end
 
   # Tab pressed once the user has typed past the command name; routes to programmable or file completion.
