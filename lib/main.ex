@@ -80,8 +80,11 @@ defmodule CLI do
 
       27 ->
         case {read_byte(), read_byte()} do
-          {?[, ?A} -> handle_up(buf, arrow_up_count + 1) |> read_line(tab_count, arrow_up_count)
-          _ -> read_line(buf, tab_count, arrow_up_count + 1)
+          {?[, ?A} ->
+            handle_up(buf, arrow_up_count + 1) |> read_line(tab_count, arrow_up_count + 1)
+
+          _ ->
+            read_line(buf, tab_count, arrow_up_count + 1)
         end
 
       b when is_integer(b) ->
