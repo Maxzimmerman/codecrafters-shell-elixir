@@ -40,6 +40,8 @@ defmodule Commands.History do
       history
       |> Enum.map(&Enum.join(&1, " "))
 
+    IO.puts(count)
+
     lines
     |> Enum.take(count - 1)
     |> Enum.each(fn line ->
