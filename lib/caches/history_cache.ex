@@ -22,4 +22,5 @@ defmodule HistoryCache do
 
   def get_all, do: GenServer.call(__MODULE__, :get_all)
   def add_one(command), do: GenServer.cast(__MODULE__, {:add_one, command})
+  def drop_most_recent, do: GenServer.cast()
 end
