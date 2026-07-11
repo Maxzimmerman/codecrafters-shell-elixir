@@ -45,7 +45,7 @@ defmodule CLI do
   end
 
   # Byte-by-byte line reader; handles Enter, Tab, Backspace, Ctrl-C, Ctrl-D, printable chars.
-  defp read_line(buf, tab_count) do
+  defp read_line(buf, tab_count, arrow_up_count) do
     case read_byte() do
       :eof ->
         if buf == "", do: :eof, else: buf
@@ -60,34 +60,34 @@ defmodule CLI do
 
       ?\t ->
         if length(String.split(buf, " ")) > 1 do
-          buf |> handle_file_completion_tab(tab_count) |> read_line(tab_count + 1)
+          buf |> handle_file_completion_tab(tab_count) |> read_line(tab_count + 1, arrow_up_count)
         else
-          buf |> handle_tab(tab_count) |> read_line(tab_count + 1)
+          buf |> handle_tab(tab_count) |> read_line(tab_count + 1, arrow_up_count)
         end
 
       127 ->
-        buf |> backspace() |> read_line(0)
+        buf |> backspace() |> read_line(tab_count, arrow_up_count)
 
       8 ->
-        buf |> backspace() |> read_line(0)
+        buf |> backspace() |> read_line(tab_count, arrow_up_count)
 
       3 ->
         IO.write("^C\r\n")
         System.halt(130)
 
       4 ->
-        if buf == "", do: :eof, else: read_line(buf, tab_count)
+        if buf == "", do: :eof, else: read_line(buf, tab_count, arrow_up_count)
 
       27 ->
         case {read_byte(), read_byte()} do
-          {?[, ?A} -> handle_up(buf) |> read_line(0)
-          _ -> read_line(buf, 0)
+          {?[, ?A} -> handle_up(buf, arrow_up_count + 1) |> read_line(tab_count, arrow_up_count)
+          _ -> read_line(buf, tab_count, arrow_up_count + 1)
         end
 
       b when is_integer(b) ->
         char = <<b>>
         IO.write(char)
-        read_line(buf <> char, 0)
+        read_line(buf <> char, tab_count, arrow_up_count)
     end
   end
 
@@ -99,9 +99,9 @@ defmodule CLI do
     String.slice(buf, 0..-2//1)
   end
 
-  def handle_up(_buf) do
+  def handle_up(_buf, count) do
     HistoryCache.get_all()
-    |> History.print_most_recent()
+    |> History.print_most_recent(count)
   end
 
   # Tab pressed once the user has typed past the command name; routes to programmable or file completion.
@@ -260,7 +260,7 @@ defmodule CLI do
     JobsCache.clean_obsolete_jobs_and_print()
     IO.write("$ ")
 
-    case read_line("", 0) do
+    case read_line("", 0, 0) do
       :eof ->
         :ok
 

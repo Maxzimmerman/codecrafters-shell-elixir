@@ -35,13 +35,13 @@ defmodule Commands.History do
     end)
   end
 
-  def print_most_recent(history) do
+  def print_most_recent(history, count) do
     lines =
       history
       |> Enum.map(&Enum.join(&1, " "))
 
     lines
-    |> Enum.take(1)
+    |> Enum.at(count)
     |> Enum.each(fn line ->
       IO.puts("#{line}")
     end)
