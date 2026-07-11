@@ -45,7 +45,7 @@ defmodule CLI do
   end
 
   # Byte-by-byte line reader; handles Enter, Tab, Backspace, Ctrl-C, Ctrl-D, printable chars.
-  defp read_line(buf, tab_count, arrow_up_count, arrow_down_count) do
+  defp read_line(buf, tab_count, arrow_up_count) do
     case read_byte() do
       :eof ->
         if buf == "", do: :eof, else: buf
@@ -68,39 +68,39 @@ defmodule CLI do
 
         # tab_count tracks consecutive unproductive tabs; any progress resets it
         next_count = if new_buf == buf, do: tab_count + 1, else: 0
-        read_line(new_buf, next_count, arrow_up_count, arrow_down_count)
+        read_line(new_buf, next_count, arrow_up_count)
 
       127 ->
-        buf |> backspace() |> read_line(tab_count, arrow_up_count, arrow_down_count)
+        buf |> backspace() |> read_line(tab_count, arrow_up_count)
 
       8 ->
-        buf |> backspace() |> read_line(tab_count, arrow_up_count, arrow_down_count)
+        buf |> backspace() |> read_line(tab_count, arrow_up_count)
 
       3 ->
         IO.write("^C\r\n")
         System.halt(130)
 
       4 ->
-        if buf == "", do: :eof, else: read_line(buf, tab_count, arrow_up_count, arrow_down_count)
+        if buf == "", do: :eof, else: read_line(buf, tab_count, arrow_up_count)
 
       27 ->
         case {read_byte(), read_byte()} do
           {?[, ?A} ->
             handle_up(buf, arrow_up_count + 1)
-            |> read_line(tab_count, arrow_up_count + 1, arrow_down_count)
+            |> read_line(tab_count, arrow_up_count + 1)
 
           {?[, ?B} ->
-            handle_down(buf, arrow_down_count + 1)
-            |> read_line(tab_count, arrow_up_count, arrow_down_count)
+            handle_up(buf, arrow_up_count - 1)
+            |> read_line(tab_count, arrow_up_count)
 
           _ ->
-            read_line(buf, tab_count, arrow_up_count, arrow_down_count)
+            read_line(buf, tab_count, arrow_up_count)
         end
 
       b when is_integer(b) ->
         char = <<b>>
         IO.write(char)
-        read_line(buf <> char, tab_count, arrow_up_count, arrow_down_count)
+        read_line(buf <> char, tab_count, arrow_up_count)
     end
   end
 
@@ -302,7 +302,7 @@ defmodule CLI do
     JobsCache.clean_obsolete_jobs_and_print()
     IO.write("$ ")
 
-    case read_line("", 0, 0, 0) do
+    case read_line("", 0, 0) do
       :eof ->
         :ok
 
