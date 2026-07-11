@@ -129,21 +129,6 @@ defmodule CLI do
     end
   end
 
-  def handle_down(buf, count) do
-    history = HistoryCache.get_all() |> Enum.map(&Enum.join(&1, " ")) |> Enum.reverse()
-
-    case Enum.at(history, count - 1) do
-      nil ->
-        IO.write("\a")
-        buf
-
-      recalled ->
-        IO.write(String.duplicate("\b \b", String.length(buf)))
-        IO.write(recalled)
-        recalled
-    end
-  end
-
   # Tab pressed once the user has typed past the command name; routes to programmable or file completion.
   defp handle_file_completion_tab(buf, count) do
     parts = String.split(buf, " ")
