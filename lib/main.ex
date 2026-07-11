@@ -253,21 +253,23 @@ defmodule CLI do
         IO.write(suffix)
         match <> " "
 
-      found_matches when length(found_matches) > 1 and count == 0 ->
+      found_matches when length(found_matches) > 1 ->
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, buf, "")
 
-        if suffix == "" do
-          IO.write("\a")
-          buf
-        else
-          IO.write(suffix)
-          buf <> suffix
-        end
+        cond do
+          suffix != "" ->
+            IO.write(suffix)
+            buf <> suffix
 
-      found_matches when length(found_matches) > 1 and count == 1 ->
-        IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
-        buf
+          count == 0 ->
+            IO.write("\a")
+            buf
+
+          true ->
+            IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
+            buf
+        end
 
       _ ->
         IO.write("\a")
