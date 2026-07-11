@@ -44,14 +44,11 @@ defmodule Commands.History do
       |> Enum.map(&Enum.join(&1, " "))
       |> Enum.reverse()
 
-    IO.inspect(
-      lines
-      |> Enum.take(1)
-      |> Enum.each(fn line ->
-        IO.puts("#{line}")
-      end),
-      label: "result"
-    )
+    lines
+    |> Enum.take(1)
+    |> Enum.each(fn line ->
+      IO.puts("#{line}")
+    end)
   end
 
   defp format_index(index) do
