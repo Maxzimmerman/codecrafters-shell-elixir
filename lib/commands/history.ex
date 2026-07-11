@@ -42,7 +42,7 @@ defmodule Commands.History do
 
     output =
       lines
-      |> Enum.at(count - 1)
+      |> Enum.at(count)
 
     IO.puts("#{output}")
   end
