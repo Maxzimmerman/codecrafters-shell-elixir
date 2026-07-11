@@ -36,9 +36,6 @@ defmodule Commands.History do
   end
 
   def print_most_recent(history) do
-    IO.puts("MOST RECENT")
-    IO.inspect(history, label: "full history")
-
     lines =
       history
       |> Enum.map(&Enum.join(&1, " "))
