@@ -40,12 +40,11 @@ defmodule Commands.History do
       history
       |> Enum.map(&Enum.join(&1, " "))
 
-    lines
-    |> Enum.at(count - 1)
-    |> String.split()
-    |> Enum.each(fn line ->
-      IO.puts("#{line}")
-    end)
+    output =
+      lines
+      |> Enum.at(count - 1)
+
+    IO.puts("#{output}")
   end
 
   defp format_index(index) do
