@@ -42,7 +42,7 @@ defmodule Commands.History do
 
     lines
     |> Enum.at(count)
-    |> String.to_charlist()
+    |> String.split()
     |> Enum.each(fn line ->
       IO.puts("#{line}")
     end)
