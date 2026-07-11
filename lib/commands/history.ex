@@ -41,7 +41,8 @@ defmodule Commands.History do
       |> Enum.map(&Enum.join(&1, " "))
 
     lines
-    |> Enum.take(count)
+    |> Enum.at(count)
+    |> String.to_list()
     |> Enum.each(fn line ->
       IO.puts("#{line}")
     end)
