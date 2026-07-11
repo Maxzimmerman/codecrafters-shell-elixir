@@ -59,11 +59,16 @@ defmodule CLI do
         buf
 
       ?\t ->
-        if length(String.split(buf, " ")) > 1 do
-          buf |> handle_file_completion_tab(tab_count) |> read_line(tab_count + 1, arrow_up_count)
-        else
-          buf |> handle_tab(tab_count) |> read_line(tab_count + 1, arrow_up_count)
-        end
+        new_buf =
+          if length(String.split(buf, " ")) > 1 do
+            handle_file_completion_tab(buf, tab_count)
+          else
+            handle_tab(buf, tab_count)
+          end
+
+        # tab_count tracks consecutive unproductive tabs; any progress resets it
+        next_count = if new_buf == buf, do: tab_count + 1, else: 0
+        read_line(new_buf, next_count, arrow_up_count)
 
       127 ->
         buf |> backspace() |> read_line(tab_count, arrow_up_count)
@@ -157,25 +162,23 @@ defmodule CLI do
         IO.write(suffix)
         buf <> suffix
 
-      found_matches when length(found_matches) > 1 and count == 0 ->
+      found_matches when length(found_matches) > 1 ->
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, current_word, "")
 
-        if suffix == "" do
-          IO.write("\a")
-          buf
-        else
-          IO.write(suffix)
-          buf <> suffix
+        cond do
+          suffix != "" ->
+            IO.write(suffix)
+            buf <> suffix
+
+          count == 0 ->
+            IO.write("\a")
+            buf
+
+          true ->
+            IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
+            buf
         end
-
-      found_matches when length(found_matches) > 1 and count == 1 ->
-        IO.write("\r\n" <> Enum.join(found_matches, "  ") <> "\r\n$ " <> buf)
-        buf
-
-      found_matches when length(found_matches) > 1 and count >= 1 ->
-        IO.puts("here")
-        buf
 
       _ ->
         IO.write("\a")
@@ -200,26 +203,28 @@ defmodule CLI do
         IO.write(suffix <> trailing)
         buf <> suffix <> trailing
 
-      found_matches when length(found_matches) > 1 and count == 0 ->
+      found_matches when length(found_matches) > 1 ->
         prefix = Commands.longest_common_prefix(found_matches)
         suffix = String.replace_prefix(prefix, base, "")
 
-        if suffix == "" do
-          IO.write("\a")
-          buf
-        else
-          IO.write(suffix)
-          buf <> suffix
+        cond do
+          suffix != "" ->
+            IO.write(suffix)
+            buf <> suffix
+
+          count == 0 ->
+            IO.write("\a")
+            buf
+
+          true ->
+            display =
+              Enum.map_join(found_matches, "  ", fn match ->
+                if File.dir?(Path.join(dir, match)), do: match <> "/", else: match
+              end)
+
+            IO.write("\r\n" <> display <> "\r\n$ " <> buf)
+            buf
         end
-
-      found_matches when length(found_matches) > 1 and count == 1 ->
-        display =
-          Enum.map_join(found_matches, "  ", fn match ->
-            if File.dir?(Path.join(dir, match)), do: match <> "/", else: match
-          end)
-
-        IO.write("\r\n" <> display <> "\r\n$ " <> buf)
-        buf
 
       _ ->
         IO.write("\a")
