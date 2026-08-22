@@ -25,7 +25,7 @@ defmodule Commands.History do
         HistoryCache.get_all()
         |> Enum.map(&Enum.join(&1, " "))
         |> Enum.reverse()
-        |> Enum.enum(fn item ->
+        |> Enum.each(fn item ->
           IO.write(file, item)
         end)
     end
