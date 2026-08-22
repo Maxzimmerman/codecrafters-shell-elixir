@@ -16,6 +16,16 @@ defmodule Commands.History do
     end
   end
 
+  def execute(["-w", file_path]) do
+    case File.read(file_path) do
+      {:ok, content} ->
+        save_multiple_in_cache(content)
+
+      {:error, reason} ->
+        IO.puts("Failed to read file: #{reason}")
+    end
+  end
+
   def execute(_input) do
     HistoryCache.get_all()
     |> print_history()
