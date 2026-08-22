@@ -29,6 +29,19 @@ defmodule Commands.History do
     end
   end
 
+  def execute(["-a", file_path]) do
+    with {:ok, file} <- File.open(file_path, [:append]) do
+      HistoryCache.get_all()
+      |> Enum.map(&Enum.join(&1, " "))
+      |> Enum.reverse()
+      |> Enum.each(fn item ->
+        IO.write(file, item <> "\n")
+      end)
+
+      File.close(file)
+    end
+  end
+
   def execute(_input) do
     HistoryCache.get_all()
     |> print_history()
