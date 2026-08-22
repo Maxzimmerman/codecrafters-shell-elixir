@@ -9,7 +9,6 @@ defmodule Commands.History do
   def execute(["-r", file_path]) do
     case File.read(file_path) do
       {:ok, content} ->
-        IO.inspect(content)
         save_multiple_in_cache(content)
 
       {:error, reason} ->
@@ -51,9 +50,10 @@ defmodule Commands.History do
   end
 
   defp save_multiple_in_cache(list) do
-    list
-    |> String.replace("\n", "")
-    |> String.split(" ")
+    list =
+      list
+      |> String.replace("\n", "")
+      |> String.split(" ")
 
     IO.inspect(list)
   end
