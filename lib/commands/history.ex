@@ -53,6 +53,6 @@ defmodule Commands.History do
     list
     |> String.replace("\n", "")
     |> String.split(" ")
-    |> Enum.each(fn item -> HistoryCache.add_one(item) end)
+    |> Enum.each(fn item -> HistoryCache.add_one([item]) end)
   end
 end
