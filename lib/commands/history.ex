@@ -47,6 +47,10 @@ defmodule Commands.History do
   end
 
   defp save_multiple_in_cache(list) do
-    IO.inspect(String.split(list, "\n"))
+    list
+    |> String.replace("\n", "")
+    |> String.split()
+
+    IO.inspect(list)
   end
 end
