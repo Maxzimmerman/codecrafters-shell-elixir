@@ -7,7 +7,7 @@ defmodule Commands.History do
   end
 
   def execute(["-r", file_path]) do
-    case File.read(Path.join(File.cwd!(), {file_path})) do
+    case File.read(Path.join(File.cwd!(), file_path)) do
       {:ok, content} -> IO.inspect(content)
       {:error, reason} -> IO.puts("Failed to read file: #{reason}")
     end
