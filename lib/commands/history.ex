@@ -6,9 +6,11 @@ defmodule Commands.History do
     |> print_history_limit(limit |> String.to_integer())
   end
 
-  def execute(input) do
-    IO.inspect(input, label: "EXECUTED")
+  def execute(["-r", file_path]) do
+    IO.puts(file_path)
+  end
 
+  def execute(input) do
     HistoryCache.get_all()
     |> print_history()
   end
