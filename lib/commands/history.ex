@@ -22,6 +22,8 @@ defmodule Commands.History do
   end
 
   def print_history(history) do
+    IO.inspect(history)
+
     history
     |> Enum.map(&Enum.join(&1, " "))
     |> Enum.reverse()
