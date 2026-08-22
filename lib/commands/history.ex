@@ -8,7 +8,7 @@ defmodule Commands.History do
 
   def execute(["-r", file_path]) do
     case File.read(file_path) do
-      {:ok, content} -> IO.inspect(content)
+      {:ok, content} -> save_multiple_in_cache(content)
       {:error, reason} -> IO.puts("Failed to read file: #{reason}")
     end
   end
@@ -44,5 +44,9 @@ defmodule Commands.History do
 
   defp format_index(index) do
     index |> Integer.to_string() |> String.pad_leading(5)
+  end
+
+  defp save_multiple_in_cache(list) do
+    IO.inspect(String.split(list, "\n"))
   end
 end
