@@ -2,13 +2,13 @@ defmodule Commands.History do
   @behaviour Commands.Command
 
   def execute([limit]) do
-    IO.puts("executed")
-
     HistoryCache.get_all()
     |> print_history_limit(limit |> String.to_integer())
   end
 
-  def execute(_) do
+  def execute(input) do
+    IO.inspect(input, label: "EXECUTED")
+
     HistoryCache.get_all()
     |> print_history()
   end
