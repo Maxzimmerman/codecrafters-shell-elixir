@@ -17,14 +17,12 @@ defmodule Commands.History do
   end
 
   def execute(["-w", file_path]) do
-    with true <-
-           File.exists?(file_path),
-         {:ok, file} <- File.open(file_path, [:write]) do
+    with {:ok, file} <- File.open(file_path, [:write]) do
       HistoryCache.get_all()
       |> Enum.map(&Enum.join(&1, " "))
       |> Enum.reverse()
       |> Enum.each(fn item ->
-        IO.write(file, item)
+        IO.write(file, item <> "\n")
       end)
 
       File.close(file)
