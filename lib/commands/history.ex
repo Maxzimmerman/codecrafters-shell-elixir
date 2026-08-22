@@ -7,7 +7,7 @@ defmodule Commands.History do
   end
 
   def execute(["-r", file_path]) do
-    case File.read("./#{path}") do
+    case File.read("./#{file_path}") do
       {:ok, content} -> IO.puts(content)
       {:error, reason} -> IO.puts("Failed to read file: #{reason}")
     end
