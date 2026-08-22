@@ -8,8 +8,12 @@ defmodule Commands.History do
 
   def execute(["-r", file_path]) do
     case File.read(file_path) do
-      {:ok, content} -> save_multiple_in_cache(content)
-      {:error, reason} -> IO.puts("Failed to read file: #{reason}")
+      {:ok, content} ->
+        IO.inspect(content)
+        save_multiple_in_cache(content)
+
+      {:error, reason} ->
+        IO.puts("Failed to read file: #{reason}")
     end
   end
 
