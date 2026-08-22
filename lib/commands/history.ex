@@ -52,7 +52,7 @@ defmodule Commands.History do
 
   defp save_multiple_in_cache(list) do
     list
-    |> String.replace("word/word", ~r"/", "\\\\")
+    |> String.replace(~r"/", "\\\\")
     |> Enum.map(fn item -> String.replace(item, "\n", " ") end)
     |> Enum.each(fn item -> HistoryCache.add_one([item]) end)
   end
