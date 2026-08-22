@@ -17,9 +17,6 @@ defmodule Commands.History do
   end
 
   def execute(["-w", file_path]) do
-    IO.inspect(HistoryCache.get_all(), label: "TEST")
-    File.write(file_path, HistoryCache.get_all(), [:append])
-
     case File.open("large_log.txt", [:write]) do
       {:ok, file} ->
         HistoryCache.get_all()
@@ -28,6 +25,8 @@ defmodule Commands.History do
         |> Enum.each(fn item ->
           IO.write(file, item)
         end)
+
+        File.close(file)
     end
   end
 
