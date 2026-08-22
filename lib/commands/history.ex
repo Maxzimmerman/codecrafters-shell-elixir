@@ -9,7 +9,6 @@ defmodule Commands.History do
   def execute(["-r", file_path]) do
     case File.read(file_path) do
       {:ok, content} ->
-        IO.inspect(content, label: "TESET")
         save_multiple_in_cache(content)
 
       {:error, reason} ->
