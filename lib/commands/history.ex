@@ -17,6 +17,7 @@ defmodule Commands.History do
   end
 
   def execute(["-w", file_path]) do
+    IO.inspect(HistoryCache.get_all(), label: "TEST")
     File.write(file_path, HistoryCache.get_all(), [:append])
   end
 
