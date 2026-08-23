@@ -37,7 +37,7 @@ defmodule CLI do
     listen()
   end
 
-  defp load_from_hist_file() do
+  def load_from_hist_file() do
     with path when is_binary(path) <- System.get_env("HISTFILE"),
          {:ok, content} <- File.read(path) do
       History.save_multiple_in_cache(content)
