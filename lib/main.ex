@@ -35,6 +35,8 @@ defmodule CLI do
     listen()
   end
 
+  defp set_host_file_env, do: System.get_env("HOSTFILE")
+
   # Read exactly one byte from stdin (returns the int code or :eof).
   defp read_byte do
     case :io.get_chars(:standard_io, ~c"", 1) do
