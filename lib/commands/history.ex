@@ -46,9 +46,12 @@ defmodule Commands.History do
 
   defp get_comments_which_are_not_in_file(file_path) do
     with {:ok, content} <- File.read(file_path) do
-      content
-      |> String.split("\n", trim: true)
-      |> Enum.map(fn item -> String.replace(item, "\n", " ") end)
+      content =
+        content
+        |> String.split("\n", trim: true)
+        |> Enum.map(fn item -> String.replace(item, "\n", " ") end)
+
+      IO.inspect(content, label: "TEST")
 
       HistoryCache.get_all()
       |> Enum.map(&Enum.join(&1, " "))
