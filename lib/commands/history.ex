@@ -31,25 +31,13 @@ defmodule Commands.History do
 
   def execute(["-a", file_path]) do
     with {:ok, file} <- File.open(file_path, [:append]) do
-      get_comments_which_are_not_in_file(file_path)
+      HistoryCache.take_pending_append()
+      |> Enum.map(&Enum.join(&1, " "))
       |> Enum.each(fn item ->
         IO.write(file, item <> "\n")
       end)
 
       File.close(file)
-    end
-  end
-
-  defp get_comments_which_are_not_in_file(file_path) do
-    with {:ok, content} <- File.read(file_path) do
-      content =
-        content
-        |> String.split("\n", trim: true)
-        |> Enum.map(fn item -> String.replace(item, "\n", " ") end)
-
-      HistoryCache.get_all()
-      |> Enum.map(&Enum.join(&1, " "))
-      |> Enum.reverse()
     end
   end
 
