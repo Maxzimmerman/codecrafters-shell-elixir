@@ -31,7 +31,7 @@ defmodule Commands.History do
 
   def execute(["-a", file_path]) do
     with {:ok, file} <- File.open(file_path, [:append]) do
-      ["history -a #{file_path}" | get_comments_which_are_not_in_file(file_path)]
+      (get_comments_which_are_not_in_file(file_path) ++ ["history -a #{file_path}"])
       |> Enum.each(fn item ->
         IO.write(file, item <> "\n")
       end)
