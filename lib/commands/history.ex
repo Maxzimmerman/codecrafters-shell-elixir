@@ -42,6 +42,16 @@ defmodule Commands.History do
     end
   end
 
+  defp get_comments_which_are_not_in_file(file_path) do
+    with {:ok, content} <- File.read(file_path) do
+      IO.inspect(content, label: "TEST")
+
+      HistoryCache.get_all()
+      |> Enum.map(&Enum.join(&1, " "))
+      |> Enum.reverse()
+    end
+  end
+
   def execute(_input) do
     HistoryCache.get_all()
     |> print_history()
