@@ -32,12 +32,15 @@ defmodule CLI do
     {:ok, _} = JobsCache.start_link()
     {:ok, _} = HistoryCache.start_link()
 
-    IO.inspect(load_from_hist_file())
+    load_from_hist_file()
+
     listen()
   end
 
   defp load_from_hist_file() do
-    System.get_env("HISTFILE")
+    with {:ok, content} <- File.read(System.get_env("HISTFILE")) do
+      History.save_multiple_in_cache(content)
+    end
   end
 
   # Read exactly one byte from stdin (returns the int code or :eof).

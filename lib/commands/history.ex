@@ -74,7 +74,7 @@ defmodule Commands.History do
     index |> Integer.to_string() |> String.pad_leading(5)
   end
 
-  defp save_multiple_in_cache(list) do
+  def save_multiple_in_cache(list) do
     list
     |> String.split("\n", trim: true)
     |> Enum.map(fn item -> String.replace(item, "\n", " ") end)
