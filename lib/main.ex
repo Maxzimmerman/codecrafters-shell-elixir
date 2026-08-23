@@ -36,8 +36,8 @@ defmodule CLI do
     listen()
   end
 
-  defp load_from_host_file() do
-    System.get_env("HOSTFILE")
+  defp load_from_hist_file() do
+    System.get_env("HISTFILE")
   end
 
   # Read exactly one byte from stdin (returns the int code or :eof).
