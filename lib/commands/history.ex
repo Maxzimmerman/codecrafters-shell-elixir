@@ -55,7 +55,7 @@ defmodule Commands.History do
           command not in content
         end)
 
-      [history_to_file | "history -a #{file_path}"]
+      ["history -a #{file_path}" | history_to_file]
     end
   end
 
