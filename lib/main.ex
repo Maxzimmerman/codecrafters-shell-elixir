@@ -44,6 +44,20 @@ defmodule CLI do
     end
   end
 
+  def write_to_hist_file() do
+    with path when is_binary(path) <- System.get_env("HISTFILE"),
+         {:ok, file} <- File.open(path, [:write]) do
+      HistoryCache.get_all()
+      |> Enum.map(&Enum.join(&1, " "))
+      |> Enum.reverse()
+      |> Enum.each(fn item ->
+        IO.write(file, item <> "\n")
+      end)
+
+      File.close(file)
+    end
+  end
+
   # Read exactly one byte from stdin (returns the int code or :eof).
   defp read_byte do
     case :io.get_chars(:standard_io, ~c"", 1) do
