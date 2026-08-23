@@ -30,7 +30,7 @@ defmodule Commands.History do
   end
 
   def execute(["-a", file_path]) do
-    get_comments_which_are_not_in_file(file_path)
+    IO.inspect(get_comments_which_are_not_in_file(file_path))
 
     with {:ok, file} <- File.open(file_path, [:append]) do
       HistoryCache.get_all()
@@ -51,11 +51,10 @@ defmodule Commands.History do
         |> String.split("\n", trim: true)
         |> Enum.map(fn item -> String.replace(item, "\n", " ") end)
 
-      IO.inspect(content, label: "TEST")
-
       HistoryCache.get_all()
       |> Enum.map(&Enum.join(&1, " "))
       |> Enum.reverse()
+      |> Enum.filter(fn command -> command not in content end)
     end
   end
 
