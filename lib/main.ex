@@ -32,7 +32,7 @@ defmodule CLI do
     {:ok, _} = JobsCache.start_link()
     {:ok, _} = HistoryCache.start_link()
 
-    IO.inspect(set_host_file_env())
+    IO.inspect(load_from_host_file())
     listen()
   end
 
