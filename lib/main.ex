@@ -32,10 +32,11 @@ defmodule CLI do
     {:ok, _} = JobsCache.start_link()
     {:ok, _} = HistoryCache.start_link()
 
+    IO.inspect(set_host_file_env())
     listen()
   end
 
-  defp set_host_file_env, do: System.get_env("HOSTFILE")
+  defp set_host_file_env, do: System.put_env("HOSTFILE", "")
 
   # Read exactly one byte from stdin (returns the int code or :eof).
   defp read_byte do
