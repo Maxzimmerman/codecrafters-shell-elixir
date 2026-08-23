@@ -47,12 +47,15 @@ defmodule Commands.History do
         |> String.split("\n", trim: true)
         |> Enum.map(fn item -> String.replace(item, "\n", " ") end)
 
-      HistoryCache.get_all()
-      |> Enum.map(&Enum.join(&1, " "))
-      |> Enum.reverse()
-      |> Enum.filter(fn command ->
-        command not in content
-      end)
+      history_to_file =
+        HistoryCache.get_all()
+        |> Enum.map(&Enum.join(&1, " "))
+        |> Enum.reverse()
+        |> Enum.filter(fn command ->
+          command not in content
+        end)
+
+      [history_to_file | "history -a #{file_path}"]
     end
   end
 
