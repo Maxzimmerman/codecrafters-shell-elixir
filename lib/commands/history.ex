@@ -50,7 +50,9 @@ defmodule Commands.History do
       HistoryCache.get_all()
       |> Enum.map(&Enum.join(&1, " "))
       |> Enum.reverse()
-      |> Enum.filter(fn command -> command not in content end)
+      |> Enum.filter(fn command ->
+        command not in content and String.contains?(command, "history")
+      end)
     end
   end
 
