@@ -33,6 +33,7 @@ defmodule CLI do
     {:ok, _pid} = RegisteredCompletionScriptsCache.start_link()
     {:ok, _} = JobsCache.start_link()
     {:ok, _} = HistoryCache.start_link()
+    {:ok, _} = VariableCache.start_link()
 
     load_from_hist_file()
 

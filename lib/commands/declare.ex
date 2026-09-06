@@ -2,7 +2,10 @@ defmodule Commands.Declare do
   @behaviour Commands.Command
 
   def execute(["-p", variable_name | _]) do
-    IO.inspect(variable_name)
+    case VariableCache.get_one(variable_name) do
+      var -> IO.puts(var)
+      :not_found -> IO.puts("declare: #{variable_name}: not found")
+    end
   end
 
   def execute(args) do
