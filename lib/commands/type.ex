@@ -11,7 +11,8 @@ defmodule Commands.Type do
     "cd",
     "complete",
     "jobs",
-    "history"
+    "history",
+    "declare"
   ]
 
   def execute(args) do
