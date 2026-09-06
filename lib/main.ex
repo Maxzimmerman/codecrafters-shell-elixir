@@ -8,6 +8,7 @@ defmodule CLI do
   alias Commands.Complete
   alias Commands.Jobs
   alias Commands.History
+  alias Commands.Declare
 
   alias Commands
 
@@ -20,6 +21,7 @@ defmodule CLI do
     "complete" => Complete,
     "jobs" => Jobs,
     "history" => History,
+    "declare" => Declare,
     "" => Execute
   }
 
