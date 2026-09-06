@@ -3,7 +3,6 @@ defmodule Commands.Declare do
 
   def execute(["-p", variable_name | _]) do
     case VariableCache.get_one(variable_name) do
-      var -> IO.puts(var)
       :not_found -> IO.puts("declare: #{variable_name}: not found")
     end
   end
