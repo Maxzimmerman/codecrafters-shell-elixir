@@ -17,6 +17,8 @@ defmodule VariableCache do
 
   @impl true
   def handle_call({:get_one, variable}, _from, {history, _appended} = state) do
+    IO.inspect(state)
+
     case Enum.find(state, :not_found, &(&1 == variable)) do
       :not_found ->
         {:reply, :not_found, state}
