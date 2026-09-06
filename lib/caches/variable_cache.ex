@@ -11,13 +11,13 @@ defmodule VariableCache do
   end
 
   @impl true
-  def handle_call(:get_all, _from, {history, _appended} = state) do
-    {:reply, history, state}
+  def handle_call(:get_all, _from, state) do
+    {:reply, state, state}
   end
 
   @impl true
-  def handle_call({:get_one, variable}, _from, {variables, _appended} = state) do
-    case Enum.find(variables, :not_found, &(&1 == variable)) do
+  def handle_call({:get_one, variable}, _from, state) do
+    case Enum.find(state, :not_found, &(&1 == variable)) do
       :not_found ->
         {:reply, :not_found, state}
 
