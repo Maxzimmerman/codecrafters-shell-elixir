@@ -7,6 +7,10 @@ defmodule Commands.Declare do
     end
   end
 
+  def execute([key <> "=" <> value]) do
+    IO.inspect(%{key => value})
+  end
+
   def execute(args) do
   end
 end
