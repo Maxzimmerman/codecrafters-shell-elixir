@@ -8,7 +8,8 @@ defmodule Commands.Declare do
   end
 
   def execute([input]) do
-    IO.inspect(%{"test" => input})
+    [key, val] = String.split(input, "=")
+    IO.inspect(%{key => val})
   end
 
   def execute(args) do
