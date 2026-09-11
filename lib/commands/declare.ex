@@ -9,7 +9,7 @@ defmodule Commands.Declare do
 
   def execute([input]) do
     [key, val] = String.split(input, "=")
-    IO.inspect(%{key => val})
+    VariableCache.add_one(%{key => val})
   end
 
   def execute(args) do
