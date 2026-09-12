@@ -524,10 +524,13 @@ defmodule CLI do
 
   # Parameter expansion: `$VAR` expands unquoted and inside double quotes, but not
   # inside single quotes (that case is handled by the literal clause below).
-  defp tokenize(<<"$", rest::binary>>, tokens, current, mode, _has_token)
+  defp tokenize(<<"$", rest::binary>>, tokens, current, mode, has_token)
        when mode in [:none, :double] do
     {value, rest} = expand_variable(rest)
-    tokenize(rest, tokens, current <> value, mode, true)
+    # An unset variable yields "". If nothing else has contributed to this word
+    # (no literal text, no quotes), it must not become an empty argument — so only
+    # mark the token as started when the expansion actually produced characters.
+    tokenize(rest, tokens, current <> value, mode, has_token or value != "")
   end
 
   defp tokenize(<<c::utf8, rest::binary>>, tokens, current, mode, _has_token)
