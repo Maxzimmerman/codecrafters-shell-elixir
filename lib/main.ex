@@ -522,6 +522,14 @@ defmodule CLI do
     tokenize(rest, tokens, current <> <<c::utf8>>, :double, true)
   end
 
+  # Parameter expansion: `$VAR` expands unquoted and inside double quotes, but not
+  # inside single quotes (that case is handled by the literal clause below).
+  defp tokenize(<<"$", rest::binary>>, tokens, current, mode, _has_token)
+       when mode in [:none, :double] do
+    {value, rest} = expand_variable(rest)
+    tokenize(rest, tokens, current <> value, mode, true)
+  end
+
   defp tokenize(<<c::utf8, rest::binary>>, tokens, current, mode, _has_token)
        when mode in [:single, :double] do
     tokenize(rest, tokens, current <> <<c::utf8>>, mode, true)
@@ -542,4 +550,29 @@ defmodule CLI do
   defp tokenize(<<c::utf8, rest::binary>>, tokens, current, :none, _has_token) do
     tokenize(rest, tokens, current <> <<c::utf8>>, :none, true)
   end
+
+  # Read a variable name (`[A-Za-z_][A-Za-z0-9_]*`) starting after a `$`, look it up,
+  # and return {substituted_value, remaining_input}. A `$` not followed by a valid
+  # name character is left as a literal `$`.
+  defp expand_variable(<<c, rest::binary>>)
+       when c in ?a..?z or c in ?A..?Z or c == ?_ do
+    {name, rest} = take_var_name(rest, <<c>>)
+
+    value =
+      case VariableCache.get_one(name) do
+        :not_found -> ""
+        {_key, val} -> val
+      end
+
+    {value, rest}
+  end
+
+  defp expand_variable(rest), do: {"$", rest}
+
+  defp take_var_name(<<c, rest::binary>>, acc)
+       when c in ?a..?z or c in ?A..?Z or c in ?0..?9 or c == ?_ do
+    take_var_name(rest, acc <> <<c>>)
+  end
+
+  defp take_var_name(rest, acc), do: {acc, rest}
 end
