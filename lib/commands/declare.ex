@@ -20,7 +20,7 @@ defmodule Commands.Declare do
   defp validate_key(key) do
     case Regex.match?(@key_regex, key) do
       true -> true
-      false -> IO.puts("declare: #{key}: not a valid identifier")
+      false -> IO.puts("declare: `#{key}': not a valid identifier")
     end
   end
 end
