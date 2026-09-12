@@ -21,7 +21,7 @@ defmodule VariableCache do
       :error ->
         {:reply, :not_found, state}
 
-      {:ok, value} ->
+      value ->
         {:reply, value, state}
     end
   end
