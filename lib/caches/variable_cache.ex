@@ -32,6 +32,6 @@ defmodule VariableCache do
   end
 
   def get_all, do: GenServer.call(__MODULE__, :get_all)
-  def get_one(variable), do: GenServer.call(__MODULE__, {:get_one, variable})
+  def get_one(key), do: GenServer.call(__MODULE__, {:get_one, key})
   def add_one(key, value), do: GenServer.cast(__MODULE__, {:add_one, key, value})
 end
