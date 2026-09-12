@@ -27,11 +27,11 @@ defmodule VariableCache do
   end
 
   @impl true
-  def handle_cast({:add_one, %{} = variable}, [history, appended]) do
-    {:noreply, {[variable | history], appended}}
+  def handle_cast({:add_one, key, value}, state) do
+    {:noreply, Map.put(state, key, value)}
   end
 
   def get_all, do: GenServer.call(__MODULE__, :get_all)
   def get_one(variable), do: GenServer.call(__MODULE__, {:get_one, variable})
-  def add_one(variable), do: GenServer.cast(__MODULE__, {:add_one, variable})
+  def add_one(key, value), do: GenServer.cast(__MODULE__, {:add_one, key, value})
 end
