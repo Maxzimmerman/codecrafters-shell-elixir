@@ -7,7 +7,7 @@ defmodule VariableCache do
 
   @impl true
   def init(_) do
-    {:ok, []}
+    {:ok, %{}}
   end
 
   @impl true
@@ -16,12 +16,12 @@ defmodule VariableCache do
   end
 
   @impl true
-  def handle_call({:get_one, variable}, _from, state) do
-    case Enum.find(state, :not_found, &(&1 == variable)) do
-      :not_found ->
+  def handle_call({:get_one, variable_key}, _from, state) do
+    case Map.get(state, variable_key) do
+      :error ->
         {:reply, :not_found, state}
 
-      var ->
+      {:ok, var} ->
         {:reply, var, state}
     end
   end
