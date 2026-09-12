@@ -1,7 +1,7 @@
 defmodule Commands.Declare do
   @behaviour Commands.Command
 
-  @key_regex ~r/^[a-zA-Z_]/
+  @key_regex ~r/^[a-zA-Z_][a-zA-Z0-9_]*$/
 
   def execute(["-p", variable_name | _]) do
     case VariableCache.get_one(variable_name) do
