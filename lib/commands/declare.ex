@@ -12,15 +12,15 @@ defmodule Commands.Declare do
 
   def execute([input]) do
     with [key, val] <- String.split(input, "="),
-         true <- validate_key(key) do
+         true <- validate_key(key, val) do
       VariableCache.add_one(key, val)
     end
   end
 
-  defp validate_key(key) do
+  defp validate_key(key, val) do
     case Regex.match?(@key_regex, key) do
       true -> true
-      false -> IO.puts("declare: `#{key}': not a valid identifier")
+      false -> IO.puts("declare: `#{key}=': not a valid identifier")
     end
   end
 end
