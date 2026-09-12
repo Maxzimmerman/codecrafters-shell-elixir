@@ -551,23 +551,31 @@ defmodule CLI do
     tokenize(rest, tokens, current <> <<c::utf8>>, :none, true)
   end
 
-  # Read a variable name (`[A-Za-z_][A-Za-z0-9_]*`) starting after a `$`, look it up,
-  # and return {substituted_value, remaining_input}. A `$` not followed by a valid
-  # name character is left as a literal `$`.
+  # Read a variable name starting after a `$`, look it up, and return
+  # {substituted_value, remaining_input}. Supports both `$NAME` and the braced
+  # `${NAME}` form. A `$` not followed by a valid name (or a `${...}` that never
+  # closes) is left as literal text.
+  defp expand_variable(<<"{", rest::binary>>) do
+    case String.split(rest, "}", parts: 2) do
+      [name, after_brace] -> {lookup(name), after_brace}
+      [_no_close] -> {"${", rest}
+    end
+  end
+
   defp expand_variable(<<c, rest::binary>>)
        when c in ?a..?z or c in ?A..?Z or c == ?_ do
     {name, rest} = take_var_name(rest, <<c>>)
-
-    value =
-      case VariableCache.get_one(name) do
-        :not_found -> ""
-        {_key, val} -> val
-      end
-
-    {value, rest}
+    {lookup(name), rest}
   end
 
   defp expand_variable(rest), do: {"$", rest}
+
+  defp lookup(name) do
+    case VariableCache.get_one(name) do
+      :not_found -> ""
+      {_key, val} -> val
+    end
+  end
 
   defp take_var_name(<<c, rest::binary>>, acc)
        when c in ?a..?z or c in ?A..?Z or c in ?0..?9 or c == ?_ do
