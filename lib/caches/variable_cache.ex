@@ -27,7 +27,7 @@ defmodule VariableCache do
   end
 
   @impl true
-  def handle_cast({:add_one, variable}, {history, appended}) do
+  def handle_cast({:add_one, %{} = variable}, [history, appended]) do
     {:noreply, {[variable | history], appended}}
   end
 
