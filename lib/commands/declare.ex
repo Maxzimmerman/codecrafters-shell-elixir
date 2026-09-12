@@ -11,7 +11,4 @@ defmodule Commands.Declare do
     [key, val] = String.split(input, "=")
     VariableCache.add_one(%{key => val})
   end
-
-  def execute(args) do
-  end
 end
