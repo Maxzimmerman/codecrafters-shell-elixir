@@ -17,12 +17,12 @@ defmodule VariableCache do
 
   @impl true
   def handle_call({:get_one, variable_key}, _from, state) do
-    case Map.get(state, variable_key) do
+    case Map.fetch(state, variable_key) do
       :error ->
         {:reply, :not_found, state}
 
-      value ->
-        {:reply, value, state}
+      {:ok, value} ->
+        {:reply, {variable_key, value}, state}
     end
   end
 
