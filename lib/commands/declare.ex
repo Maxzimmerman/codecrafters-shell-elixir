@@ -9,6 +9,6 @@ defmodule Commands.Declare do
 
   def execute([input]) do
     [key, val] = String.split(input, "=")
-    VariableCache.add_one(%{key => val})
+    VariableCache.add_one(key, val)
   end
 end
