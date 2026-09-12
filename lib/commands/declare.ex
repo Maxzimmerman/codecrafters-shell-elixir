@@ -4,7 +4,7 @@ defmodule Commands.Declare do
   def execute(["-p", variable_name | _]) do
     case VariableCache.get_one(variable_name) do
       :not_found -> IO.puts("declare: #{variable_name}: not found")
-      {key, value} -> IO.puts("declare -- \"#{key}=#{value}\"")
+      {key, value} -> IO.puts("declare -- #{key}=\"#{value}\"")
     end
   end
 
